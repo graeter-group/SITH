@@ -36,6 +36,7 @@ class JEDI:
         # simply assume no --d cus I got rid of the option anyway, all input is in Cartesian
 
         # jedi_rims
+        #Converts cartesian coordinates into RIModes
 
     def extractData(self):
         try:
