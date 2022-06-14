@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 from Geometry import Atom
 from Geometry import Geometry
+from SITH_Utilities import Extractor
 
 class JEDI:
 
@@ -12,19 +13,17 @@ class JEDI:
 
 
     #! Decide if just use one constructor and always pass explicit values, or make overloaded constructor
-    def __init__(self, rePath='x0.xyz', dePath='xF.xyz', ePath='E_geoms.txt', hPath='H_cart.txt'):
+    #! Change this so that there is a relaxed Energy ePath can be either a singular file 
+    def __init__(self, rePath='x0.fchk', dePath='xF.fchk'):
         
         self.rPath = Path(rePath)
         self.defPath = Path(dePath)
-        self.enePath = Path(ePath)
-        self.hesPath = Path(hPath)
-        #Check that all files exist and that, if given, the I/O path is a directory
-        assert self.rPath.exists(), "Path to relaxed geometry does not exist."
-        assert self.defPath.exists(), "Path to deformed geometry does not exist."
-        assert self.enePath.exists(), "Path to energetics file does not exist."
-        assert self.hesPath.exists(), "Path to cartesian Hessian does not exist."
 
-        if (not self.rPath.exists()) or (not self.defPath.exists()) or (not self.enePath.exists()) or (not self.hesPath.exists()):
+        #Check that all files exist and that, if given, the I/O path is a directory
+        assert self.rPath.exists(), "Path to relaxed geometry data does not exist."
+        assert self.defPath.exists(), "Path to deformed geometry data does not exist."
+
+        if (not self.rPath.exists()) or (not self.defPath.exists()):
             sys.exit("Path given for one or more input files does not exist.")
 
         self.dDir = self.defPath.is_dir()
@@ -37,6 +36,7 @@ class JEDI:
 
         # jedi_rims
         #Converts cartesian coordinates into RIModes
+        #Completely unnecessary, Gaussian does all of this already
 
     def extractData(self):
         try:
@@ -47,7 +47,7 @@ class JEDI:
 
             self.dData = list()
             if self.dDir:
-                dPaths = list(self.defPath.glob('*.xyz'))
+                dPaths = list(self.defPath.glob('*.fchk'))
             else:
                 dPaths = [self.defPath]
 
@@ -55,21 +55,21 @@ class JEDI:
                 with dp.open() as dFile:
                     self.dData.append((dp.name, dFile.readlines()))
 
-            with self.enePath.open() as eFile:
-                eData = eFile.readlines()
-                eSplit = list()
-                if len(eData) > 1:
-                    for item in eData:
-                        iSplit = item.split()
-                        eSplit.extend(iSplit)
-                    if len(eSplit) == 3:
-                        raise ValueError("Energy file input must be of the form: {Energy Difference} {E Deformed} {E Relaxed}")
-                else:
-                    eSplit = eData[0].split()
+            # with self.enePath.open() as eFile:
+            #     eData = eFile.readlines()
+            #     eSplit = list()
+            #     if len(eData) > 1:
+            #         for item in eData:
+            #             iSplit = item.split()
+            #             eSplit.extend(iSplit)
+            #         if len(eSplit) == 3:
+            #             raise ValueError("Energy file input must be of the form: {Energy Difference} {E Deformed} {E Relaxed}")
+            #     else:
+            #         eSplit = eData[0].split()
 
 
-            with self.hesPath.open() as hFile:
-                hData = hFile.readlines()
+            # with self.hesPath.open() as hFile:
+            #     hData = hFile.readlines()
         except:
             print("An exception occurred during the extraction of data from input files.")
             sys.exit(sys.exc_info()[0])
@@ -77,15 +77,17 @@ class JEDI:
         #! Add in checks to make sure they aren't just empty files
         self.validateFiles()
 
+        rExtractor = Extractor(rData)
         #Create Geometry objects from relaxed and deformed data
-        self.relaxed = Geometry(self.rPath.name, rData)
+        self.rRIC, self.rXYZ, self.hRIC, self.rEnergy = extractor.extract(rData)
+        self.rRIC = Geometry(self.rPath.name, rData)
         self.deformed = list()
         for dd in self.dData:
             self.deformed.append(Geometry(dd[0], dd[1]))
         
-        if any([d.nAtoms() != self.relaxed.nAtoms() for d in self.deformed]):
+        if any([d.nAtoms() != self.rRIC.nAtoms() for d in self.deformed]):
             sys.exit("Inconsistency in number of atoms of input geometries.")
-        self.nCarts = 3 * self.relaxed.nAtoms()
+        self.nCarts = 3 * self.rRIC.nAtoms()
 
         #Populate energy fields from eData
         #! Double check this is correct

@@ -19,6 +19,7 @@ class RIModes():
 
         #extract cartesian coordinates into list -> dataframe
 
+    #def 
 
     def pullElements(self):
         with open("jedi_elements-library.txt", "r") as lib_elements: 
