@@ -1,14 +1,15 @@
+from importlib.resources import path
 from pathlib import Path
 import sys
 from typing import Tuple
-import LTMatrix
+import LTMatrix #Move into here soon, be sure to credit og github though
 from openbabel import openbabel as ob
 import numpy as np
-import Geometry
+#import Geometry #No longer needed because I thought it could fit into utilities just fine
 
 class Extractor:
 
-    def __init__(self, name:str, linesList:list) -> None:
+    def __init__(self, path:Path, linesList:list) -> None:
         self.eHeader = "Total Energy"
         self.hHeader = "Internal Force Constants"
         self.hEnder = "Mulliken Charges"
@@ -16,9 +17,12 @@ class Extractor:
         self.xcEnder = "Force Field"
         self.xrHeader = "Redundant internal coordinates"
         self.xrEnder = "ZRed-IntVec"
+        self.rdHeader = "Redundant internal dimensions"
+        self.rdEnder = "Redundant internal coordinate indices"
         self.nHeader = "Number of atoms"
         self.aHeader = "Atomic numbers"
-        self.geometry = Geometry(name)
+
+        self.name = path.name
 
         self.lines = linesList
 
@@ -26,7 +30,8 @@ class Extractor:
         self.obConversion.SetInAndOutFormats("fchk", "xyz")
 
         mol = ob.OBMol()
-        self.obConversion.ReadFile(mol, sys.argv[1])   # Open Babel will uncompress automatically
+        self.obConversion.ReadFile(mol, path.as_posix())   # Open Babel will uncompress automatically
+        self.obConversion.WriteFile(mol, str(path.name+".xyz"))
         #! find a way to just get it out as list of string or something
         self.extract()
 
@@ -35,9 +40,12 @@ class Extractor:
         for i in range(0, len(self.lines)):
             line = self.lines[i]
 
+            #This all must be in order
+            #! Sandbox this ASAP you dummy
             if self.nHeader in line:
                 splitLine = line.split()
                 numAtoms = int(splitLine[len(splitLine)-1])
+                self.geometry = Geometry(self.name, numAtoms)
 
             elif self.aHeader in line:
                 i=i+1
@@ -57,7 +65,7 @@ class Extractor:
             #     assert (numAtoms * 3) == len(xcRaw), "Number of coordinates does not match number of atoms (3 * atoms)."
             #     self.geometry.buildCartesian(xcRaw)
 
-            elif "Redundant internal dimensions" in line:
+            elif self.rdHeader in line:
                 i=i+1
                 lin = self.lines[i]
                 rDims = lin.split()
@@ -73,6 +81,7 @@ class Extractor:
                 self.geometry.buildRIC(rDims, xrRaw)
 
             elif self.hHeader in line:
+                hFirst = line.split()
                 i=i+1
                 hRaw = list()
                 while self.hEnder not in self.lines[i]:
@@ -81,6 +90,10 @@ class Extractor:
                     hRaw.extend([float(i) for i in rowsplit])
                     i=i+1
                 break
+        with open(self.geometry.name + ".xyz", "r") as xyz:
+            xyzLines = xyz.readlines()
+            self.geometry.buildCartesian(xyzLines)
+
 
     def getGeometry(self) -> Geometry:
         if self.geometry:
@@ -91,6 +104,82 @@ class Extractor:
     def getHessian(self):
         pass
 
+from nis import match
+import sys
+import numpy as np
+
+class Geometry:
+
+    def __init__(self, name:str, nAtoms:int) -> None:
+        self.name = name
+        self.rawRIC = list()
+        self.lengths = list()
+        self.angles = list()
+        self.diheds = list()
+        self.energy = np.inf
+        self.atoms = list()
+        self.nAtoms = nAtoms
+        self.dims = list()
+
+
+    #! Need to adapt to new format, make sure to specify and/or convert units
+    def buildCartesian(self, lines:list):
+        first = lines[0]
+        if len(first.split()) == 1:
+            nAtoms = int(first)
+            if nAtoms != self.nAtoms:
+                sys.exit("Mismatch in number of atoms.")
+        for line in lines:
+            sLine = line.split()
+            if len(sLine) > 1 and len(sLine) < 5:
+                a = Atom(sLine[0], sLine[1:4])
+                self.atoms.append(a)
+            elif len(sLine) >= 5:
+                pass
+        
+
+    def numAtoms(self):
+        return len(self.atoms)
+
+
+    def buildRIC(self, dims:list, lines:list):
+        self.dims = dims
+        for line in lines:
+            self.rawRIC.extend(line.split())
+        if len(self.rawRIC) != dims[0]:
+            sys.exit("Mismatch between the number of degrees of freedom expected ("+str(dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+").")
+        for i in range(len(self.rawRIC)):
+            if i < int(dims[1]):
+                self.lengths.append(self.rawRIC[i])
+            elif i < int(dims[1]) + int(dims[2]):
+                self.angles.append(self.rawRIC[i])
+            elif i < int(dims[1]) + int(dims[2]) + int(dims[3]):
+                self.diheds.append(self.rawRIC[i])
+            else:
+                sys.exit("Mismatch between RIC dimensions specified aside fromt the total.")
+            
+
+
+    def getAtoms(self)->list:
+        if self.atoms:
+            return self.atoms
+        else:
+            pass
+    
+    
+    def getEnergy(self)->float:
+        if self.energy:
+            return self.energy
+        else:
+            pass
+
+
+
+
+class Atom:
+    def __init__(self, element:str, coords:list) -> None:
+        self.element = element
+        self.coords = coords
 
     
 

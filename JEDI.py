@@ -77,9 +77,9 @@ class JEDI:
         #! Add in checks to make sure they aren't just empty files
         self.validateFiles()
 
-        rExtractor = Extractor(rData)
+        rExtractor = Extractor(self.rPath, rData)
         #Create Geometry objects from relaxed and deformed data
-        self.rRIC, self.rXYZ, self.hRIC, self.rEnergy = extractor.extract(rData)
+        self.rRIC, self.rXYZ, self.hRIC, self.rEnergy = rExtractor.extract(rData)
         self.rRIC = Geometry(self.rPath.name, rData)
         self.deformed = list()
         for dd in self.dData:
