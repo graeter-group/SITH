@@ -1,9 +1,9 @@
 import os
-from pathlib import Path
 import sys
-from Geometry import Atom
-from Geometry import Geometry
-from SITH_Utilities import Extractor
+from pathlib import Path
+
+from SITH_Utilities import Extractor, Geometry
+
 
 class JEDI:
 
@@ -79,8 +79,8 @@ class JEDI:
 
         rExtractor = Extractor(self.rPath, rData)
         #Create Geometry objects from relaxed and deformed data
-        self.rRIC, self.rXYZ, self.hRIC, self.rEnergy = rExtractor.extract(rData)
-        self.rRIC = Geometry(self.rPath.name, rData)
+        #self.rRIC, self.rXYZ, self.hRIC, self.rEnergy = rExtractor.extract(rData)
+        self.relaxed = rExtractor.getGeometry()
         self.deformed = list()
         for dd in self.dData:
             self.deformed.append(Geometry(dd[0], dd[1]))
@@ -92,13 +92,13 @@ class JEDI:
         #Populate energy fields from eData
         #! Double check this is correct
         #! Sanna says the energy file is optional?  Ask about this because it's not clear in documentation
-        self.eDiff = eSplit[0]
-        self.dEnergy = eSplit[1]
-        self.rEnergy = eSplit[2]
+        #self.eDiff = eSplit[0]
+        #self.dEnergy = eSplit[1]
+        #self.rEnergy = eSplit[2]
 
         #Populate Hessian, Hessian data must already be in the correct form
         #! Need to do properly so it is a good np.ndarray
-        self.hMat = hData
+        self.hMat = self.relaxed.getHessian()
         
             
 

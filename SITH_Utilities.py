@@ -1,9 +1,11 @@
+import sys
 from importlib.resources import path
 from pathlib import Path
-import sys
 from typing import Tuple
-from openbabel import openbabel as ob
+
 import numpy as np
+from openbabel import openbabel as ob
+
 #import Geometry #No longer needed because I thought it could fit into utilities just fine
 
 # LTMatrix class comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
@@ -234,10 +236,10 @@ class Geometry:
     
     
     def getEnergy(self)->float:
-        if self.energy:
+        if self.energy != np.inf:
             return self.energy
         else:
-            pass
+            sys.exit("Energy has not been set for this geometry.  You done goofed real bad.")
 
 
 
