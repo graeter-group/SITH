@@ -7,21 +7,23 @@ from typing import Tuple
 import numpy as np
 from openbabel import openbabel as ob
 
-#import Geometry #No longer needed because I thought it could fit into utilities just fine
+# import Geometry #No longer needed because I thought it could fit into utilities just fine
 
 # LTMatrix class comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
+
+
 class LTMatrix(list):
-    def __init__(self,L):
+    def __init__(self, L):
         """
         Accept a list of elements in a lower triangular matrix.
         """
-        list.__init__(self,L)
+        list.__init__(self, L)
         self.list = L
-        i,j = LTMatrix.getRowColumn(len(L) - 1)
+        i, j = LTMatrix.getRowColumn(len(L) - 1)
         assert i == j, "Not a LTMatrix"
         self.dimension = i + 1
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         """
         Accept one or two integers.
         ONE: get item at the given position (count from zero)
@@ -31,7 +33,6 @@ class LTMatrix(list):
             return self.list[LTMatrix.getPosition(*key)]
         else:
             return self.list[key]
-
 
     @staticmethod
     def getRowColumn(N):
@@ -74,7 +75,6 @@ class LTMatrix(list):
         num = int(num)
         return num - 1
 
-
     def buildFullMat(self):
         """
         build full matrix (np.ndarray).
@@ -83,7 +83,7 @@ class LTMatrix(list):
         for i in range(self.dimension):
             L.append([])
             for j in range(self.dimension):
-                L[-1].append(self[i,j])
+                L[-1].append(self[i, j])
         self._fullmat = np.array(L)
         return self._fullmat
 
@@ -94,14 +94,13 @@ class LTMatrix(list):
         """
         return getattr(self, '_fullmat', self.buildFullMat())
 
-
     def inverse(self):
         return np.linalg.inv(self.fullmat)
 
     def uppermat(self):
         up = []
-        for i,row in enumerate(self.fullmat):
-                up.extend(row[i:])
+        for i, row in enumerate(self.fullmat):
+            up.extend(row[i:])
         return up
 
     @staticmethod
@@ -117,27 +116,26 @@ class LTMatrix(list):
         R5                20
         """
         dimension = LTMatrix.getRowColumn(len(uppermat)-1)[0] + 1
-        def getUpperPosition(i,j, dimension):
+
+        def getUpperPosition(i, j, dimension):
             firstnum = dimension
             if i == 0:
                 return j
             lastnum = firstnum - i + 1
             countnum = i
-            abovenums = (firstnum + lastnum)*countnum /2
+            abovenums = (firstnum + lastnum)*countnum / 2
             position = abovenums + j - i
             return int(position)
         L = []
         for i in range(dimension):
             for j in range(i+1):
-                L.append(uppermat[getUpperPosition(j,i,dimension)])
+                L.append(uppermat[getUpperPosition(j, i, dimension)])
         return LTMatrix(L)
-
-
 
 
 class Geometry:
 
-    def __init__(self, name:str, nAtoms:int) -> None:
+    def __init__(self, name: str, nAtoms: int) -> None:
         self.name = name
         self.rawRIC = list()
         self.lengths = list()
@@ -149,9 +147,8 @@ class Geometry:
         self.dims = list()
         self.dimIndices = list()
 
-
     #! Need to adapt to new format, make sure to specify and/or convert units
-    def buildCartesian(self, lines:list):
+    def buildCartesian(self, lines: list):
         first = lines[0]
         if len(first.split()) == 1:
             nAtoms = int(first)
@@ -164,16 +161,14 @@ class Geometry:
                 self.atoms.append(a)
             elif len(sLine) >= 5:
                 pass
-        
 
     def numAtoms(self):
         return self.nAtoms
 
-
-    def buildRIC(self, dims:list, dimILines:list, coordLines:list):
+    def buildRIC(self, dims: list, dimILines: list, coordLines: list):
         self.dims = [int(d) for d in dims]
 
-        #region Indices
+        # region Indices
         # Parse through the 'dimILines' input which indicates which atoms (by index)
         # are involved in each RIC degree of freedom
 
@@ -186,11 +181,11 @@ class Geometry:
                 print(ve)
                 raise Exception("Invalid atom index given as input.")
 
+        # Check that # indices is divisible by 4
+        assert len(rawIndices) % 4 == 0 and len(
+            rawIndices) == self.dims[0] * 4, "Redundant internal coordinate indices input has invalid dimensions."
 
-        #Check that # indices is divisible by 4
-        assert len(rawIndices)%4 == 0 and len(rawIndices) == self.dims[0] * 4, "Redundant internal coordinate indices input has invalid dimensions."
-
-        #Parse into sets of 4, then into tuples of the relevant number of values
+        # Parse into sets of 4, then into tuples of the relevant number of values
         for i in range(0, len(rawIndices), 4):
             a1 = rawIndices[i]
             a2 = rawIndices[i+1]
@@ -198,28 +193,29 @@ class Geometry:
             a4 = rawIndices[i+3]
             assert a1 <= self.nAtoms and a2 <= self.nAtoms and a3 <= self.nAtoms and a4 <= self.nAtoms, "Invalid atom index given as input."
             assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
-            #bond lengths check
+            # bond lengths check
             if i < self.dims[1]*4:
                 assert a3 == 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2))
-            #bond angles check
+            # bond angles check
             elif i < (self.dims[1] + self.dims[2])*4:
                 assert a3 != 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2, a3))
-            #dihedral angles check
+            # dihedral angles check
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
                 assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2, a3, a4))
             # self.dimIndices.append((int(),))
 
-        #Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
-        #These should line up with self.dims correctly
+        # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+        # These should line up with self.dims correctly
 
-        #endregion
+        # endregion
 
         for line in coordLines:
             self.rawRIC.extend([float(ric) for ric in line.split()])
-        assert len(self.rawRIC) == dims[0], "Mismatch between the number of degrees of freedom expected ("+str(dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+")."
+        assert len(self.rawRIC) == dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
+            dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+")."
         for i in range(len(self.rawRIC)):
             if i < int(dims[1]):
                 self.lengths.append(self.rawRIC[i])
@@ -228,32 +224,28 @@ class Geometry:
             elif i < int(dims[1]) + int(dims[2]) + int(dims[3]):
                 self.diheds.append(self.rawRIC[i])
             else:
-                raise Exception("Mismatch between RIC dimensions specified aside from the total.")
-            
+                raise Exception(
+                    "Mismatch between RIC dimensions specified aside from the total.")
 
-
-    def getAtoms(self)->list:
+    def getAtoms(self) -> list:
         if self.atoms:
             return self.atoms
         else:
             pass
-    
-    
-    def getEnergy(self)->float:
+
+    def getEnergy(self) -> float:
         if self.energy != np.inf:
             return self.energy
         else:
-            raise Exception("Energy has not been set for this geometry.  You done goofed real bad.")
-
-
+            raise Exception(
+                "Energy has not been set for this geometry.  You done goofed real bad.")
 
 
 class Atom:
-    def __init__(self, element:str, coords:list) -> None:
+    def __init__(self, element: str, coords: list) -> None:
         self.element = element
         self.coords = coords
 
-    
 
 class UnitConverter:
 
@@ -263,7 +255,7 @@ class UnitConverter:
 
 class Extractor:
 
-    def __init__(self, path:Path, linesList:list) -> None:
+    def __init__(self, path: Path, linesList: list) -> None:
         self.eHeader = "Total Energy"
         self.hHeader = "Internal Force Constants"
         self.hEnder = "Mulliken Charges"
@@ -277,31 +269,30 @@ class Extractor:
         self.aHeader = "Atomic numbers"
 
         self.path = path
-        self.name = path.name
+        self.name = path.stem
 
         self.lines = linesList
-
-        self.writeXYZ()
-        
-        #! find a way to just get it out as list of string or something
-        self.extract()
 
     def writeXYZ(self):
         obConversion = ob.OBConversion()
         obConversion.SetInAndOutFormats("fchk", "xyz")
 
         mol = ob.OBMol()
-        obConversion.ReadFile(mol, self.path.as_posix())   # Open Babel will uncompress automatically
-        obConversion.WriteFile(mol, str(self.path.name+".xyz"))
+        assert self.path.exists(), "Path to fchk file does not exist"
+        assert obConversion.ReadFile(mol, self.path.as_posix(
+        )), "Reading fchk file with openbabel failed."   # Open Babel will uncompress automatically
+        assert obConversion.WriteFile(mol, str(
+            self.path.parent.as_posix()+self.path.root+self.path.stem+".xyz")), "Could not write XYZ file."
 
     def extract(self):
-        
+        self.writeXYZ()
+
         #! Change to a while < len loop?
         i = 0
         while i < len(self.lines):
             line = self.lines[i]
 
-            #This all must be in order
+            # This all must be in order
             #! Sandbox this ASAP you dummy
             if self.nHeader in line:
                 splitLine = line.split()
@@ -309,7 +300,7 @@ class Extractor:
                 self.geometry = Geometry(self.name, numAtoms)
 
             elif self.aHeader in line:
-                i=i+1
+                i = i+1
                 lin = self.lines[i]
                 atomicNums = lin.split()
 
@@ -327,25 +318,26 @@ class Extractor:
             #     self.geometry.buildCartesian(xcRaw)
 
             elif self.rdHeader in line:
-                i=i+1
+                i = i+1
                 lin = self.lines[i]
                 rDims = lin.split()
 
             elif self.rdEnder in line:
-                i=i+1
+                i = i+1
                 rdiStart = i
                 while self.xrHeader not in self.lines[i]:
-                    i=i+1
+                    i = i+1
                 xrDims = self.lines[rdiStart:i]
                 #! assert validation of number of degrees of freedom?
-                if not xrDims: raise Exception("Missing 'Redundant internal coordinate indices'.")
-
+                if not xrDims:
+                    raise Exception(
+                        "Missing 'Redundant internal coordinate indices'.")
 
             elif self.xrHeader in line:
-                i=i+1
+                i = i+1
                 xrStart = i
                 while self.xrEnder not in self.lines[i]:
-                    i=i+1
+                    i = i+1
                 xrRaw = self.lines[xrStart:i]
                 #! assert validation of number of degrees of freedom?
                 #if not xrDims: raise Exception("Missing 'Redundant internal coordinate indices'.")
@@ -353,16 +345,16 @@ class Extractor:
 
             elif self.hHeader in line:
                 hFirst = line.split()
-                i=i+1
+                i = i+1
                 self.hRaw = list()
                 while self.hEnder not in self.lines[i]:
                     row = self.lines[i]
                     rowsplit = row.split()
                     self.hRaw.extend([float(i) for i in rowsplit])
-                    i=i+1
-                
-            i = i+ 1
-        with open(self.geometry.name + ".xyz", "r") as xyz:
+                    i = i+1
+
+            i = i + 1
+        with open(self.path.parent.as_posix()+self.path.root + self.path.stem + ".xyz", "r") as xyz:
             xyzLines = xyz.readlines()
             self.geometry.buildCartesian(xyzLines)
 
