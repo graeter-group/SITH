@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import sys
 from importlib.resources import path
 from pathlib import Path
@@ -155,7 +156,7 @@ class Geometry:
         if len(first.split()) == 1:
             nAtoms = int(first)
             if nAtoms != self.nAtoms:
-                sys.exit("Mismatch in number of atoms.")
+                raise Exception("Mismatch in number of atoms.")
         for line in lines:
             sLine = line.split()
             if len(sLine) > 1 and len(sLine) < 5:
@@ -166,19 +167,28 @@ class Geometry:
         
 
     def numAtoms(self):
-        return len(self.atoms)
+        return self.nAtoms
 
 
     def buildRIC(self, dims:list, dimILines:list, coordLines:list):
-        self.dims = dims
+        self.dims = [int(d) for d in dims]
+
+        #region Indices
+        # Parse through the 'dimILines' input which indicates which atoms (by index)
+        # are involved in each RIC degree of freedom
 
         rawIndices = list()
         for iLine in dimILines:
             iSplit = iLine.split()
-            rawIndices.extend([int(i) for i in iSplit])
+            try:
+                rawIndices.extend([int(i) for i in iSplit])
+            except ValueError as ve:
+                print(ve)
+                raise Exception("Invalid atom index given as input.")
+
 
         #Check that # indices is divisible by 4
-        if len(rawIndices)%4 != 0: sys.exit("Incorrect dimensions in Redundant internal coordinate indices.")
+        assert len(rawIndices)%4 == 0 and len(rawIndices) == self.dims[0] * 4, "Redundant internal coordinate indices input has invalid dimensions."
 
         #Parse into sets of 4, then into tuples of the relevant number of values
         for i in range(0, len(rawIndices), 4):
@@ -186,36 +196,30 @@ class Geometry:
             a2 = rawIndices[i+1]
             a3 = rawIndices[i+2]
             a4 = rawIndices[i+3]
-            if a1 == 0 or a2 == 0:
-                sys.exit("AHHHHHHHHH big goof")
+            assert a1 <= self.nAtoms and a2 <= self.nAtoms and a3 <= self.nAtoms and a4 <= self.nAtoms, "Invalid atom index given as input."
+            assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
             #bond lengths check
             if i < self.dims[1]*4:
-                if a3 != 0 or a4 != 0:
-                    sys.exit("Mismatch between given RIC dimensions # of bond lengths and the number of atom indices specified for dimension"+str(i/4))
-                else:
-                    self.dimIndices.append((a1, a2))
+                assert a3 == 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                self.dimIndices.append((a1, a2))
             #bond angles check
             elif i < (self.dims[1] + self.dims[2])*4:
-                if a3 == 0 or a4 != 0:
-                    sys.exit("Mismatch between given 'RIC dimensions' # of bond angles and the number of atom indices specified for dimension"+str(i/4))
-                else:
-                    self.dimIndices.append((a1, a2, a3))
+                assert a3 != 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                self.dimIndices.append((a1, a2, a3))
             #dihedral angles check
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
-                if a3 == 0 or a4 == 0:
-                    sys.exit("Mismatch between given 'RIC dimensions' # of dihedral angles and the number of atom indices specified for dimension"+str(i/4))
-                else:
-                    self.dimIndices.append((a1, a2, a3, a4))
+                assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                self.dimIndices.append((a1, a2, a3, a4))
             # self.dimIndices.append((int(),))
 
         #Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
         #These should line up with self.dims correctly
 
+        #endregion
 
         for line in coordLines:
-            self.rawRIC.extend(line.split())
-        if len(self.rawRIC) != dims[0]:
-            sys.exit("Mismatch between the number of degrees of freedom expected ("+str(dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+").")
+            self.rawRIC.extend([float(ric) for ric in line.split()])
+        assert len(self.rawRIC) == dims[0], "Mismatch between the number of degrees of freedom expected ("+str(dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+")."
         for i in range(len(self.rawRIC)):
             if i < int(dims[1]):
                 self.lengths.append(self.rawRIC[i])
@@ -224,7 +228,7 @@ class Geometry:
             elif i < int(dims[1]) + int(dims[2]) + int(dims[3]):
                 self.diheds.append(self.rawRIC[i])
             else:
-                sys.exit("Mismatch between RIC dimensions specified aside fromt the total.")
+                raise Exception("Mismatch between RIC dimensions specified aside from the total.")
             
 
 
@@ -239,7 +243,7 @@ class Geometry:
         if self.energy != np.inf:
             return self.energy
         else:
-            sys.exit("Energy has not been set for this geometry.  You done goofed real bad.")
+            raise Exception("Energy has not been set for this geometry.  You done goofed real bad.")
 
 
 
@@ -272,18 +276,23 @@ class Extractor:
         self.nHeader = "Number of atoms"
         self.aHeader = "Atomic numbers"
 
+        self.path = path
         self.name = path.name
 
         self.lines = linesList
 
-        self.obConversion = ob.OBConversion()
-        self.obConversion.SetInAndOutFormats("fchk", "xyz")
-
-        mol = ob.OBMol()
-        self.obConversion.ReadFile(mol, path.as_posix())   # Open Babel will uncompress automatically
-        self.obConversion.WriteFile(mol, str(path.name+".xyz"))
+        self.writeXYZ()
+        
         #! find a way to just get it out as list of string or something
         self.extract()
+
+    def writeXYZ(self):
+        obConversion = ob.OBConversion()
+        obConversion.SetInAndOutFormats("fchk", "xyz")
+
+        mol = ob.OBMol()
+        obConversion.ReadFile(mol, self.path.as_posix())   # Open Babel will uncompress automatically
+        obConversion.WriteFile(mol, str(self.path.name+".xyz"))
 
     def extract(self):
         
@@ -329,7 +338,7 @@ class Extractor:
                     i=i+1
                 xrDims = self.lines[rdiStart:i]
                 #! assert validation of number of degrees of freedom?
-                if not xrDims: sys.exit("Missing 'Redundant internal coordinate indices'.")
+                if not xrDims: raise Exception("Missing 'Redundant internal coordinate indices'.")
 
 
             elif self.xrHeader in line:
@@ -339,7 +348,7 @@ class Extractor:
                     i=i+1
                 xrRaw = self.lines[xrStart:i]
                 #! assert validation of number of degrees of freedom?
-                #if not xrDims: sys.exit("Missing 'Redundant internal coordinate indices'.")
+                #if not xrDims: raise Exception("Missing 'Redundant internal coordinate indices'.")
                 self.geometry.buildRIC(rDims, xrDims, xrRaw)
 
             elif self.hHeader in line:
@@ -365,7 +374,7 @@ class Extractor:
         if self.geometry:
             return self.geometry
         else:
-            sys.exit("There is no geometry.")
+            raise Exception("There is no geometry.")
 
     def getHessian(self):
         if self.hessian:
