@@ -240,6 +240,23 @@ class Geometry:
             raise Exception(
                 "Energy has not been set for this geometry.  You done goofed real bad.")
 
+    def __eq__(self, __o: object) -> bool:
+        #if __o is type(self):
+            b = True
+            b = b and self.name == __o.name
+            b = b and self.rawRIC == __o.rawRIC
+            b = b and self.lengths == __o.lengths
+            b = b and self.angles == __o.angles
+            b = b and self.diheds == __o.diheds
+            b = b and self.energy == __o.energy
+            b = b and self.atoms == __o.atoms
+            b = b and self.nAtoms == __o.nAtoms
+            b = b and self.dims == __o.dims
+            b = b and self.dimIndices == __o.dimIndices
+            return b
+        #else:
+            #return False
+
 
 class Atom:
     def __init__(self, element: str, coords: list) -> None:
@@ -333,7 +350,7 @@ class Extractor:
                     raise Exception(
                         "Missing 'Redundant internal coordinate indices'.")
 
-            elif self.xrHeader in line:
+            if self.xrHeader in line:
                 i = i+1
                 xrStart = i
                 while self.xrEnder not in self.lines[i]:
