@@ -214,7 +214,7 @@ class Geometry:
 
         for line in coordLines:
             self.rawRIC.extend([float(ric) for ric in line.split()])
-        assert len(self.rawRIC) == dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
+        assert len(self.rawRIC) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
             dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+")."
         for i in range(len(self.rawRIC)):
             if i < int(dims[1]):
@@ -262,6 +262,9 @@ class Atom:
     def __init__(self, element: str, coords: list) -> None:
         self.element = element
         self.coords = coords
+
+    def __eq__(self, __o: object) -> bool:
+        return self.element == __o.element and self.coords ==__o.coords
 
 
 class UnitConverter:
@@ -340,11 +343,10 @@ class Extractor:
                 rDims = lin.split()
 
             elif self.rdEnder in line:
-                i = i+1
-                rdiStart = i
-                while self.xrHeader not in self.lines[i]:
+                rdiStart = i+1
+                while self.xrHeader not in self.lines[i+1]:
                     i = i+1
-                xrDims = self.lines[rdiStart:i]
+                xrDims = self.lines[rdiStart:i+1]
                 #! assert validation of number of degrees of freedom?
                 if not xrDims:
                     raise Exception(
@@ -374,9 +376,10 @@ class Extractor:
         with open(self.path.parent.as_posix()+self.path.root + self.path.stem + ".xyz", "r") as xyz:
             xyzLines = xyz.readlines()
             self.geometry.buildCartesian(xyzLines)
+        self.buildHessian()
 
     def buildHessian(self):
-        ltMat = LTMatrix.LTMatrix(self.hRaw)
+        ltMat = LTMatrix(self.hRaw)
         self.hessian = ltMat.fullmat
 
     def getGeometry(self) -> Geometry:
@@ -384,13 +387,6 @@ class Extractor:
             return self.geometry
         else:
             raise Exception("There is no geometry.")
-
-    def getHessian(self):
-        if self.hessian:
-            return self.hessian
-        else:
-            self.buildHessian()
-            return self.hessian
 
 # if __name__ == '__main__':
 #     import doctest

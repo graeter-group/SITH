@@ -90,6 +90,8 @@ class JEDI:
             sys.exit("Inconsistency in number of atoms of input geometries.")
         self.nCarts = 3 * self.rRIC.nAtoms()
 
+        self.killAtoms()
+
         #Populate energy fields from eData
         #! Double check this is correct
         #! Sanna says the energy file is optional?  Ask about this because it's not clear in documentation
@@ -101,7 +103,11 @@ class JEDI:
         #! Need to do properly so it is a good np.ndarray
         self.hMat = self.relaxed.getHessian()
         
-            
+    def killAtoms(self):
+        """
+        Implement this later first get methanol test working
+        """
+        pass
 
     def validateFiles(self):
         pass

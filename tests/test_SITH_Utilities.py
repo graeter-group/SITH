@@ -401,7 +401,19 @@ def test_extractedGeometry():
 
 
 def test_buildHessian():
-    pass
+    extractor = Extractor(testPath, frankenLines)
+    # Geometry
+    extractor.extract()
+    geo = extractor.getGeometry()
+    egeo = Geometry(testPath.stem, 6)
+    egeo.energy = energy
+    egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
+    egeo.buildCartesian(cartesianLines)
+    hess = extractor.hessian
+    ltMat = LTMatrix(ehRaw)
+    ehess = ltMat.fullmat
+    assert (ehess == hess).all()
+
 
 
 def test_getGeometry():
