@@ -65,6 +65,7 @@ def test_fullEnergyAnalysis():
 
 def test_fullRun():
     jedi = JEDI()
+    jedi.energyAnalysis()
 
 #region invalid Geometries (might be unnecessary or more for extractors?)
 
