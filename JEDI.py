@@ -148,7 +148,9 @@ class JEDI:
             self.pEnergies = float(
                 100) * self.energies / self.deformationEnergy
         else:
-            for i in range(len(self.deformed)):
+            self.deformationEnergy = np.ndarray(len(self.deformed))
+            self.pEnergies = np.ndarray((len(self.deformed), self.relaxed.dims[0]))
+            for i in range(1, len(self.deformed)):
                 self.deformationEnergy[i] = 0.5 * np.transpose(self.delta_q[i,:]).dot(
                     self.hMat).dot(self.delta_q[i,:])  # scalar 1x1 total Energy
                 for j in range(len(self.delta_q[i])):

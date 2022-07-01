@@ -48,7 +48,8 @@ def test_basic():
     jedi = JEDI()
 
 def test_multiDeformed():
-    jedi = JEDI()
+    jedi = JEDI('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    jedi.energyAnalysis()
 
 def test_populateQ():
     jedi = JEDI()
