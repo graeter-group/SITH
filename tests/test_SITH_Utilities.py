@@ -198,6 +198,17 @@ def test_getAtoms():
 
 # endregion
 
+#region validity as relaxed or deformed (might move to extractor not Geometry? might not even need)
+
+def test_validRelaxed():
+    pass
+def test_invalidRelaxed():
+    pass
+def test_validDeformed():
+    pass
+def test_invalidDeformed():
+    pass
+
 # endregion
 
 # region Extractor Tests

@@ -146,7 +146,7 @@ class Geometry:
         self.nAtoms = nAtoms
         self.dims = list()
         self.dimIndices = list()
-        self.hessian = np.ndarray()
+        #self.hessian = np.ndarray()
 
     #! Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
