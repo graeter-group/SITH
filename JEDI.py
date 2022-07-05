@@ -36,9 +36,8 @@ class JEDI:
 
         self.extractData()
 
-
     def extractData(self):
-        
+
         self.getContents()
 
         rExtractor = Extractor(self.rPath, self.rData)
@@ -81,7 +80,6 @@ class JEDI:
 
         self.dDir = self.defPath.is_dir()
 
-
     def getContents(self):
         """
         Gets the contents of the input files, including those in a deformed directory and verifies they are not empty.
@@ -102,62 +100,66 @@ class JEDI:
             for dp in dPaths:
                 with dp.open() as dFile:
                     dLines = dFile.readlines()
-                    assert len(dLines) > 0, "One or more deformed files are empty."
+                    assert len(
+                        dLines) > 0, "One or more deformed files are empty."
                     self.dData.append((dp, dLines))
 
         except:
-            print("An exception occurred during the extraction of the input files' contents.")
+            print(
+                "An exception occurred during the extraction of the input files' contents.")
             sys.exit(sys.exc_info()[0])
 
     def validateGeometries(self):
         """
         Ensure that the relaxed and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        #if any([d.nAtoms() != self.relaxed.nAtoms() for d in self.deformed]):
+        # if any([d.nAtoms() != self.relaxed.nAtoms() for d in self.deformed]):
         #    sys.exit("Inconsistency in number of atoms of input geometries.")
         #self.nCarts = 3 * self.relaxed.nAtoms()
         pass
 
     def populateQ(self):
-        self.q0 = np.hstack((self.relaxed.lengths,
-                            self.relaxed.angles, self.relaxed.diheds))
-        # qF rows correspond to each deformed geometry, the columns correspond to the degrees of freedom
-        # qF[row or deformed geometry index][d.o.f. index] -> value of d.o.f. for deformed geometry at index of self.deformed
-        self.qF = np.hstack((self.deformed[0].lengths,
-                                       self.deformed[0].angles, self.deformed[0].diheds))
+        self.q0 = np.zeros((self.relaxed.dims[0], 1))
+        self.qF = np.zeros((self.relaxed.dims[0], 1))
+        self.q0[:,0] = np.transpose(np.hstack((self.relaxed.lengths,
+                                          self.relaxed.angles, self.relaxed.diheds)))
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
+        self.qF[:,0] = np.transpose(np.hstack((self.deformed[0].lengths,
+                                           self.deformed[0].angles, self.deformed[0].diheds)))
         if len(self.deformed) > 1:
             for i in range(1, len(self.deformed)):
                 deformation = self.deformed[i]
-                temp = np.hstack((deformation.lengths,
-                                       deformation.angles, deformation.diheds))
-                self.qF = np.vstack((self.qF, temp))
+                temp = np.transpose(np.hstack((deformation.lengths,
+                                               deformation.angles, deformation.diheds)))
+                self.qF = np.column_stack((self.qF, temp))
             # delta_q is organized in the same shape as qF
-        self.delta_q = self.qF - self.q0
+        self.delta_q = np.subtract(self.qF, self.q0) #self.qF - self.q0
 
     def energyAnalysis(self):
-        self.energies = np.ndarray((len(self.deformed), self.relaxed.dims[0]))
+        self.energies = np.zeros((self.relaxed.dims[0], len(self.deformed)))
+        self.deformationEnergy = np.zeros((1, len(self.deformed)))
+        self.pEnergies = np.zeros((self.relaxed.dims[0], len(self.deformed)))
         if len(self.deformed) == 1:
-            self.deformationEnergy = 0.5 * np.transpose(self.delta_q).dot(
-                    self.hMat).dot(self.delta_q)  # scalar 1x1 total Energy
-            for j in range(len(self.delta_q)):
+            self.deformationEnergy[0,0] = 0.5 * np.transpose(self.delta_q).dot(
+                self.hMat).dot(self.delta_q)  # scalar 1x1 total Energy
+            for j in range(self.relaxed.dims[0]):
                 isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j], np.zeros(
-                    len(self.delta_q)-j-1)))  # tricky, need to troubleshoot
-                self.energies[0,j] = 0.5 * \
-                    np.transpose(isolatedDOF).dot(self.hMat).dot(isolatedDOF)
-
-            self.pEnergies = float(
-                100) * self.energies / self.deformationEnergy
+                    self.relaxed.dims[0]-j-1)))  # tricky, need to troubleshoot
+                # isolatedDOF)
+                self.energies[j, 0] = 0.5 * \
+                    (isolatedDOF).dot(self.hMat).dot(self.delta_q)
+            self.pEnergies[:,0] = float(
+                100) * self.energies[:,0] / self.deformationEnergy[0,0]
         else:
-            self.deformationEnergy = np.ndarray(len(self.deformed))
-            self.pEnergies = np.ndarray((len(self.deformed), self.relaxed.dims[0]))
-            for i in range(1, len(self.deformed)):
-                self.deformationEnergy[i] = 0.5 * np.transpose(self.delta_q[i,:]).dot(
-                    self.hMat).dot(self.delta_q[i,:])  # scalar 1x1 total Energy
-                for j in range(len(self.delta_q[i])):
-                    isolatedDOF = np.hstack((np.zeros(j), self.delta_q[i, j], np.zeros(
-                        len(self.delta_q[i])-j-1)))  # tricky, need to troubleshoot
-                    self.energies[i, j] = 0.5 * \
-                        np.transpose(isolatedDOF).dot(self.hMat).dot(isolatedDOF)
-    
-                self.pEnergies[i] = float(
-                    100) * self.energies[i] / self.deformationEnergy[i]
+            for i in range(len(self.deformed)):
+                self.deformationEnergy[0,i] = 0.5 * np.transpose(self.delta_q[:,i]).dot(
+                    self.hMat).dot(self.delta_q[:,i])  # scalar 1x1 total Energy
+                for j in range(self.relaxed.dims[0]):
+                    isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j,i], np.zeros(
+                        self.relaxed.dims[0]-j-1)))  # tricky, need to troubleshoot
+                    self.energies[j, i] = 0.5 * \
+                        (isolatedDOF).dot(self.hMat).dot(isolatedDOF)
+
+                self.pEnergies[:,i] = float(
+                    100) * self.energies[:,i] / self.deformationEnergy[0,i]

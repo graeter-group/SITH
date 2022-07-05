@@ -3,6 +3,7 @@ import sys
 from importlib.resources import path
 from pathlib import Path
 from typing import Tuple
+from ase.units import Bohr, Hartree
 
 import numpy as np
 from openbabel import openbabel as ob

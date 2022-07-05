@@ -17,7 +17,7 @@ def test_singleGood():
 
 
 def test_multiDeformedGood():
-    pass
+    jedi = JEDI('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
 
 
 def test_noRelaxed():
@@ -53,6 +53,7 @@ def test_multiDeformed():
 
 def test_populateQ():
     jedi = JEDI()
+    #check that q0, qF, and delta_q are all correct
 
 def test_totalEnergies():
     jedi = JEDI()
@@ -62,6 +63,7 @@ def test_energyMatrix():
 
 def test_fullEnergyAnalysis():
     jedi = JEDI()
+    #set manual values for each and check dot multiplication
     jedi.energyAnalysis()
 
 def test_fullRun():
