@@ -273,7 +273,9 @@ class UnitConverter:
     """
     Class to convert units utilizing Atomic Simulation Environment (ase) constants
     xyz standard input is in Angstrom
-    internal Hessian is in length: Ha/Bohr^2 angle: Hartree/radian^2
+    RIC are in atomic units
+    internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
+    Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units
     """
 
     def __init__(self) -> None:
