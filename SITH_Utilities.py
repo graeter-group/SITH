@@ -270,9 +270,22 @@ class Atom:
 
 
 class UnitConverter:
+    """
+    Class to convert units utilizing Atomic Simulation Environment (ase) constants
+    xyz standard input is in Angstrom
+    internal Hessian is in length: Ha/Bohr^2 angle: Hartree/radian^2
+    """
 
     def __init__(self) -> None:
         pass
+
+    @staticmethod
+    def angstromToBohr(a:float) -> float:
+        return a * Bohr
+
+    @staticmethod
+    def bohrToAngstrom(b:float) -> float:
+        return b / Bohr
 
 
 class Extractor:
