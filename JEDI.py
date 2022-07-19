@@ -4,7 +4,7 @@ import sys
 import numpy as np
 from pathlib import Path
 
-from SITH_Utilities import Extractor, Geometry
+from SITH_Utilities import Extractor, Geometry, UnitConverter
 
 
 class JEDI:
@@ -91,7 +91,7 @@ class JEDI:
 
             self.dData = list()
             if self.dDir:
-                dPaths = list(self.defPath.glob('*.fchk'))
+                dPaths = list(sorted(self.defPath.glob('*.fchk')))
                 dPaths = [pathlib.Path(dp) for dp in dPaths]
             else:
                 dPaths = [self.defPath]

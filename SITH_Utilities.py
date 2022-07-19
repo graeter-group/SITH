@@ -8,6 +8,7 @@ from ase.units import Bohr, Hartree
 import numpy as np
 from openbabel import openbabel as ob
 
+
 # import Geometry #No longer needed because I thought it could fit into utilities just fine
 
 # LTMatrix class comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
@@ -288,6 +289,10 @@ class UnitConverter:
     @staticmethod
     def bohrToAngstrom(b:float) -> float:
         return b / Bohr
+
+    @staticmethod
+    def radianToDegree(r:float) -> float:
+        return 
 
 
 class Extractor:
