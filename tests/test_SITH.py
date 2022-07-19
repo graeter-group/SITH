@@ -1,23 +1,23 @@
 from genericpath import exists
 from numpy import extract
 import pytest
-from JEDI import JEDI
+from SITH import SITH
 from SITH_Utilities import *
 import pathlib
 
 
 def test_initialized():
-    jedi = JEDI()
+    sith = SITH()
 
 # region File Input
 
 
 def test_singleGood():
-    jedi = JEDI()
+    sith = SITH()
 
 
 def test_multiDeformedGood():
-    jedi = JEDI('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
 
 
 def test_noRelaxed():
@@ -45,30 +45,30 @@ def test_emptyDeformed():
 
 
 def test_basic():
-    jedi = JEDI()
+    sith = SITH()
 
 def test_multiDeformed():
-    jedi = JEDI('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    jedi.energyAnalysis()
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.energyAnalysis()
 
 def test_populateQ():
-    jedi = JEDI()
+    sith = SITH()
     #check that q0, qF, and delta_q are all correct
 
 def test_totalEnergies():
-    jedi = JEDI()
+    sith = SITH()
 
 def test_energyMatrix():
-    jedi = JEDI()
+    sith = SITH()
 
 def test_fullEnergyAnalysis():
-    jedi = JEDI()
+    sith = SITH()
     #set manual values for each and check dot multiplication
-    jedi.energyAnalysis()
+    sith.energyAnalysis()
 
 def test_fullRun():
-    jedi = JEDI()
-    jedi.energyAnalysis()
+    sith = SITH()
+    sith.energyAnalysis()
 
 #region invalid Geometries (might be unnecessary or more for extractors?)
 

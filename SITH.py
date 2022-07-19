@@ -7,7 +7,7 @@ from pathlib import Path
 from SITH_Utilities import Extractor, Geometry, UnitConverter
 
 
-class JEDI:
+class SITH:
 
     # Set 'pathIO' if you would like to give it a specific working directory for I/O
 
@@ -58,7 +58,7 @@ class JEDI:
         self.killAtoms()
 
         # normally the b matrix calculation
-        # delta q calculation, so ran jedi_delta_q and pulled delta_q
+        # delta q calculation, so ran sith_delta_q and pulled delta_q
 
         self.populateQ()
 
