@@ -121,12 +121,12 @@ class JEDI:
     def populateQ(self):
         self.q0 = np.zeros((self.relaxed.dims[0], 1))
         self.qF = np.zeros((self.relaxed.dims[0], 1))
-        self.q0[:,0] = np.transpose(np.hstack((self.relaxed.lengths,
-                                          self.relaxed.angles, self.relaxed.diheds)))
+        self.q0[:, 0] = np.transpose(np.hstack((self.relaxed.lengths,
+                                               self.relaxed.angles, self.relaxed.diheds)))
         # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
-        self.qF[:,0] = np.transpose(np.hstack((self.deformed[0].lengths,
-                                           self.deformed[0].angles, self.deformed[0].diheds)))
+        self.qF[:, 0] = np.transpose(np.hstack((self.deformed[0].lengths,
+                                               self.deformed[0].angles, self.deformed[0].diheds)))
         if len(self.deformed) > 1:
             for i in range(1, len(self.deformed)):
                 deformation = self.deformed[i]
@@ -134,14 +134,23 @@ class JEDI:
                                                deformation.angles, deformation.diheds)))
                 self.qF = np.column_stack((self.qF, temp))
             # delta_q is organized in the same shape as qF
-        self.delta_q = np.subtract(self.qF, self.q0) #self.qF - self.q0
+        self.delta_q = np.subtract(self.qF, self.q0)  # self.qF - self.q0
+
+        """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
+        coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
+        instead of what it should be: k + l"""
+        # ! If possible, find a more reliable method for this
+        with np.nditer(self.delta_q, op_flags=['readwrite']) as dqit:
+            for dq in dqit:
+                dq[...] = 2*np.pi - \
+                    np.abs(dq) if np.abs(dq) > (2*np.pi - 0.005) else dq
 
     def energyAnalysis(self):
         self.energies = np.zeros((self.relaxed.dims[0], len(self.deformed)))
         self.deformationEnergy = np.zeros((1, len(self.deformed)))
         self.pEnergies = np.zeros((self.relaxed.dims[0], len(self.deformed)))
         if len(self.deformed) == 1:
-            self.deformationEnergy[0,0] = 0.5 * np.transpose(self.delta_q).dot(
+            self.deformationEnergy[0, 0] = 0.5 * np.transpose(self.delta_q).dot(
                 self.hMat).dot(self.delta_q)  # scalar 1x1 total Energy
             for j in range(self.relaxed.dims[0]):
                 isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j], np.zeros(
@@ -149,17 +158,17 @@ class JEDI:
                 # isolatedDOF)
                 self.energies[j, 0] = 0.5 * \
                     (isolatedDOF).dot(self.hMat).dot(self.delta_q)
-            self.pEnergies[:,0] = float(
-                100) * self.energies[:,0] / self.deformationEnergy[0,0]
+            self.pEnergies[:, 0] = float(
+                100) * self.energies[:, 0] / self.deformationEnergy[0, 0]
         else:
             for i in range(len(self.deformed)):
-                self.deformationEnergy[0,i] = 0.5 * np.transpose(self.delta_q[:,i]).dot(
-                    self.hMat).dot(self.delta_q[:,i])  # scalar 1x1 total Energy
+                self.deformationEnergy[0, i] = 0.5 * np.transpose(self.delta_q[:, i]).dot(
+                    self.hMat).dot(self.delta_q[:, i])  # scalar 1x1 total Energy
                 for j in range(self.relaxed.dims[0]):
-                    isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j,i], np.zeros(
+                    isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j, i], np.zeros(
                         self.relaxed.dims[0]-j-1)))  # tricky, need to troubleshoot
                     self.energies[j, i] = 0.5 * \
                         (isolatedDOF).dot(self.hMat).dot(isolatedDOF)
 
-                self.pEnergies[:,i] = float(
-                    100) * self.energies[:,i] / self.deformationEnergy[0,i]
+                self.pEnergies[:, i] = float(
+                    100) * self.energies[:, i] / self.deformationEnergy[0, i]

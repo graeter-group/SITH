@@ -1,4 +1,5 @@
 from re import L
+from typing import Tuple
 from JEDI import JEDI
 from SITH_Utilities import UnitConverter
 import numpy as np
@@ -9,7 +10,7 @@ class JediResults:
     def writeFiles(self, jedi: JEDI) -> bool:
         pass
 
-    def buildEnergiesString(self, jedi: JEDI) -> list:
+    def buildTotEnergiesString(self, jedi: JEDI) -> list:
         pass
 
     def buildDeltaQString(self, jedi: JEDI) -> list:
@@ -64,47 +65,36 @@ class JediResults:
     def buildEnergyMatrix(self, jedi: JEDI) -> list:
         """
         Returns a list of strings containing the energy in each degree of freedom per deformed geometry.
-        Data is of the format:
+        Data is in Hartrees and of the format:
         DOF Index       Deformation 1       Deformation 2       ...
         1               stress E            stress E            ...
         2               stress E            stress E            ...
-        ...
+        ...             ...                 ...                 ...
         """
         uc = UnitConverter()
-        dqAngstroms = list()
+        eMat = list()
         header = "DOF \t"
         for deformation in jedi.deformed:
             header += str(deformation.name)+"\t"
-        dqAngstroms.append(header)
-        dqAng = [uc.bohrToAngstrom(dq)
-                 for dq in jedi.delta_q[0:jedi.relaxed.dims[1], :]]
-        dqAng = np.asarray(dqAng)
-        dqAng = dqAng.astype(str)
-        for dof in range(jedi.relaxed.dims[1]):
-            if len(jedi.deformed) > 1:
-                line = str(dof+1) + "\t" + '\t'.join(dqAng[dof, :])
-                dqAngstroms.append(line)
-            else:
-                line = str(dof+1) + "\t" + dqAng[dof][1:-2]
-                dqAngstroms.append(line)
-        dqDeg = np.degrees(jedi.delta_q[jedi.relaxed.dims[1]:, :])
-        dqDeg = np.asarray(dqDeg)
-        dqDeg = dqDeg.astype(str)
-        for dof in range(jedi.relaxed.dims[2]+jedi.relaxed.dims[3]):
-            if len(jedi.deformed) > 1:
-                line = str(
-                    dof+1+jedi.relaxed.dims[1]) + "\t" + '\t'.join(dqDeg[dof, :])
-                dqAngstroms.append(line)
-            else:
-                line = str(
-                    dof+1+jedi.relaxed.dims[1]) + "\t" + str(dqDeg[dof][0])
-                dqAngstroms.append(line)
+        eMat.append(header)
+        eStrings = jedi.energies.astype(str)
+        for dof in range(jedi.relaxed.dims[0]):
+            line = str(dof+1) + "\t" + '\t'.join(eStrings[dof, :])
+            eMat.append(line)
+        return eMat
 
-        return dqAngstroms
+    def writeEnergyMatrix(self, jedi: JEDI) -> bool:
+        ePrint = self.buildEnergyMatrix(jedi)
+        with open('E_RICS.txt', "w") as dq:
+            dq.writelines('\n'.join(ePrint))
 
-    def compareEnergies(self, jedi: JEDI):
-        self.expectedDE = np.zeros((1,len(jedi.deformed)))
+    def compareEnergies(self, jedi: JEDI) -> Tuple:
+        expectedDE = np.zeros((1, len(jedi.deformed)))
         for i in range(len(jedi.deformed)):
-            self.expectedDE[0,i] = jedi.deformed[i].energy - jedi.relaxed.energy
-        self.errorDE = jedi.deformationEnergy - self.expectedDE
-        self.pErrorDE = self.errorDE / self.expectedDE
+            expectedDE[0, i] = jedi.deformed[i].energy - jedi.relaxed.energy
+        errorDE = jedi.deformationEnergy - expectedDE
+        pErrorDE = 100 * errorDE / expectedDE
+        return (expectedDE, errorDE, pErrorDE)
+
+    def writeComparison(self, jedi: JEDI):
+        expectedDE, errorDE, pErrorDE = self.compareEnergies(jedi)
