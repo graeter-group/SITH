@@ -14,14 +14,24 @@ class SithResults:
         totE = self.buildTotEnergiesString(sith)
         dq = self.buildDeltaQString(sith)
         ric = self.buildInternalCoordsString(sith)
+        expectedDE, errorDE, pErrorDE = self.compareEnergies(sith)
         energies = self.buildEnergyMatrix(sith)
 
-        with open(sith.rPath.parent.as_posix()+'summary.txt', "w") as s:
+        with open(sith.rPath.parent.as_posix()+sith.rPath.root+'summary.txt', "w") as s:
             s.write("Summary of SITH analysis\n")
             s.write("Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
             s.writelines('\n'.join(ric))
-            s.write("Changes in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n")
+            s.write("\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n")
             s.writelines('\n'.join(dq))
+            s.write("\n\n***********************\n**  Energy Analysis  **\n***********************\n")
+            s.write("Overall Structural Energies\n")
+            s.write("Deformation\t\u0394E\t\t\u0025Error\tError\n")
+            for i in range(len(sith.deformed)):
+                s.write("{: <12s}{: >12.8f}{: >12.2%}{: >12.8f}\n".format(sith.deformed[i].name, sith.deformationEnergy[0,i], pErrorDE[0,i], errorDE[0,i]))
+
+            s.write("Energy per DOF (RIC)\n")
+            s.writelines("\n".join(energies))
+
 
 
     def buildTotEnergiesString(self, sith: SITH) -> list:
@@ -38,20 +48,20 @@ class SithResults:
         """
         uc = UnitConverter()
         dqAngstroms = list()
-        header = "DOF \t"
+        header = "DOF         "
         for deformation in sith.deformed:
-            header += str(deformation.name)+"\t"
+            header += "{: <12s}".format(deformation.name)
         dqAngstroms.append(header)
         dqAng = [uc.bohrToAngstrom(dq)
                  for dq in sith.delta_q[0:sith.relaxed.dims[1], :]]
         dqAng = np.asarray(dqAng)
-        dqAng = dqAng.astype(str)
         for dof in range(sith.relaxed.dims[1]):
             if len(sith.deformed) > 1:
-                line = str(dof+1) + "\t" + '\t'.join(dqAng[dof, :])
+                line = "{:< 12}".format(dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
+                #line = str(dof+1) + "\t" + '\t'.join(dqAng[dof, :])
                 dqAngstroms.append(line)
             else:
-                line = str(dof+1) + "\t" + dqAng[dof][1:-2]
+                line = "{:< 12}{: >12.8f}".format(dof+1, dqAng[dof][0])
                 dqAngstroms.append(line)
         dqDeg = np.degrees(sith.delta_q[sith.relaxed.dims[1]:, :])
         dqDeg = np.asarray(dqDeg)
@@ -110,7 +120,7 @@ class SithResults:
         for i in range(len(sith.deformed)):
             expectedDE[0, i] = sith.deformed[i].energy - sith.relaxed.energy
         errorDE = sith.deformationEnergy - expectedDE
-        pErrorDE = 100 * errorDE / expectedDE
+        pErrorDE = errorDE / expectedDE
         return (expectedDE, errorDE, pErrorDE)
 
     def writeComparison(self, sith: SITH):
