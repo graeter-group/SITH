@@ -10,7 +10,7 @@ class SithResults:
     def writeFiles(self, sith: SITH) -> bool:
         pass
 
-    def writeSummary(self, sith:SITH):
+    def writeSummary(self, sith: SITH):
         totE = self.buildTotEnergiesString(sith)
         dq = self.buildDeltaQString(sith)
         ric = self.buildInternalCoordsString(sith)
@@ -19,20 +19,22 @@ class SithResults:
 
         with open(sith.rPath.parent.as_posix()+sith.rPath.root+'summary.txt', "w") as s:
             s.write("Summary of SITH analysis\n")
-            s.write("Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
+            s.write(
+                "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
             s.writelines('\n'.join(ric))
-            s.write("\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n")
+            s.write(
+                "\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n")
             s.writelines('\n'.join(dq))
-            s.write("\n\n***********************\n**  Energy Analysis  **\n***********************\n")
+            s.write(
+                "\n\n***********************\n**  Energy Analysis  **\n***********************\n")
             s.write("Overall Structural Energies\n")
-            s.write("Deformation\t\u0394E\t\t\u0025Error\tError\n")
+            s.write("Deformation        \u0394E          \u0025Error          Error\n")
             for i in range(len(sith.deformed)):
-                s.write("{: <12s}{: >12.8f}{: >12.2%}{: >12.8f}\n".format(sith.deformed[i].name, sith.deformationEnergy[0,i], pErrorDE[0,i], errorDE[0,i]))
+                s.write("{: <12s}{: >16.6E}{: >12.2%}{: >16.6E}\n".format(
+                    sith.deformed[i].name, sith.deformationEnergy[0, i], pErrorDE[0, i], errorDE[0, i]))
 
             s.write("Energy per DOF (RIC)\n")
             s.writelines("\n".join(energies))
-
-
 
     def buildTotEnergiesString(self, sith: SITH) -> list:
         pass
@@ -50,30 +52,29 @@ class SithResults:
         dqAngstroms = list()
         header = "DOF         "
         for deformation in sith.deformed:
-            header += "{: <12s}".format(deformation.name)
+            header += "{: ^12s}".format(deformation.name)
         dqAngstroms.append(header)
         dqAng = [uc.bohrToAngstrom(dq)
                  for dq in sith.delta_q[0:sith.relaxed.dims[1], :]]
         dqAng = np.asarray(dqAng)
         for dof in range(sith.relaxed.dims[1]):
             if len(sith.deformed) > 1:
-                line = "{:< 12}".format(dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
-                #line = str(dof+1) + "\t" + '\t'.join(dqAng[dof, :])
+                line = "{: <12}".format(
+                    dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = "{:< 12}{: >12.8f}".format(dof+1, dqAng[dof][0])
+                line = "{: <12}{: >12.8f}".format(dof+1, dqAng[dof][0])
                 dqAngstroms.append(line)
         dqDeg = np.degrees(sith.delta_q[sith.relaxed.dims[1]:, :])
         dqDeg = np.asarray(dqDeg)
-        dqDeg = dqDeg.astype(str)
         for dof in range(sith.relaxed.dims[2]+sith.relaxed.dims[3]):
             if len(sith.deformed) > 1:
-                line = str(
-                    dof+1+sith.relaxed.dims[1]) + "\t" + '\t'.join(dqDeg[dof, :])
+                line = "{:< 12}".format(dof+1+sith.relaxed.dims[1]) + ''.join(
+                    ["{: >12.8f}".format(dqd) for dqd in dqDeg[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = str(
-                    dof+1+sith.relaxed.dims[1]) + "\t" + str(dqDeg[dof][0])
+                line = "{:< 12}{: >12.8f}".format(
+                    dof+1+sith.relaxed.dims[1], dqDeg[dof][0])
                 dqAngstroms.append(line)
 
         return dqAngstroms
@@ -87,7 +88,7 @@ class SithResults:
         """
         Returns a list of strings containing the atom indices involved in each degree of freedom.
         """
-        return [str(dof+1) + '\t' + str(sith.relaxed.dimIndices[dof]) for dof in range(sith.relaxed.dims[0])]
+        return ["{: <12}".format(dof+1) + str(sith.relaxed.dimIndices[dof]) for dof in range(sith.relaxed.dims[0])]
 
     def buildEnergyMatrix(self, sith: SITH) -> list:
         """
@@ -100,13 +101,13 @@ class SithResults:
         """
         uc = UnitConverter()
         eMat = list()
-        header = "DOF \t"
+        header = "DOF         "
         for deformation in sith.deformed:
-            header += str(deformation.name)+"\t"
+            header += "{: ^16s}".format(deformation.name)
         eMat.append(header)
-        eStrings = sith.energies.astype(str)
         for dof in range(sith.relaxed.dims[0]):
-            line = str(dof+1) + "\t" + '\t'.join(eStrings[dof, :])
+            line = "{: <12}".format(
+                dof+1) + ''.join(["{: >16.6E}".format(e) for e in sith.energies[dof, :]])
             eMat.append(line)
         return eMat
 
@@ -127,4 +128,3 @@ class SithResults:
         expectedDE, errorDE, pErrorDE = self.compareEnergies(sith)
         with open('pError.txt', "w") as dq:
             dq.writelines('\n'.join(pErrorDE.astype(str)))
-
