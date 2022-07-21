@@ -1,17 +1,12 @@
-import os
 import pathlib
 import sys
 import numpy as np
 from pathlib import Path
 
-from SITH_Utilities import Extractor, Geometry, UnitConverter
+from SITH_Utilities import Extractor
 
 
 class SITH:
-
-    # Set 'pathIO' if you would like to give it a specific working directory for I/O
-
-    # @property
 
     #! Decide if just use one constructor and always pass explicit values, or make overloaded constructor
     #! Change this so that there is a relaxed Energy ePath can be either a singular file
@@ -21,18 +16,6 @@ class SITH:
         self.defPath = Path(dePath)
 
         self.validateFiles()
-
-        # region global variable initialization
-
-        #self.q0 = np.ndarray()
-        #self.qF = np.ndarray()
-        #self.delta_q = np.ndarray()
-        #self.energies = np.ndarray()
-        #self.pEnergies = np.ndarray()
-        # vertical vector bc each row is a different deformed geometry
-        #self.deformationEnergy = np.ndarray()
-
-        # endregion
 
         self.extractData()
 
@@ -57,9 +40,6 @@ class SITH:
 
         self.killAtoms()
 
-        # normally the b matrix calculation
-        # delta q calculation, so ran sith_delta_q and pulled delta_q
-
         self.populateQ()
 
     def killAtoms(self):
@@ -74,9 +54,6 @@ class SITH:
         """
         assert self.rPath.exists(), "Path to relaxed geometry data does not exist."
         assert self.defPath.exists(), "Path to deformed geometry data does not exist."
-
-        if (not self.rPath.exists()) or (not self.defPath.exists()):
-            sys.exit("Path given for one or more input files does not exist.")
 
         self.dDir = self.defPath.is_dir()
 
@@ -96,7 +73,7 @@ class SITH:
             else:
                 dPaths = [self.defPath]
 
-            assert len(dPaths) > 0, "Deformed file directory is empty."
+            assert len(dPaths) > 0, "Deformed directory is empty."
             for dp in dPaths:
                 with dp.open() as dFile:
                     dLines = dFile.readlines()
@@ -105,6 +82,7 @@ class SITH:
                     self.dData.append((dp, dLines))
 
         except:
+            # This exception catch can be made more specific if necessary, but it really shouldn't be needed
             print(
                 "An exception occurred during the extraction of the input files' contents.")
             sys.exit(sys.exc_info()[0])
@@ -113,10 +91,8 @@ class SITH:
         """
         Ensure that the relaxed and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        # if any([d.nAtoms() != self.relaxed.nAtoms() for d in self.deformed]):
-        #    sys.exit("Inconsistency in number of atoms of input geometries.")
-        #self.nCarts = 3 * self.relaxed.nAtoms()
-        pass
+        assert all([deformn.numAtoms() == self.relaxed.numAtoms() and all([deformn.dims[i] == self.relaxed.dims[i] for i in range(
+            4)]) for deformn in self.deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
     def populateQ(self):
         self.q0 = np.zeros((self.relaxed.dims[0], 1))
@@ -134,17 +110,18 @@ class SITH:
                                                deformation.angles, deformation.diheds)))
                 self.qF = np.column_stack((self.qF, temp))
             # delta_q is organized in the same shape as qF
-        self.delta_q = np.subtract(self.qF, self.q0)  # self.qF - self.q0
+        self.delta_q = np.subtract(self.qF, self.q0)
 
         """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
-        # ! If possible, find a more reliable method for this
+        # TODO: make this ore definitive because collagen use case phi psi angles often around pi regime, perhaps just convert domain of radians from (-pi, pi) -(+pi)-> (0, 2pi) when taking in coordinates initially?
         with np.nditer(self.delta_q, op_flags=['readwrite']) as dqit:
             for dq in dqit:
-                dq[...] = 2*np.pi - \
-                    np.abs(dq) if np.abs(dq) > (2*np.pi - 0.005) else dq
+                dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
+                                                        0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
 
+# TODO: reove the necessity of separately handling single deformation vs deformation vector
     def energyAnalysis(self):
         self.energies = np.zeros((self.relaxed.dims[0], len(self.deformed)))
         self.deformationEnergy = np.zeros((1, len(self.deformed)))
@@ -154,8 +131,7 @@ class SITH:
                 self.hMat).dot(self.delta_q)  # scalar 1x1 total Energy
             for j in range(self.relaxed.dims[0]):
                 isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j], np.zeros(
-                    self.relaxed.dims[0]-j-1)))  # tricky, need to troubleshoot
-                # isolatedDOF)
+                    self.relaxed.dims[0]-j-1)))
                 self.energies[j, 0] = 0.5 * \
                     (isolatedDOF).dot(self.hMat).dot(self.delta_q)
             self.pEnergies[:, 0] = float(
@@ -166,7 +142,7 @@ class SITH:
                     self.hMat).dot(self.delta_q[:, i])  # scalar 1x1 total Energy
                 for j in range(self.relaxed.dims[0]):
                     isolatedDOF = np.hstack((np.zeros(j), self.delta_q[j, i], np.zeros(
-                        self.relaxed.dims[0]-j-1)))  # tricky, need to troubleshoot
+                        self.relaxed.dims[0]-j-1)))
                     self.energies[j, i] = 0.5 * \
                         (isolatedDOF).dot(self.hMat).dot(isolatedDOF)
 

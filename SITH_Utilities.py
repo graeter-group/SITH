@@ -1,15 +1,11 @@
 from multiprocessing.sharedctypes import Value
-import sys
 from importlib.resources import path
 from pathlib import Path
-from typing import Tuple
-from ase.units import Bohr, Hartree
+from ase.units import Bohr
 
 import numpy as np
 from openbabel import openbabel as ob
 
-
-# import Geometry #No longer needed because I thought it could fit into utilities just fine
 
 # LTMatrix class comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
 
@@ -134,6 +130,8 @@ class LTMatrix(list):
                 L.append(uppermat[getUpperPosition(j, i, dimension)])
         return LTMatrix(L)
 
+# TODO: sandbox all variables meant to be publicly accessible as properties
+
 
 class Geometry:
 
@@ -148,7 +146,6 @@ class Geometry:
         self.nAtoms = nAtoms
         self.dims = list()
         self.dimIndices = list()
-        #self.hessian = np.ndarray()
 
     #! Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
@@ -172,7 +169,7 @@ class Geometry:
         self.dims = [int(d) for d in dims]
 
         # region Indices
-        # Parse through the 'dimILines' input which indicates which atoms (by index)
+        # Parses through the 'dimILines' input which indicates which atoms (by index)
         # are involved in each RIC degree of freedom
 
         rawIndices = list()
@@ -194,6 +191,8 @@ class Geometry:
             a2 = rawIndices[i+1]
             a3 = rawIndices[i+2]
             a4 = rawIndices[i+3]
+            # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+            # These should line up with self.dims correctly
             assert a1 <= self.nAtoms and a2 <= self.nAtoms and a3 <= self.nAtoms and a4 <= self.nAtoms, "Invalid atom index given as input."
             assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
             # bond lengths check
@@ -208,10 +207,6 @@ class Geometry:
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
                 assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2, a3, a4))
-            # self.dimIndices.append((int(),))
-
-        # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
-        # These should line up with self.dims correctly
 
         # endregion
 
@@ -244,21 +239,18 @@ class Geometry:
                 "Energy has not been set for this geometry.  You done goofed real bad.")
 
     def __eq__(self, __o: object) -> bool:
-        #if __o is type(self):
-            b = True
-            b = b and self.name == __o.name
-            b = b and self.rawRIC == __o.rawRIC
-            b = b and self.lengths == __o.lengths
-            b = b and self.angles == __o.angles
-            b = b and self.diheds == __o.diheds
-            b = b and self.energy == __o.energy
-            b = b and self.atoms == __o.atoms
-            b = b and self.nAtoms == __o.nAtoms
-            b = b and self.dims == __o.dims
-            b = b and self.dimIndices == __o.dimIndices
-            return b
-        #else:
-            #return False
+        b = True
+        b = b and self.name == __o.name
+        b = b and self.rawRIC == __o.rawRIC
+        b = b and self.lengths == __o.lengths
+        b = b and self.angles == __o.angles
+        b = b and self.diheds == __o.diheds
+        b = b and self.energy == __o.energy
+        b = b and self.atoms == __o.atoms
+        b = b and self.nAtoms == __o.nAtoms
+        b = b and self.dims == __o.dims
+        b = b and self.dimIndices == __o.dimIndices
+        return b
 
 
 class Atom:
@@ -267,7 +259,7 @@ class Atom:
         self.coords = coords
 
     def __eq__(self, __o: object) -> bool:
-        return self.element == __o.element and self.coords ==__o.coords
+        return self.element == __o.element and self.coords == __o.coords
 
 
 class UnitConverter:
@@ -283,30 +275,30 @@ class UnitConverter:
         pass
 
     @staticmethod
-    def angstromToBohr(a:float) -> float:
+    def angstromToBohr(a: float) -> float:
         return a * Bohr
 
     @staticmethod
-    def bohrToAngstrom(b:float) -> float:
+    def bohrToAngstrom(b: float) -> float:
         return b / Bohr
 
     @staticmethod
-    def radianToDegree(r:float) -> float:
-        return 
+    def radianToDegree(r: float) -> float:
+        return
 
 
 class Extractor:
 
     def __init__(self, path: Path, linesList: list) -> None:
         self.eHeader = "Total Energy"
-        self.hHeader = "Internal Force Constants"
+        self.hessHeader = "Internal Force Constants"
         self.hEnder = "Mulliken Charges"
         self.xcHeader = "Current cartesian coordinates"
         self.xcEnder = "Force Field"
-        self.xrHeader = "Redundant internal coordinates"
+        self.ricHeader = "Redundant internal coordinates"
         self.xrEnder = "ZRed-IntVec"
-        self.rdHeader = "Redundant internal dimensions"
-        self.rdEnder = "Redundant internal coordinate indices"
+        self.dimHeader = "Redundant internal dimensions"
+        self.dimIndicesHeader = "Redundant internal coordinate indices"
         self.nHeader = "Number of atoms"
         self.aHeader = "Atomic numbers"
 
@@ -322,7 +314,7 @@ class Extractor:
         mol = ob.OBMol()
         assert self.path.exists(), "Path to fchk file does not exist"
         assert obConversion.ReadFile(mol, self.path.as_posix(
-        )), "Reading fchk file with openbabel failed."   # Open Babel will uncompress automatically
+        )), "Reading fchk file with openbabel failed."
         assert obConversion.WriteFile(mol, str(
             self.path.parent.as_posix()+self.path.root+self.path.stem+".xyz")), "Could not write XYZ file."
 
@@ -330,6 +322,7 @@ class Extractor:
         self.writeXYZ()
 
         #! Change to a while < len loop?
+        # TODO: make end based on number of values to expect (N = ) not the next header
         i = 0
         while i < len(self.lines):
             line = self.lines[i]
@@ -350,41 +343,30 @@ class Extractor:
                 splitLine = line.split()
                 self.geometry.energy = float(splitLine[len(splitLine)-1])
 
-            # elif self.xcHeader in line:
-            #     i=i+1
-            #     xcStart = i
-            #     while self.xcEnder not in self.lines[i]:
-            #         i=i+1
-            #     xcRaw = self.lines[xcStart:i]
-            #     assert (numAtoms * 3) == len(xcRaw), "Number of coordinates does not match number of atoms (3 * atoms)."
-            #     self.geometry.buildCartesian(xcRaw)
-
-            elif self.rdHeader in line:
+            elif self.dimHeader in line:
                 i = i+1
                 lin = self.lines[i]
                 rDims = lin.split()
 
-            elif self.rdEnder in line:
+            elif self.dimIndicesHeader in line:
                 rdiStart = i+1
-                while self.xrHeader not in self.lines[i+1]:
+                while self.ricHeader not in self.lines[i+1]:
                     i = i+1
                 xrDims = self.lines[rdiStart:i+1]
                 #! assert validation of number of degrees of freedom?
-                if not xrDims:
-                    raise Exception(
-                        "Missing 'Redundant internal coordinate indices'.")
+                assert len(
+                    xrDims) > 0, "Missing 'Redundant internal coordinate indices'."
 
-            if self.xrHeader in line:
+            if self.ricHeader in line:
                 i = i+1
                 xrStart = i
                 while self.xrEnder not in self.lines[i]:
                     i = i+1
                 xrRaw = self.lines[xrStart:i]
-                #! assert validation of number of degrees of freedom?
-                #if not xrDims: raise Exception("Missing 'Redundant internal coordinate indices'.")
                 self.geometry.buildRIC(rDims, xrDims, xrRaw)
+                # TODO: build in validation for RICs in ^ if not already there
 
-            elif self.hHeader in line:
+            elif self.hessHeader in line:
                 hFirst = line.split()
                 i = i+1
                 self.hRaw = list()
@@ -410,7 +392,3 @@ class Extractor:
             return self.geometry
         else:
             raise Exception("There is no geometry.")
-
-# if __name__ == '__main__':
-#     import doctest
-#     doctest.testmod()

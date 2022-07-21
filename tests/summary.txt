@@ -39,7 +39,7 @@ DOF          moh-xF-1.5  moh-xF-1.6  moh-xF-1.7  moh-xF-1.8  moh-xF-1.9
 **  Energy Analysis  **
 ***********************
 Overall Structural Energies
-Deformation      ΔE          %Error          Error
+Deformation        ΔE          %Error          Error
 moh-xF-1.5      1.291310E-03      10.44%    1.220305E-04
 moh-xF-1.6      1.121112E-02      29.21%    2.534601E-03
 moh-xF-1.7      3.097771E-02      50.42%    1.038305E-02

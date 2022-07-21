@@ -34,3 +34,4 @@ def test_compareEnergies():
     jp.compareEnergies(sith)
     jp.writeEnergyMatrix(sith)
     jp.writeSummary(sith)
+    

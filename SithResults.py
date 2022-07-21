@@ -1,9 +1,10 @@
-from re import L
 from typing import Tuple
 from SITH import SITH
 from SITH_Utilities import UnitConverter
 import numpy as np
 
+
+#TODO: sandbox the file access with try catch dum dum
 
 class SithResults:
 
@@ -28,7 +29,8 @@ class SithResults:
             s.write(
                 "\n\n***********************\n**  Energy Analysis  **\n***********************\n")
             s.write("Overall Structural Energies\n")
-            s.write("Deformation        \u0394E          \u0025Error          Error\n")
+            s.write(
+                "Deformation        \u0394E          \u0025Error          Error\n")
             for i in range(len(sith.deformed)):
                 s.write("{: <12s}{: >16.6E}{: >12.2%}{: >16.6E}\n".format(
                     sith.deformed[i].name, sith.deformationEnergy[0, i], pErrorDE[0, i], errorDE[0, i]))
@@ -128,3 +130,10 @@ class SithResults:
         expectedDE, errorDE, pErrorDE = self.compareEnergies(sith)
         with open('pError.txt', "w") as dq:
             dq.writelines('\n'.join(pErrorDE.astype(str)))
+
+    def buildAtomList(self, sith: SITH):
+        """Builds strings for indicating the atom represented by each index."""
+        pass
+
+    def writeAtomList(self, sith: SITH):
+        pass
