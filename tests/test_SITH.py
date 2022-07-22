@@ -76,6 +76,13 @@ def test_fullRun():
     sith = SITH()
     sith.energyAnalysis()
 
+def test_killAtoms():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.killDOFs([0, 12])
+    sith.populateQ()
+    sith.energyAnalysis()
+
 # region invalid Geometries (might be unnecessary or more for extractors?)
 
 
