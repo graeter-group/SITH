@@ -42,7 +42,7 @@ class SITH:
 
         #self.killAtoms()
 
-        self.populateQ()
+        #self.populateQ()
 
     def killAtoms(self, atoms:list):
         """
@@ -109,13 +109,13 @@ class SITH:
         for deformation in self.deformed:
             deformation.killDOFs(dofs)
 
-    def killDOFs(self, dofs: list[Tuple]):
-        """
-        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
-        as well as from the Hessian matrix.
-        """
+    # def killDOFs(self, dofs: list[Tuple]):
+    #     """
+    #     Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
+    #     as well as from the Hessian matrix.
+    #     """
         
-        indices = [indexOf(self.relaxed.dimIndices, dof) for dof in dofs]
+    #     indices = [[indexOf(self.relaxed.dimIndices[i], dof) for i in range(self.relaxed.dims[0])] for dof in dofs]
         self.killDOFs(indices)
 
     def validateFiles(self):

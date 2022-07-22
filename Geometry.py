@@ -33,6 +33,7 @@ class Geometry:
         return len(self.atoms)
 
 
+#TODO: get rid of once verified as vestigial code
     def buildRIC(self, dims:list, lines:list):
         self.dims = dims
         for line in lines:
