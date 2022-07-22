@@ -137,10 +137,7 @@ class Geometry:
 
     def __init__(self, name: str, nAtoms: int) -> None:
         self.name = name
-        self.rawRIC = list()
-        self.lengths = list()
-        self.angles = list()
-        self.diheds = list()
+        self.ric = list()
         self.energy = np.inf
         self.atoms = list()
         self.nAtoms = nAtoms
@@ -211,25 +208,28 @@ class Geometry:
         # endregion
 
         for line in coordLines:
-            self.rawRIC.extend([float(ric) for ric in line.split()])
-        assert len(self.rawRIC) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
-            dims[0])+") and number of coordinates given ("+str(len(self.rawRIC))+")."
-        for i in range(len(self.rawRIC)):
-            if i < int(dims[1]):
-                self.lengths.append(self.rawRIC[i])
-            elif i < int(dims[1]) + int(dims[2]):
-                self.angles.append(self.rawRIC[i])
-            elif i < int(dims[1]) + int(dims[2]) + int(dims[3]):
-                self.diheds.append(self.rawRIC[i])
-            else:
-                raise Exception(
-                    "Mismatch between RIC dimensions specified aside from the total.")
+            self.ric.extend([float(ric) for ric in line.split()])
+        self.ric = np.asarray(self.ric)
+        assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
+            dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
 
     def getAtoms(self) -> list:
         if self.atoms:
             return self.atoms
         else:
             pass
+
+    def killDOFs(self, dofs: list[int]):
+        np.delete(self.ric, dofs)
+        self.dims[0] -= len(dofs)
+        lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofs)
+        anglesDeleted = sum(
+            x < self.dims[2] and x >= self.dims[1] for x in dofs)
+        dihedralsDeleted = sum(
+            x < self.dims[3] and x >= self.dims[2] for x in dofs)
+        self.dims[1] -= lengthsDeleted
+        self.dims[2] -= anglesDeleted
+        self.dims[3] -= dihedralsDeleted
 
     def getEnergy(self) -> float:
         if self.energy != np.inf:
@@ -241,10 +241,7 @@ class Geometry:
     def __eq__(self, __o: object) -> bool:
         b = True
         b = b and self.name == __o.name
-        b = b and self.rawRIC == __o.rawRIC
-        b = b and self.lengths == __o.lengths
-        b = b and self.angles == __o.angles
-        b = b and self.diheds == __o.diheds
+        b = b and all(self.ric == __o.ric)
         b = b and self.energy == __o.energy
         b = b and self.atoms == __o.atoms
         b = b and self.nAtoms == __o.nAtoms

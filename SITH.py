@@ -1,4 +1,4 @@
-from operator import contains
+from operator import contains, indexOf
 import pathlib
 import sys
 from typing import Tuple
@@ -42,7 +42,7 @@ class SITH:
 
         #self.killAtoms()
 
-        #self.populateQ()
+        self.populateQ()
 
     def killAtoms(self, atoms:list):
         """
@@ -72,41 +72,51 @@ class SITH:
         as well as from the Hessian matrix.
         """
         assert dofIndex < self.relaxed.dims[0], "Out of bounds index given for degree of freedom to be killed."
-        #np.delete
-        if dofIndex < self.relaxed.dims[1]:
-            self.relaxed.lengths[dofIndex] = 'kill'
-            self.relaxed.dims[1] -= 1
-            self.relaxed.dims[0] -= 1
-            for d in self.deformed:
-                d.lengths[dofIndex] = 'kill'
-                d.dims[1] -= 1
-                d.dims[0] -= 1
-        elif dofIndex < self.relaxed.dims[2] + self.relaxed.dims[1]:
-            self.relaxed.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
-            self.relaxed.dims[2] -= 1
-            self.relaxed.dims[0] -= 1
-            for d in self.deformed:
-                d.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
-                d.dims[2] -= 1
-                d.dims[0] -= 1
-        elif dofIndex < self.relaxed.dims[0]:
-            self.relaxed.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
-            self.relaxed.dims[3] -= 1
-            self.relaxed.dims[0] -= 1
-            for d in self.deformed:
-                d.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
-                d.dims[3] -= 1
-                d.dims[0] -= 1
+        
+        # if dofIndex < self.relaxed.dims[1]:
+        #     self.relaxed.lengths[dofIndex] = 'kill'
+        #     self.relaxed.dims[1] -= 1
+        #     self.relaxed.dims[0] -= 1
+        #     for d in self.deformed:
+        #         d.lengths[dofIndex] = 'kill'
+        #         d.dims[1] -= 1
+        #         d.dims[0] -= 1
+        # elif dofIndex < self.relaxed.dims[2] + self.relaxed.dims[1]:
+        #     self.relaxed.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
+        #     self.relaxed.dims[2] -= 1
+        #     self.relaxed.dims[0] -= 1
+        #     for d in self.deformed:
+        #         d.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
+        #         d.dims[2] -= 1
+        #         d.dims[0] -= 1
+        # elif dofIndex < self.relaxed.dims[0]:
+        #     self.relaxed.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
+        #     self.relaxed.dims[3] -= 1
+        #     self.relaxed.dims[0] -= 1
+        #     for d in self.deformed:
+        #         d.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
+        #         d.dims[3] -= 1
+        #         d.dims[0] -= 1
 
         #TODO: Code to remove DOF from Hessian
 
-    def killDOFs(self, dofs: list):
+    def killDOFs(self, dofs: list[int]):
         """
         Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
         as well as from the Hessian matrix.
         """
-        for dof in dofs:
-            self.killDOF(dof)
+        self.relaxed.killDOFs(dofs)
+        for deformation in self.deformed:
+            deformation.killDOFs(dofs)
+
+    def killDOFs(self, dofs: list[Tuple]):
+        """
+        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
+        as well as from the Hessian matrix.
+        """
+        
+        indices = [indexOf(self.relaxed.dimIndices, dof) for dof in dofs]
+        self.killDOFs(indices)
 
     def validateFiles(self):
         """
@@ -157,17 +167,14 @@ class SITH:
     def populateQ(self):
         self.q0 = np.zeros((self.relaxed.dims[0], 1))
         self.qF = np.zeros((self.relaxed.dims[0], 1))
-        self.q0[:, 0] = np.transpose(np.hstack((self.relaxed.lengths,
-                                               self.relaxed.angles, self.relaxed.diheds)))
+        self.q0[:, 0] = np.transpose(np.asarray(self.relaxed.ric))
         # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
-        self.qF[:, 0] = np.transpose(np.hstack((self.deformed[0].lengths,
-                                               self.deformed[0].angles, self.deformed[0].diheds)))
+        self.qF[:, 0] = np.transpose(np.asarray(self.deformed[0].ric))
         if len(self.deformed) > 1:
             for i in range(1, len(self.deformed)):
                 deformation = self.deformed[i]
-                temp = np.transpose(np.hstack((deformation.lengths,
-                                               deformation.angles, deformation.diheds)))
+                temp = np.transpose(np.asarray(deformation.ric))
                 self.qF = np.column_stack((self.qF, temp))
             # delta_q is organized in the same shape as qF
         self.delta_q = np.subtract(self.qF, self.q0)

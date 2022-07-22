@@ -7,9 +7,6 @@ class Geometry:
     def __init__(self, name:str, nAtoms:int) -> None:
         self.name = name
         self.rawRIC = list()
-        self.lengths = list()
-        self.angles = list()
-        self.diheds = list()
         self.energy = np.inf
         self.atoms = list()
         self.nAtoms = nAtoms

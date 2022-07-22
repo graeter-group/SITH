@@ -78,10 +78,7 @@ def test_buildRICGood():
     geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
-    assert geo.rawRIC == coords
-    assert geo.lengths == bonds
-    assert geo.angles == angles
-    assert geo.diheds == diheds
+    assert all(geo.ric == coords)
 
 
 # region bad coordinates
