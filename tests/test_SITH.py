@@ -50,6 +50,8 @@ def test_basic():
 def test_multiDeformed():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+
+    sith.extractData()
     sith.energyAnalysis()
 
 
@@ -68,20 +70,34 @@ def test_energyMatrix():
 
 def test_fullEnergyAnalysis():
     sith = SITH()
+    sith.extractData()
     # set manual values for each and check dot multiplication
     sith.energyAnalysis()
 
 
 def test_fullRun():
     sith = SITH()
+    sith.extractData()
     sith.energyAnalysis()
 
-def test_killAtoms():
+
+def test_killDOFs():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.killDOFs([0, 12])
-    sith.populateQ()
-    sith.energyAnalysis()
+    sith.setKillDOFs([(1, 2), (2, 1, 5, 6)])
+    sith.extractData()
+
+def test_killDOFsBAD():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.setKillDOFs([(1, 6), (2, 1, 5, 6)])
+    sith.extractData()
+
+def test_killDOFsBAD2():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.setKillDOFs([(1, 6)])
+    sith.extractData()
 
 # region invalid Geometries (might be unnecessary or more for extractors?)
 
@@ -103,9 +119,12 @@ def test_incompleteDeformed():
 
 # endregion
 
+
 def test_AAfromDaniel():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/Gly-x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed')
+    sith.setKillDOFs([(1, 16)])
+    sith.extractData()
     sith.energyAnalysis()
     jp = SithResults()
     blah = jp.buildDeltaQString(sith)

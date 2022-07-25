@@ -17,9 +17,13 @@ class SITH:
         self.rPath = Path(rePath)
         self.defPath = Path(dePath)
 
+        self._kill = False
+        self._killAtoms = list()
+        self._killDOFs = list()
+
         self.validateFiles()
 
-        self.extractData()
+        # self.extractData()
 
     def extractData(self):
 
@@ -38,13 +42,26 @@ class SITH:
         # might get rid of if decide for the geometries to hold their respective hessians only, but this seems best for now
         self.hMat = self.relaxed.hessian
 
+        if self._kill:
+            self.kill()
+
         self.validateGeometries()
 
-        #self.killAtoms()
+        self.populateQ()
 
-        #self.populateQ()
+    def setKillAtoms(self, atoms: list):
+        self._killAtoms = atoms
+        self._kill = True
 
-    def killAtoms(self, atoms:list):
+    def setKillDOFs(self, dofs: list):
+        self._killDOFs = dofs
+        self._kill = True
+
+    def kill(self):
+        self.killDOFs(self._killDOFs)
+        self.killAtoms(self._killAtoms)
+
+    def killAtoms(self, atoms: list):
         """
         Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
         the geometries' RICs as well as from the Hessian matrix.
@@ -52,12 +69,13 @@ class SITH:
         for atomIndex in atoms:
             self.killAtom(atomIndex)
 
-    def killAtom(self, atom:int):
+    def killAtom(self, atom: int):
         """
         Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
         the geometries' RICs as well as from the Hessian matrix.
         """
-        dimIndicesToKill = [index for index in range(self.relaxed.dims[0]) if atom in self.relaxed.dimIndices[index]]
+        dimIndicesToKill = [index for index in range(
+            self.relaxed.dims[0]) if atom in self.relaxed.dimIndices[index]]
 
     def killDOF(self, dof: Tuple):
         """
@@ -72,7 +90,7 @@ class SITH:
         as well as from the Hessian matrix.
         """
         assert dofIndex < self.relaxed.dims[0], "Out of bounds index given for degree of freedom to be killed."
-        
+
         # if dofIndex < self.relaxed.dims[1]:
         #     self.relaxed.lengths[dofIndex] = 'kill'
         #     self.relaxed.dims[1] -= 1
@@ -98,25 +116,35 @@ class SITH:
         #         d.dims[3] -= 1
         #         d.dims[0] -= 1
 
-        #TODO: Code to remove DOF from Hessian
+        # TODO: Code to remove DOF from Hessian
 
-    def killDOFs(self, dofs: list[int]):
+    def killDOFs(self, dofs: list[Tuple]):
         """
         Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
         as well as from the Hessian matrix.
         """
-        self.relaxed.killDOFs(dofs)
+        # blah = list()
+        # for dof in dofs:
+        #     for i in range(self.relaxed.dims[0]):
+        #         if self.relaxed.dimIndices[i] == dof:
+        #             blah.append(i)
+        rIndices = list()
+        dIndices = list()
+        for dof in dofs:
+            rIndices.extend([i for i in range(self.relaxed.dims[0]) if self.relaxed.dimIndices[i] == dof])
+            dIndices.extend([i for i in range(self.deformed[0].dims[0]) if self.deformed[0].dimIndices[i] == dof])
+        self.relaxed.killDOFs(rIndices)
         for deformation in self.deformed:
-            deformation.killDOFs(dofs)
+            deformation.killDOFs(dIndices)
 
     # def killDOFs(self, dofs: list[Tuple]):
     #     """
     #     Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
     #     as well as from the Hessian matrix.
     #     """
-        
+
     #     indices = [[indexOf(self.relaxed.dimIndices[i], dof) for i in range(self.relaxed.dims[0])] for dof in dofs]
-        self.killDOFs(indices)
+    #     self.killDOFs(indices)
 
     def validateFiles(self):
         """

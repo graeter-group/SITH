@@ -1,6 +1,7 @@
 from multiprocessing.sharedctypes import Value
 from importlib.resources import path
 from pathlib import Path
+from typing import Tuple
 from ase.units import Bohr
 
 import numpy as np
@@ -219,14 +220,14 @@ class Geometry:
         else:
             pass
 
-    def killDOFs(self, dofs: list[int]):
-        self.ric = np.delete(self.ric, dofs)
-        self.dims[0] -= len(dofs)
-        lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofs)
+    def killDOFs(self, dofis: list[int]):
+        self.ric = np.delete(self.ric, dofis)
+        lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
         anglesDeleted = sum(
-            x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dofs)
+            x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dofis)
         dihedralsDeleted = sum(
-            x < self.dims[0] and x >= self.dims[2] for x in dofs)
+            x < self.dims[0] and x >= self.dims[2] for x in dofis)
+        self.dims[0] -= len(dofis)
         self.dims[1] -= lengthsDeleted
         self.dims[2] -= anglesDeleted
         self.dims[3] -= dihedralsDeleted

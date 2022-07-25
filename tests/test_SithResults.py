@@ -9,6 +9,7 @@ from SithResults import SithResults
 
 def test_buildDQ():
     sith = SITH()
+    sith.extractData()
     sith.energyAnalysis()
     jp = SithResults()
     blah = jp.buildDeltaQString(sith)
@@ -18,6 +19,7 @@ def test_buildDQ():
 def test_buildDQ2():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
     sith.energyAnalysis()
     jp = SithResults()
     blah = jp.buildDeltaQString(sith)
@@ -27,6 +29,7 @@ def test_buildDQ2():
 def test_compareEnergies():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
     sith.energyAnalysis()
     jp = SithResults()
     blah = jp.buildDeltaQString(sith)
