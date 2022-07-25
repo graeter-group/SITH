@@ -222,6 +222,7 @@ class Geometry:
 
     def killDOFs(self, dofis: list[int]):
         self.ric = np.delete(self.ric, dofis)
+        self.dimIndices = np.delete(self.dimIndices, dofis)
         lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
         anglesDeleted = sum(
             x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dofis)
