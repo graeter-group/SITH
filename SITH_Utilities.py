@@ -214,12 +214,6 @@ class Geometry:
         assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
             dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
 
-    def getAtoms(self) -> list:
-        if self.atoms:
-            return self.atoms
-        else:
-            pass
-
     def killDOFs(self, dofis: list[int]):
         self.ric = np.delete(self.ric, dofis)
         self.dimIndices = np.delete(self.dimIndices, dofis)
@@ -232,13 +226,6 @@ class Geometry:
         self.dims[1] -= lengthsDeleted
         self.dims[2] -= anglesDeleted
         self.dims[3] -= dihedralsDeleted
-
-    def getEnergy(self) -> float:
-        if self.energy != np.inf:
-            return self.energy
-        else:
-            raise Exception(
-                "Energy has not been set for this geometry.  You done goofed real bad.")
 
     def __eq__(self, __o: object) -> bool:
         b = True

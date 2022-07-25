@@ -74,49 +74,11 @@ class SITH:
         Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
         the geometries' RICs as well as from the Hessian matrix.
         """
+        dimsToKill = [dim for dim in self.relaxed.dimIndices if atom in dim]
         dimIndicesToKill = [index for index in range(
             self.relaxed.dims[0]) if atom in self.relaxed.dimIndices[index]]
+        self.killDOFs(dimsToKill)
 
-    def killDOF(self, dof: Tuple):
-        """
-        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
-        as well as from the Hessian matrix.
-        """
-        self.killDOF(self.relaxed.dimIndices.index(dof))
-
-    def killDOF(self, dofIndex: int):
-        """
-        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries' RICs
-        as well as from the Hessian matrix.
-        """
-        assert dofIndex < self.relaxed.dims[0], "Out of bounds index given for degree of freedom to be killed."
-
-        # if dofIndex < self.relaxed.dims[1]:
-        #     self.relaxed.lengths[dofIndex] = 'kill'
-        #     self.relaxed.dims[1] -= 1
-        #     self.relaxed.dims[0] -= 1
-        #     for d in self.deformed:
-        #         d.lengths[dofIndex] = 'kill'
-        #         d.dims[1] -= 1
-        #         d.dims[0] -= 1
-        # elif dofIndex < self.relaxed.dims[2] + self.relaxed.dims[1]:
-        #     self.relaxed.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
-        #     self.relaxed.dims[2] -= 1
-        #     self.relaxed.dims[0] -= 1
-        #     for d in self.deformed:
-        #         d.angles[dofIndex - self.relaxed.dims[1]] = 'kill'
-        #         d.dims[2] -= 1
-        #         d.dims[0] -= 1
-        # elif dofIndex < self.relaxed.dims[0]:
-        #     self.relaxed.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
-        #     self.relaxed.dims[3] -= 1
-        #     self.relaxed.dims[0] -= 1
-        #     for d in self.deformed:
-        #         d.diheds[dofIndex - self.relaxed.dims[1] - self.relaxed.dims[2]] = 'kill'
-        #         d.dims[3] -= 1
-        #         d.dims[0] -= 1
-
-        # TODO: Code to remove DOF from Hessian
 
     def killDOFs(self, dofs: list[Tuple]):
         """
