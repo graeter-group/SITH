@@ -1,3 +1,4 @@
+from array import array
 from multiprocessing.sharedctypes import Value
 from importlib.resources import path
 from pathlib import Path
@@ -8,10 +9,8 @@ import numpy as np
 from openbabel import openbabel as ob
 
 
-# LTMatrix class comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
-
-
 class LTMatrix(list):
+    """LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py"""
     def __init__(self, L):
         """
         Accept a list of elements in a lower triangular matrix.
@@ -135,17 +134,30 @@ class LTMatrix(list):
 
 
 class Geometry:
+    """Houses data associated with a molecular structure, all public variables are intended for access not modification."""
 
     def __init__(self, name: str, nAtoms: int) -> None:
         self.name = name
-        self.ric = list()
-        self.energy = np.inf
+        """Name of geometry, based off of stem of .fchk file path unless otherwise modified."""
+        self.ric = array('f')
+        """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
+        self.energy = None
+        """Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input"""
         self.atoms = list()
+        """List of <SITH_Utilities.Atom> objects associated with geometry."""
         self.nAtoms = nAtoms
-        self.dims = list()
+        """Number of atoms"""
+        self.dims = array('i')
+        """Array of number of dimensions of DOF type
+        [0]: total dimensions/DOFs
+        [1]: bond lengths
+        [2]: bond angles
+        [3]: dihedral angles
+        """
         self.dimIndices = list()
+        """List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric"""
 
-    #! Need to adapt to new format, make sure to specify and/or convert units
+    #TODO: Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
         first = lines[0]
         if len(first.split()) == 1:
@@ -160,11 +172,8 @@ class Geometry:
             elif len(sLine) >= 5:
                 pass
 
-    def numAtoms(self):
-        return self.nAtoms
-
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
-        self.dims = [int(d) for d in dims]
+        self.dims = array('i', [int(d) for d in dims])
 
         # region Indices
         # Parses through the 'dimILines' input which indicates which atoms (by index)
