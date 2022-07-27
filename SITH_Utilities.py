@@ -11,6 +11,7 @@ from openbabel import openbabel as ob
 
 class LTMatrix(list):
     """LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py"""
+
     def __init__(self, L):
         """
         Accept a list of elements in a lower triangular matrix.
@@ -157,8 +158,12 @@ class Geometry:
         self.dimIndices = list()
         """List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric"""
 
-    #TODO: Need to adapt to new format, make sure to specify and/or convert units
+    # TODO: Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
+        """Takes in a list of str containing the lines of a .xyz file, populates self.atoms
+
+        -----
+        Data is assumed to be Cartesian and in Angstroms as is standard for .xyz files"""
         first = lines[0]
         if len(first.split()) == 1:
             nAtoms = int(first)
@@ -173,6 +178,13 @@ class Geometry:
                 pass
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
+        """
+        Takes in lists of RIC-related data, Populates 
+
+            dims: quantities of each RIC dimension type
+            dimILines: list of strings of each line of RIC Indices 
+            coordLines: list of strings of each line of RICs
+        """
         self.dims = array('i', [int(d) for d in dims])
 
         # region Indices
@@ -223,7 +235,15 @@ class Geometry:
         assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
             dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
 
-    def killDOFs(self, dofis: list[int]):
+        for i in range(self.dims[1], self.dims[0]):
+            self.ric[i] = self.ric[i] + np.pi
+
+
+    def _killDOFs(self, dofis: list[int]):
+        """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric and dimIndices, updates dims
+
+        -----
+        May need to also remove from the Hessian matrix if frozen length constraints produce artificial DOFs in Hessian"""
         self.ric = np.delete(self.ric, dofis)
         self.dimIndices = np.delete(self.dimIndices, dofis)
         lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
@@ -249,6 +269,7 @@ class Geometry:
 
 
 class Atom:
+    """Holds Cartesian coordinate data as well as element data"""
     def __init__(self, element: str, coords: list) -> None:
         self.element = element
         self.coords = coords
@@ -283,35 +304,40 @@ class UnitConverter:
 
 
 class Extractor:
+    """Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
+    
+    -----
+    The user really shouldn't be using this class 0.0 unless they perhaps want a custom one for
+    non-fchk files, in which case they should make a new class inheriting from this one."""
 
     def __init__(self, path: Path, linesList: list) -> None:
-        self.eHeader = "Total Energy"
-        self.hessHeader = "Internal Force Constants"
+        self.__energyHeader = "Total Energy"
+        self.__hessianHeader = "Internal Force Constants"
         self.hEnder = "Mulliken Charges"
-        self.xcHeader = "Current cartesian coordinates"
+        self.__cartesianCoordsHeader = "Current cartesian coordinates"
         self.xcEnder = "Force Field"
-        self.ricHeader = "Redundant internal coordinates"
+        self.__ricHeader = "Redundant internal coordinates"
         self.xrEnder = "ZRed-IntVec"
-        self.dimHeader = "Redundant internal dimensions"
-        self.dimIndicesHeader = "Redundant internal coordinate indices"
-        self.nHeader = "Number of atoms"
-        self.aHeader = "Atomic numbers"
+        self.__ricDimHeader = "Redundant internal dimensions"
+        self.__ricIndicesHeader = "Redundant internal coordinate indices"
+        self.__numAtomsHeader = "Number of atoms"
+        self.__atomicNumsHeader = "Atomic numbers"
 
-        self.path = path
-        self.name = path.stem
+        self._path = path
+        self._name = path.stem
 
-        self.lines = linesList
+        self.__lines = linesList
 
     def writeXYZ(self):
         obConversion = ob.OBConversion()
         obConversion.SetInAndOutFormats("fchk", "xyz")
 
         mol = ob.OBMol()
-        assert self.path.exists(), "Path to fchk file does not exist"
-        assert obConversion.ReadFile(mol, self.path.as_posix(
+        assert self._path.exists(), "Path to fchk file does not exist"
+        assert obConversion.ReadFile(mol, self._path.as_posix(
         )), "Reading fchk file with openbabel failed."
         assert obConversion.WriteFile(mol, str(
-            self.path.parent.as_posix()+self.path.root+self.path.stem+".xyz")), "Could not write XYZ file."
+            self._path.parent.as_posix()+self._path.root+self._path.stem+".xyz")), "Could not write XYZ file."
 
     def extract(self):
         self.writeXYZ()
@@ -319,60 +345,60 @@ class Extractor:
         #! Change to a while < len loop?
         # TODO: make end based on number of values to expect (N = ) not the next header
         i = 0
-        while i < len(self.lines):
-            line = self.lines[i]
+        while i < len(self.__lines):
+            line = self.__lines[i]
 
             # This all must be in order
             #! Sandbox this ASAP you dummy
-            if self.nHeader in line:
+            if self.__numAtomsHeader in line:
                 splitLine = line.split()
                 numAtoms = int(splitLine[len(splitLine)-1])
-                self.geometry = Geometry(self.name, numAtoms)
+                self.geometry = Geometry(self._name, numAtoms)
 
-            elif self.aHeader in line:
+            elif self.__atomicNumsHeader in line:
                 i = i+1
-                lin = self.lines[i]
+                lin = self.__lines[i]
                 atomicNums = lin.split()
 
-            elif self.eHeader in line:
+            elif self.__energyHeader in line:
                 splitLine = line.split()
                 self.geometry.energy = float(splitLine[len(splitLine)-1])
 
-            elif self.dimHeader in line:
+            elif self.__ricDimHeader in line:
                 i = i+1
-                lin = self.lines[i]
+                lin = self.__lines[i]
                 rDims = lin.split()
 
-            elif self.dimIndicesHeader in line:
+            elif self.__ricIndicesHeader in line:
                 rdiStart = i+1
-                while self.ricHeader not in self.lines[i+1]:
+                while self.__ricHeader not in self.__lines[i+1]:
                     i = i+1
-                xrDims = self.lines[rdiStart:i+1]
+                xrDims = self.__lines[rdiStart:i+1]
                 #! assert validation of number of degrees of freedom?
                 assert len(
                     xrDims) > 0, "Missing 'Redundant internal coordinate indices'."
 
-            if self.ricHeader in line:
+            if self.__ricHeader in line:
                 i = i+1
                 xrStart = i
-                while self.xrEnder not in self.lines[i]:
+                while self.xrEnder not in self.__lines[i]:
                     i = i+1
-                xrRaw = self.lines[xrStart:i]
+                xrRaw = self.__lines[xrStart:i]
                 self.geometry.buildRIC(rDims, xrDims, xrRaw)
                 # TODO: build in validation for RICs in ^ if not already there
 
-            elif self.hessHeader in line:
+            elif self.__hessianHeader in line:
                 hFirst = line.split()
                 i = i+1
                 self.hRaw = list()
-                while self.hEnder not in self.lines[i]:
-                    row = self.lines[i]
+                while self.hEnder not in self.__lines[i]:
+                    row = self.__lines[i]
                     rowsplit = row.split()
                     self.hRaw.extend([float(i) for i in rowsplit])
                     i = i+1
 
             i = i + 1
-        with open(self.path.parent.as_posix()+self.path.root + self.path.stem + ".xyz", "r") as xyz:
+        with open(self._path.parent.as_posix()+self._path.root + self._path.stem + ".xyz", "r") as xyz:
             xyzLines = xyz.readlines()
             self.geometry.buildCartesian(xyzLines)
         self.buildHessian()

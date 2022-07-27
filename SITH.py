@@ -1,9 +1,11 @@
+"""File description docstring TODO"""
 from operator import contains, indexOf
-import pathlib
 import sys
 from typing import Tuple
-import numpy as np
+
+import pathlib
 from pathlib import Path
+import numpy as np
 
 from SITH_Utilities import Extractor
 
@@ -154,9 +156,9 @@ class SITH:
                             if self._relaxed.dimIndices[i] == dof])
             dIndices.extend([i for i in range(self._deformed[0].dims[0])
                             if self._deformed[0].dimIndices[i] == dof])
-        self._relaxed.killDOFs(rIndices)
+        self._relaxed._killDOFs(rIndices)
         for deformation in self._deformed:
-            deformation.killDOFs(dIndices)
+            deformation._killDOFs(dIndices)
 
 # endregion
 
@@ -191,9 +193,13 @@ class SITH:
         self._kill = True
 
     def extractData(self):
-        """Extracts, validates, and curates the data from the input files specified in SITH constructor, performing removal of 
-        atoms and DOFs if previously specified by the user with SetKillAtoms or SetKillDOFs.  This method must always be called prior
-        to energyAnalysis to extract and set up the relevant data."""
+        """
+        Extracts, validates, curates data from input files, removes any specified atoms and DOFs .  
+
+        -----
+        Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
+        SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
+        the relevant data."""
 
         self._getContents()
 
@@ -212,6 +218,8 @@ class SITH:
         # manually swap the relaxed geometry with that of another geometry in the deformd list and then re-run analysis.
         self.hessian = self._relaxed.hessian
 
+        # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
+        # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
         if self._kill:
             self.__kill()
 
@@ -219,10 +227,10 @@ class SITH:
 
         self._populateQ()
 
-    # TODO: remove the necessity of separately handling single deformation vs deformation vector
     # TODO: catch cases where extractData() hasn't been called and notify the user
     def energyAnalysis(self):
-        """Performs the SITH energy analysis.
+        """
+        Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.
 
         Notes
         -----
@@ -230,32 +238,23 @@ class SITH:
         (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
         between the relaxed structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
         each DOF (SITH.energies)."""
+        
+        if self.deltaQ is None or self.q0 is None or self.qF is None:
+            raise Exception("Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().")
         self.energies = np.zeros((self._relaxed.dims[0], len(self._deformed)))
         self.deformationEnergy = np.zeros((1, len(self._deformed)))
         self.pEnergies = np.zeros((self._relaxed.dims[0], len(self._deformed)))
 
-        if len(self._deformed) == 1:
-            self.deformationEnergy[0, 0] = 0.5 * np.transpose(self.deltaQ).dot(
-                self.hessian).dot(self.deltaQ)  # scalar 1x1 total Energy
+        for i in range(len(self._deformed)):
+            self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
+                self.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
             for j in range(self._relaxed.dims[0]):
-                isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j], np.zeros(
+                isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
                     self._relaxed.dims[0]-j-1)))
-                self.energies[j, 0] = 0.5 * \
-                    (isolatedDOF).dot(self.hessian).dot(self.deltaQ)
-            self.pEnergies[:, 0] = float(
-                100) * self.energies[:, 0] / self.deformationEnergy[0, 0]
-        else:
-            for i in range(len(self._deformed)):
-                self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
-                    self.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
-                for j in range(self._relaxed.dims[0]):
-                    isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
-                        self._relaxed.dims[0]-j-1)))
-                    self.energies[j, i] = 0.5 * \
-                        (isolatedDOF).dot(self.hessian).dot(isolatedDOF)
-
-                self.pEnergies[:, i] = float(
-                    100) * self.energies[:, i] / self.deformationEnergy[0, i]
+                self.energies[j, i] = 0.5 * \
+                    (isolatedDOF).dot(self.hessian).dot(isolatedDOF)
+            self.pEnergies[:, i] = float(
+                100) * self.energies[:, i] / self.deformationEnergy[0, i]
 
         print("Execute Order 67. Successful energy analysis completed.")
 
@@ -292,7 +291,7 @@ class SITH:
         """
         Ensure that the relaxed and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        assert all([deformn.numAtoms() == self._relaxed.numAtoms() and all([deformn.dims[i] == self._relaxed.dims[i] for i in range(
+        assert all([deformn.nAtoms == self._relaxed.nAtoms and all([deformn.dims[i] == self._relaxed.dims[i] for i in range(
             4)]) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
 # endregion
@@ -328,6 +327,7 @@ class SITH:
             sys.exit(sys.exc_info()[0])
 
     def _populateQ(self):
+        """Populates the relaxed RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs."""
         self.q0 = np.zeros((self._relaxed.dims[0], 1))
         self.qF = np.zeros((self._relaxed.dims[0], 1))
         self.q0[:, 0] = np.transpose(np.asarray(self._relaxed.ric))
@@ -345,8 +345,8 @@ class SITH:
         """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
-        # TODO: make this more definitive because collagen use case phi psi angles often around pi regime, perhaps just convert domain of radians from (-pi, pi) -(+pi)-> (0, 2pi) when taking in coordinates initially?
-        with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
-            for dq in dqit:
-                dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
-                                                        0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
+        # # TODO: make this more definitive because collagen use case phi psi angles often around pi regime, perhaps just convert domain of radians from (-pi, pi) -(+pi)-> (0, 2pi) when taking in coordinates initially?
+        # with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
+        #     for dq in dqit:
+        #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
+        #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)

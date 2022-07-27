@@ -1,5 +1,5 @@
 from genericpath import exists
-from numpy import extract
+from numpy import extract, float32
 import pytest
 from SITH_Utilities import *
 import pathlib
@@ -58,13 +58,13 @@ dimIndicesGoodInput = ['           1           2           0           0        
 coordLinesGoodInput = ['  2.06335755E+00  2.07679249E+00  2.07679461E+00  2.73743812E+00  1.83354933E+00',
                        '  1.90516186E+00  1.90518195E+00  1.84167462E+00  1.91434964E+00  1.94775283E+00',
                        '  1.94775582E+00  1.96310537E+00 -3.14097002E+00 -1.07379153E+00  1.07501112E+00']
-coords = array('f', [float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933, 1.90516186E+00,
-          1.90518195,  1.84167462,  1.91434964,  1.94775283, 1.94775582,  1.96310537, -3.14097002,
-          -1.07379153,  1.07501112E+00])
+coords = np.array([float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933, 1.90516186E+00+np.pi,
+          1.90518195+np.pi,  1.84167462+np.pi,  1.91434964+np.pi,  1.94775283+np.pi, 1.94775582+np.pi,  1.96310537+np.pi, -3.14097002+np.pi,
+          -1.07379153+np.pi,  1.07501112E+00+np.pi], dtype=float32)
 bonds = [float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933]
-angles = [1.90516186E+00, 1.90518195,  1.84167462,
-          1.91434964,  1.94775283, 1.94775582,  1.96310537]
-diheds = [-3.14097002, -1.07379153,  1.07501112E+00]
+angles = [1.90516186E+00+np.pi, 1.90518195+np.pi,  1.84167462+np.pi,
+          1.91434964+np.pi,  1.94775283+np.pi, 1.94775582+np.pi,  1.96310537+np.pi]
+diheds = [-3.14097002+np.pi, -1.07379153+np.pi,  1.07501112E+00+np.pi]
 
 dimIndices = [(1, 2), (1, 3), (1, 4), (1, 5), (5, 6), (2, 1, 3), (2, 1, 4), (2, 1, 5),
               (3, 1, 4), (3, 1, 5), (4, 1, 5), (1, 5, 6), (2, 1, 5, 6), (3, 1, 5, 6), (4, 1, 5, 6)]
@@ -77,7 +77,7 @@ def test_buildRICGood():
     geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
-    assert all(geo.ric == coords)
+    assert [geo.ric[i] == coords[i] for i in range(len(coords))]
 
 
 # region bad coordinates
@@ -377,15 +377,11 @@ cartesianLines = ["6",
                   "H         -1.21495       -0.73375       -0.00001"]
 
 
-def test_creation():
-    extractor = Extractor(testPath, frankenLines)
-    assert extractor.lines == frankenLines
-
 
 def test_creationEmptyList():
     extractor = Extractor(testPath, [])
-    assert extractor.path == testPath
-    assert extractor.name == testPath.stem
+    assert extractor._path == testPath
+    assert extractor._name == testPath.stem
 
 
 def test_extract():
