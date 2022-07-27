@@ -7,16 +7,18 @@ import numpy as np
 #TODO: sandbox the file access with try catch dum dum
 
 class SithResults:
+    """Contains methods which format, organize, and output data from SITH objects"""
 
     def writeFiles(self, sith: SITH) -> bool:
         pass
 
-    def writeSummary(self, sith: SITH):
-        totE = self.buildTotEnergiesString(sith)
-        dq = self.buildDeltaQString(sith)
-        ric = self.buildInternalCoordsString(sith)
-        expectedDE, errorDE, pErrorDE = self.compareEnergies(sith)
-        energies = self.buildEnergyMatrix(sith)
+    @staticmethod
+    def writeSummary(sith: SITH):
+        totE = SithResults.buildTotEnergiesString(sith)
+        dq = SithResults.buildDeltaQString(sith)
+        ric = SithResults.buildInternalCoordsString(sith)
+        expectedDE, errorDE, pErrorDE = SithResults.compareEnergies(sith)
+        energies = SithResults.buildEnergyMatrix(sith)
 
         with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+'summary.txt', "w") as s:
             s.write("Summary of SITH analysis\n")
@@ -38,10 +40,12 @@ class SithResults:
             s.write("Energy per DOF (RIC)\n")
             s.writelines("\n".join(energies))
 
-    def buildTotEnergiesString(self, sith: SITH) -> list:
+    @staticmethod
+    def buildTotEnergiesString(sith: SITH) -> list:
         pass
 
-    def buildDeltaQString(self, sith: SITH) -> list:
+    @staticmethod
+    def buildDeltaQString(sith: SITH) -> list:
         """
         Returns a list of strings containing the change in internal coordinates in each degree of freedom 
         per deformed geometry. Data is in Angstroms and degrees of the format:
@@ -81,18 +85,21 @@ class SithResults:
 
         return dqAngstroms
 
-    def writeDeltaQ(self, sith: SITH) -> bool:
-        dqPrint = self.buildDeltaQString(sith)
+    @staticmethod
+    def writeDeltaQ(sith: SITH) -> bool:
+        dqPrint = SithResults.buildDeltaQString(sith)
         with open('delta_q.txt', "w") as dq:
             dq.writelines('\n'.join(dqPrint))
 
-    def buildInternalCoordsString(self, sith: SITH) -> list:
+    @staticmethod
+    def buildInternalCoordsString(sith: SITH) -> list:
         """
         Returns a list of strings containing the atom indices involved in each degree of freedom.
         """
         return ["{: <12}".format(dof+1) + str(sith._relaxed.dimIndices[dof]) for dof in range(sith._relaxed.dims[0])]
 
-    def buildEnergyMatrix(self, sith: SITH) -> list:
+    @staticmethod
+    def buildEnergyMatrix(sith: SITH) -> list:
         """
         Returns a list of strings containing the energy in each degree of freedom per deformed geometry.
         Data is in Hartrees and of the format:
@@ -113,12 +120,14 @@ class SithResults:
             eMat.append(line)
         return eMat
 
-    def writeEnergyMatrix(self, sith: SITH) -> bool:
-        ePrint = self.buildEnergyMatrix(sith)
+    @staticmethod
+    def writeEnergyMatrix(sith: SITH) -> bool:
+        ePrint = SithResults.buildEnergyMatrix(sith)
         with open('E_RICS.txt', "w") as dq:
             dq.writelines('\n'.join(ePrint))
 
-    def compareEnergies(self, sith: SITH) -> Tuple:
+    @staticmethod
+    def compareEnergies(sith: SITH) -> Tuple:
         expectedDE = np.zeros((1, len(sith._deformed)))
         for i in range(len(sith._deformed)):
             expectedDE[0, i] = sith._deformed[i].energy - sith._relaxed.energy
@@ -126,14 +135,17 @@ class SithResults:
         pErrorDE = errorDE / expectedDE
         return (expectedDE, errorDE, pErrorDE)
 
-    def writeComparison(self, sith: SITH):
-        expectedDE, errorDE, pErrorDE = self.compareEnergies(sith)
+    @staticmethod
+    def writeComparison(sith: SITH):
+        expectedDE, errorDE, pErrorDE = SithResults.compareEnergies(sith)
         with open('pError.txt', "w") as dq:
             dq.writelines('\n'.join(pErrorDE.astype(str)))
 
-    def buildAtomList(self, sith: SITH):
+    @staticmethod
+    def buildAtomList(sith: SITH):
         """Builds strings for indicating the atom represented by each index."""
         pass
 
-    def writeAtomList(self, sith: SITH):
+    @staticmethod
+    def writeAtomList(sith: SITH):
         pass

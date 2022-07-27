@@ -238,7 +238,6 @@ class Geometry:
         for i in range(self.dims[1], self.dims[0]):
             self.ric[i] = self.ric[i] + np.pi
 
-
     def _killDOFs(self, dofis: list[int]):
         """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric and dimIndices, updates dims
 
@@ -270,6 +269,7 @@ class Geometry:
 
 class Atom:
     """Holds Cartesian coordinate data as well as element data"""
+
     def __init__(self, element: str, coords: list) -> None:
         self.element = element
         self.coords = coords
@@ -305,7 +305,7 @@ class UnitConverter:
 
 class Extractor:
     """Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
-    
+
     -----
     The user really shouldn't be using this class 0.0 unless they perhaps want a custom one for
     non-fchk files, in which case they should make a new class inheriting from this one."""
@@ -328,7 +328,11 @@ class Extractor:
 
         self.__lines = linesList
 
-    def writeXYZ(self):
+    # TODO: maybe move this to Geometry constructor or make a static method of SITH
+    def _writeXYZ(self):
+        """
+        Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
+        """
         obConversion = ob.OBConversion()
         obConversion.SetInAndOutFormats("fchk", "xyz")
 
@@ -339,8 +343,9 @@ class Extractor:
         assert obConversion.WriteFile(mol, str(
             self._path.parent.as_posix()+self._path.root+self._path.stem+".xyz")), "Could not write XYZ file."
 
-    def extract(self):
-        self.writeXYZ()
+    def _extract(self):
+        """Extracts and populates Geometry information from self.__lines"""
+        self._writeXYZ()
 
         #! Change to a while < len loop?
         # TODO: make end based on number of values to expect (N = ) not the next header
@@ -404,11 +409,13 @@ class Extractor:
         self.buildHessian()
 
     def buildHessian(self):
+        """Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data"""
         ltMat = LTMatrix(self.hRaw)
         self.hessian = ltMat.fullmat
         self.geometry.hessian = self.hessian
 
     def getGeometry(self) -> Geometry:
+        """Returns the geometry populated by the Extractor based on the input lines from a .fchk file"""
         if self.geometry:
             return self.geometry
         else:

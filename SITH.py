@@ -204,13 +204,13 @@ class SITH:
         self._getContents()
 
         rExtractor = Extractor(self._relaxedPath, self.__rData)
-        rExtractor.extract()
+        rExtractor._extract()
         # Create Geometry objects from relaxed and deformed data
         self._relaxed = rExtractor.getGeometry()
         self._deformed = list()
         for dd in self.__dData:
             dExtractor = Extractor(dd[0], dd[1])
-            dExtractor.extract()
+            dExtractor._extract()
             self._deformed.append(dExtractor.getGeometry())
 
         # Defaults to the relaxed geometry Hessian, it is recommended to make new SITH objects for each new analysis for the

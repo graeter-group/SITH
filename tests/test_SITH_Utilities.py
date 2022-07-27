@@ -387,14 +387,14 @@ def test_creationEmptyList():
 def test_extract():
     extractor = Extractor(testPath, frankenLines)
     # Geometry
-    extractor.extract()
+    extractor._extract()
     assert extractor.hRaw == ehRaw
 
 
 def test_extractedGeometry():
     extractor = Extractor(testPath, frankenLines)
     # Geometry
-    extractor.extract()
+    extractor._extract()
     geo = extractor.getGeometry()
     egeo = Geometry(testPath.stem, 6)
     egeo.energy = energy
@@ -406,7 +406,7 @@ def test_extractedGeometry():
 def test_buildHessian():
     extractor = Extractor(testPath, frankenLines)
     # Geometry
-    extractor.extract()
+    extractor._extract()
     geo = extractor.getGeometry()
     egeo = Geometry(testPath.stem, 6)
     egeo.energy = energy
