@@ -45,3 +45,4 @@ def test_writeAll():
     sith.energyAnalysis()
     jp = SithWriter()
     assert jp.writeAll(sith)
+    blah = 2

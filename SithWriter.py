@@ -6,15 +6,13 @@ import numpy as np
 from SITH import SITH
 from SITH_Utilities import UnitConverter
 
-# TODO: sandbox the file access with try catch dum dum
-
 
 class SithWriter:
     """Contains methods which format, organize, and output data from SITH objects"""
 
     @staticmethod
     def writeAll(sith: SITH) -> bool:
-        return SithWriter.writeSummary(sith) and SithWriter.writeDeltaQ(sith) and SithWriter.writeEnergyMatrix(sith) and SithWriter.writeError(sith) and SithWriter.writeAtomList(sith)
+        return SithWriter.writeSummary(sith) and SithWriter.writeDeltaQ(sith) and SithWriter.writeEnergyMatrix(sith) and SithWriter.writeError(sith)
 
     @staticmethod
     def writeSummary(sith: SITH) -> bool:
@@ -270,32 +268,3 @@ class SithWriter:
             print(e)
             return False
 
-# TODO: Implement this when Cartesian is fully done
-    @staticmethod
-    def buildAtomList(sith: SITH) -> list:
-        """Takes in SITH object sith, Returns list of strings indicating the element represented by each atomic index."""
-        lines = list()
-        #header = "            "
-        #for deformation in sith._deformed:
-        #    header += "{: ^16s}".format(deformation.name)
-        #lines.append(header)
-        #lines.append("{: <12}".format('Expected Energy') +
-        #             ''.join(["{: >16.6E}".format(e) for e in expected[0]]))
-        return lines
-
-
-    @staticmethod
-    def writeAtomList(sith: SITH, fileName="atomIndices.txt") -> bool:
-        """Takes in SITH object sith, Writes the element represented by each atomic index, Returns True if successful."""
-        try:
-            atomList = SithWriter.buildAtomList(sith)
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+fileName, "w") as dq:
-                dq.writelines('\n'.join(atomList))
-            return True
-        except IOError as e:
-            print(e)
-            return False
-        except e:
-            print("Non-IO Exception encountered:")
-            print(e)
-            return False

@@ -344,70 +344,81 @@ class Extractor:
         assert obConversion.WriteFile(mol, str(
             self._path.parent.as_posix()+self._path.root+self._path.stem+".xyz")), "Could not write XYZ file."
 
-    def _extract(self):
-        """Extracts and populates Geometry information from self.__lines"""
-        self._writeXYZ()
+    def _extract(self) -> bool:
+        """Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful"""
 
-        #! Change to a while < len loop?
-        # TODO: make end based on number of values to expect (N = ) not the next header
-        i = 0
-        while i < len(self.__lines):
-            line = self.__lines[i]
+        try:
+            i = 0
+            while i < len(self.__lines):
+                line = self.__lines[i]
 
-            # This all must be in order
-            #! Sandbox this ASAP you dummy
-            if self.__numAtomsHeader in line:
-                splitLine = line.split()
-                numAtoms = int(splitLine[len(splitLine)-1])
-                self.geometry = Geometry(self._name, numAtoms)
+                # This all must be in order
+                #! Sandbox this ASAP you dummy
+                if self.__numAtomsHeader in line:
+                    splitLine = line.split()
+                    numAtoms = int(splitLine[len(splitLine)-1])
+                    self.geometry = Geometry(self._name, numAtoms)
 
-            elif self.__atomicNumsHeader in line:
-                i = i+1
-                lin = self.__lines[i]
-                atomicNums = lin.split()
+                elif self.__energyHeader in line:
+                    splitLine = line.split()
+                    self.geometry.energy = float(splitLine[len(splitLine)-1])
 
-            elif self.__energyHeader in line:
-                splitLine = line.split()
-                self.geometry.energy = float(splitLine[len(splitLine)-1])
-
-            elif self.__ricDimHeader in line:
-                i = i+1
-                lin = self.__lines[i]
-                rDims = lin.split()
-
-            elif self.__ricIndicesHeader in line:
-                rdiStart = i+1
-                while self.__ricHeader not in self.__lines[i+1]:
+                elif self.__ricDimHeader in line:
                     i = i+1
-                xrDims = self.__lines[rdiStart:i+1]
-                #! assert validation of number of degrees of freedom?
-                assert len(
-                    xrDims) > 0, "Missing 'Redundant internal coordinate indices'."
+                    lin = self.__lines[i]
+                    rDims = lin.split()
 
-            if self.__ricHeader in line:
-                i = i+1
-                xrStart = i
-                while self.xrEnder not in self.__lines[i]:
+                elif self.__ricIndicesHeader in line:
+                    rdiStart = i+1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count < stop:
+                        count+= len(self.__lines[i].split())
+                        i += 1
+                    xrDims = self.__lines[rdiStart:i+1]
+                    #! assert validation of number of degrees of freedom?
+                    assert len(
+                        xrDims) > 0, "Missing 'Redundant internal coordinate indices'."
+
+                if self.__ricHeader in line:
                     i = i+1
-                xrRaw = self.__lines[xrStart:i]
-                self.geometry.buildRIC(rDims, xrDims, xrRaw)
-                # TODO: build in validation for RICs in ^ if not already there
+                    xrStart = i
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count < stop:
+                        count+= len(self.__lines[i].split())
+                        i += 1
+                    xrRaw = self.__lines[xrStart:i]
+                    self.geometry.buildRIC(rDims, xrDims, xrRaw)
+                    # TODO: build in validation for RICs in ^ if not already there
 
-            elif self.__hessianHeader in line:
-                hFirst = line.split()
-                i = i+1
-                self.hRaw = list()
-                while self.hEnder not in self.__lines[i]:
-                    row = self.__lines[i]
-                    rowsplit = row.split()
-                    self.hRaw.extend([float(i) for i in rowsplit])
+                elif self.__hessianHeader in line:
                     i = i+1
+                    stop = int(line.split()[-1])
+                    self.hRaw = list()
+                    while len(self.hRaw) < stop:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        self.hRaw.extend([float(i) for i in rowsplit])
+                        i = i+1
 
-            i = i + 1
-        with open(self._path.parent.as_posix()+self._path.root + self._path.stem + ".xyz", "r") as xyz:
-            xyzLines = xyz.readlines()
-            self.geometry.buildCartesian(xyzLines)
-        self.buildHessian()
+                i = i + 1
+            print("Building full Hessian matrix.")
+            self.buildHessian()
+
+            print("Translating .fchk file to new .xyz file with OpenBabel...")
+            self._writeXYZ()
+
+            print("Opening .xyz file...")
+            with open(self._path.parent.as_posix()+self._path.root + self._path.stem + ".xyz", "r") as xyz:
+                xyzLines = xyz.readlines()
+                self.geometry.buildCartesian(xyzLines)
+            print("Cartesian data extracted successfully.")
+            return True
+        except Exception as e:
+            print(e)
+            print("Data extraction failed.")
+            return False
 
     def buildHessian(self):
         """Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data"""

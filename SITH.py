@@ -347,7 +347,11 @@ class SITH:
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
         # # TODO: make this more definitive because collagen use case phi psi angles often around pi regime, perhaps just convert domain of radians from (-pi, pi) -(+pi)-> (0, 2pi) when taking in coordinates initially?
-        # with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
-        #     for dq in dqit:
+        with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
+             for dq in dqit:
         #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
         #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
+                if dq > (2*np.pi -0.05):
+                    blah = 3
+                dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
+                                                        0.05) else (dq + 2*np.pi if dq < -(2*np.pi - 0.05) else dq)
