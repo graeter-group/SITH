@@ -1,7 +1,7 @@
 import pytest
 from SITH import SITH
 from SITH_Utilities import *
-from SithResults import SithResults
+from SithWriter import SithWriter
 import pathlib
 
 
@@ -132,7 +132,7 @@ def test_AAfromDaniel():
     sith.setKillDOFs([(1, 16)])
     sith.extractData()
     sith.energyAnalysis()
-    jp = SithResults()
+    jp = SithWriter()
     blah = jp.buildDeltaQString(sith)
     jp.writeDeltaQ(sith)
     jp.compareEnergies(sith)

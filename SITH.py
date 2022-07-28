@@ -9,6 +9,7 @@ import numpy as np
 
 from SITH_Utilities import Extractor
 
+#TODO: Add a logger
 
 class SITH:
 
