@@ -138,3 +138,14 @@ def test_AAfromDaniel():
     jp.compareEnergies(sith)
     jp.writeEnergyMatrix(sith)
     jp.writeSummary(sith)
+
+def test_movedx0():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/moh-x0-1.7.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
+    sith.energyAnalysis()
+    jp = SithWriter()
+    jp.writeDeltaQ(sith, "1.7-dq.txt")
+    jp.writeError(sith, "1.7-error.txt")
+    jp.writeEnergyMatrix(sith, "1.7-energy.txt")
+    jp.writeSummary(sith, "1.7-summary.txt")

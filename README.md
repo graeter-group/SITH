@@ -8,5 +8,10 @@ Heat
 
 Stress
 Induced
-T
-H
+Traversal of
+Hessian
+
+Stress energy
+Investigated by
+Traversal of
+Hessian 

@@ -2,7 +2,7 @@
 #SBATCH -o moh-x0-1.7.out
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=20    # number of threads
-#SBATCH --mem-per-cpu=2200      # times ntasks-per-node gives total mem
+#SBATCH --mem-per-cpu=4400      # times ntasks-per-node gives total mem
 #SBATCH -p cascade.p            # determines partition
 #SBATCH --job-name='moh-x0-1.7'       #job name
 #SBATCH --threads-per-core=1

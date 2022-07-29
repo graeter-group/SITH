@@ -1,4 +1,4 @@
-%chk=moh-xF-1.7.chk
+%chk=moh-x0-1.7.chk
 # opt=(calcfc, modredundant) freq=(savenormalmodes, IntModes) 6-31+g geom=(connectivity) bmk
 
 Title Card Required

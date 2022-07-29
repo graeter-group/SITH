@@ -15,7 +15,7 @@ class SithWriter:
         return SithWriter.writeSummary(sith) and SithWriter.writeDeltaQ(sith) and SithWriter.writeEnergyMatrix(sith) and SithWriter.writeError(sith)
 
     @staticmethod
-    def writeSummary(sith: SITH) -> bool:
+    def writeSummary(sith: SITH, fileName='summary.txt') -> bool:
         """
         Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
 
@@ -32,7 +32,7 @@ class SithWriter:
         energies = SithWriter.buildEnergyMatrix(sith)
 
         try:
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+'summary.txt', "w") as s:
+            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+sith._relaxedPath.stem+fileName, "w") as s:
                 s.write("Summary of SITH analysis\n")
                 s.write(
                     "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
