@@ -3,8 +3,8 @@ from typing import Tuple
 
 import numpy as np
 
-from SITH import SITH
-from SITH_Utilities import UnitConverter
+from src.SITH import SITH
+from src.SITH.Utilities import UnitConverter
 
 
 class SithWriter:

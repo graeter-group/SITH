@@ -1,7 +1,7 @@
 import pytest
-from SITH import SITH
-from SITH_Utilities import *
-from SithWriter import SithWriter
+from src.SITH.SITH import SITH
+from src.SITH.Utilities import *
+from src.SITH.SithWriter import SithWriter
 import pathlib
 
 

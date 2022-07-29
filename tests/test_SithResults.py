@@ -1,10 +1,6 @@
-from genericpath import exists
-from numpy import extract
-import pytest
-from SITH_Utilities import *
-from SITH import SITH
-import pathlib
-from SithWriter import SithWriter
+from src.SITH.Utilities import *
+from src.SITH.SITH import SITH
+from src.SITH.SithWriter import SithWriter
 
 
 def test_buildDQ():

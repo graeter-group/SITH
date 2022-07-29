@@ -1,7 +1,6 @@
-from genericpath import exists
-from numpy import extract, float32
+from numpy import float32
 import pytest
-from SITH_Utilities import *
+from src.SITH.Utilities import *
 import pathlib
 
 """ LTMatrix has already been tested by its creator on github,

@@ -7,7 +7,7 @@ import pathlib
 from pathlib import Path
 import numpy as np
 
-from SITH_Utilities import Extractor
+from src.SITH.Utilities import Extractor
 
 #TODO: Add a logger
 
