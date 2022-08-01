@@ -20,7 +20,7 @@ def test_multiDeformedGood():
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
 
 
-def test_noRelaxed():
+def test_noReference():
     pass
 
 
@@ -32,7 +32,7 @@ def test_emptyDefDirectory():
     pass
 
 
-def test_emptyRelaxed():
+def test_emptyReference():
     pass
 
 
@@ -108,7 +108,7 @@ def test_killAtoms():
 # region invalid Geometries (might be unnecessary or more for extractors?)
 
 
-def test_badRelaxed():
+def test_badReference():
     pass
 
 
@@ -116,7 +116,7 @@ def test_badDeformed():
     pass
 
 
-def test_incompleteRelaxed():
+def test_incompleteReference():
     pass
 
 

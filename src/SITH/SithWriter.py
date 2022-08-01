@@ -1,14 +1,16 @@
-from argparse import Namespace
 from typing import Tuple
 
 import numpy as np
+import openbabel as ob
 
 from src.SITH import SITH
-from src.SITH.Utilities import UnitConverter
+from src.SITH.Utilities import Geometry, UnitConverter
 
 
 class SithWriter:
     """Contains methods which format, organize, and output data from SITH objects"""
+
+#region: Write
 
     @staticmethod
     def writeAll(sith: SITH) -> bool:
@@ -23,8 +25,6 @@ class SithWriter:
         File is written to sith input's parent directory.
         """
 
-        # TODO: Verify that analysis has been performed first, in build methods
-
         totE = SithWriter.buildTotEnergiesString(sith)
         dq = SithWriter.buildDeltaQString(sith)
         ric = SithWriter.buildInternalCoordsString(sith)
@@ -32,7 +32,7 @@ class SithWriter:
         energies = SithWriter.buildEnergyMatrix(sith)
 
         try:
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+sith._relaxedPath.stem+fileName, "w") as s:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+sith._referencePath.stem+fileName, "w") as s:
                 s.write("Summary of SITH analysis\n")
                 s.write(
                     "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
@@ -61,22 +61,6 @@ class SithWriter:
             return False
 
     @staticmethod
-    def buildTotEnergiesString(sith: SITH) -> list:
-        """
-        Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
-        Data is in Hartrees and percentages.
-        """
-        assert sith.deformationEnergy is not None, "Energy analysis has not been performed."
-        lines = list()
-        header = "            "
-        for deformation in sith._deformed:
-            header += "{: ^16s}".format(deformation.name)
-        lines.append(header)
-        lines.append("Stress Energy   " +
-                     ''.join(["{: >16.6E}".format(e) for e in sith.deformationEnergy[0]]))
-        return lines
-
-    @staticmethod
     def writeTotEnergiesString(sith: SITH, fileName="totalStressEnergy.txt") -> True:
         """
         Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
@@ -86,7 +70,7 @@ class SithWriter:
         """
         try:
             lines = SithWriter.buildTotEnergiesString(sith)
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+fileName, "w") as dq:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
                 dq.writelines('\n'.join(lines))
             return True
         except IOError as e:
@@ -96,6 +80,103 @@ class SithWriter:
             print("Non-IO Exception encountered:")
             print(e)
             return False
+
+    @staticmethod
+    def writeDeltaQ(sith: SITH, fileName="delta_q.txt") -> bool:
+        """
+        Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
+
+        -----
+        Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+        """
+        try:
+            dqPrint = SithWriter.buildDeltaQString(sith)
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
+                dq.writelines('\n'.join(dqPrint))
+            return True
+        except IOError as e:
+            print(e)
+            return False
+        except e:
+            print("Non-IO Exception encountered:")
+            print(e)
+            return False
+
+    @staticmethod
+    def writeError(sith: SITH, fileName='Error.txt') -> bool:
+        """Takes in SITH object sith, Writes error data, Returns True if successful
+
+        -----
+        Writes to .txt file in directory of sith input files' parent"""
+        try:
+            lines = SithWriter.buildErrorStrings(sith)
+            with open(fileName, "w") as dq:
+                dq.writelines('\n'.join(lines))
+            return True
+        except IOError as e:
+            print(e)
+            return False
+        except e:
+            print("Non-IO Exception encountered:")
+            print(e)
+            return False
+
+    @staticmethod
+    def writeEnergyMatrix(sith: SITH, fileName='E_RICs.txt') -> bool:
+        """
+        Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
+
+        -----
+        Data is in Hartrees and of the format row:DOF column:deformation structure.
+        """
+        try:
+            ePrint = SithWriter.buildEnergyMatrix(sith)
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
+                dq.writelines('\n'.join(ePrint))
+            return True
+        except IOError as e:
+            print(e)
+            return False
+        except e:
+            print("Non-IO Exception encountered:")
+            print(e)
+            return False
+
+    @staticmethod
+    def writeXYZ(geometry: Geometry):
+        """
+        Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
+        """
+        obConversion = ob.OBConversion()
+        obConversion.SetInAndOutFormats("fchk", "xyz")
+
+        mol = ob.OBMol()
+        assert geometry._path.exists(), "Path to fchk file does not exist"
+        assert obConversion.ReadFile(mol, geometry._path.as_posix(
+        )), "Reading fchk file with openbabel failed."
+        assert obConversion.WriteFile(mol, str(
+            geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz")), "Could not write XYZ file."
+
+# endregion
+
+#region: Build
+
+    @staticmethod
+    def buildTotEnergiesString(sith: SITH) -> list:
+        """
+        Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+        Data is in Hartrees and percentages.
+        """
+        assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no information available."
+
+        lines = list()
+        header = "            "
+        for deformation in sith._deformed:
+            header += "{: ^16s}".format(deformation.name)
+        lines.append(header)
+        lines.append("Stress Energy   " +
+                     ''.join(["{: >16.6E}".format(e) for e in sith.deformationEnergy[0]]))
+        return lines
 
     @staticmethod
     def buildDeltaQString(sith: SITH) -> list:
@@ -109,6 +190,8 @@ class SithWriter:
         2               change              change              ...
         ...
         """
+        assert sith.deltaQ is not None, "SITH.extractData() has not been performed yet, no deltaQ information available."
+
         uc = UnitConverter()
         dqAngstroms = list()
         header = "DOF         "
@@ -116,9 +199,9 @@ class SithWriter:
             header += "{: ^12s}".format(deformation.name)
         dqAngstroms.append(header)
         dqAng = [uc.bohrToAngstrom(dq)
-                 for dq in sith.deltaQ[0:sith._relaxed.dims[1], :]]
+                 for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
         dqAng = np.asarray(dqAng)
-        for dof in range(sith._relaxed.dims[1]):
+        for dof in range(sith._reference.dims[1]):
             if len(sith._deformed) > 1:
                 line = "{: <12}".format(
                     dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
@@ -126,47 +209,27 @@ class SithWriter:
             else:
                 line = "{: <12}{: >12.8f}".format(dof+1, dqAng[dof][0])
                 dqAngstroms.append(line)
-        dqDeg = np.degrees(sith.deltaQ[sith._relaxed.dims[1]:, :])
+        dqDeg = np.degrees(sith.deltaQ[sith._reference.dims[1]:, :])
         dqDeg = np.asarray(dqDeg)
-        for dof in range(sith._relaxed.dims[2]+sith._relaxed.dims[3]):
+        for dof in range(sith._reference.dims[2]+sith._reference.dims[3]):
             if len(sith._deformed) > 1:
-                line = "{:< 12}".format(dof+1+sith._relaxed.dims[1]) + ''.join(
+                line = "{:< 12}".format(dof+1+sith._reference.dims[1]) + ''.join(
                     ["{: >12.8f}".format(dqd) for dqd in dqDeg[dof, :]])
                 dqAngstroms.append(line)
             else:
                 line = "{:< 12}{: >12.8f}".format(
-                    dof+1+sith._relaxed.dims[1], dqDeg[dof][0])
+                    dof+1+sith._reference.dims[1], dqDeg[dof][0])
                 dqAngstroms.append(line)
 
         return dqAngstroms
-
-    @staticmethod
-    def writeDeltaQ(sith: SITH, fileName="delta_q.txt") -> bool:
-        """
-        Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
-
-        -----
-        Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
-        """
-        try:
-            dqPrint = SithWriter.buildDeltaQString(sith)
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+fileName, "w") as dq:
-                dq.writelines('\n'.join(dqPrint))
-            return True
-        except IOError as e:
-            print(e)
-            return False
-        except e:
-            print("Non-IO Exception encountered:")
-            print(e)
-            return False
 
     @staticmethod
     def buildInternalCoordsString(sith: SITH) -> list:
         """
         Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
         """
-        return ["{: <12}".format(dof+1) + str(sith._relaxed.dimIndices[dof]) for dof in range(sith._relaxed.dims[0])]
+        assert sith._reference.dimIndices is not None, "SITH.extractData() has not been performed yet, no summary information available."
+        return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
 
     @staticmethod
     def buildEnergyMatrix(sith: SITH) -> list:
@@ -180,54 +243,19 @@ class SithWriter:
         2               stress E            stress E            ...
         ...             ...                 ...                 ...
         """
+        assert sith.energies is not None, "SITH.energyAnalysis() has not been performed yet, no summary information available."
+
         uc = UnitConverter()
         eMat = list()
         header = "DOF         "
         for deformation in sith._deformed:
             header += "{: ^16s}".format(deformation.name)
         eMat.append(header)
-        for dof in range(sith._relaxed.dims[0]):
+        for dof in range(sith._reference.dims[0]):
             line = "{: <12}".format(
                 dof+1) + ''.join(["{: >16.6E}".format(e) for e in sith.energies[dof, :]])
             eMat.append(line)
         return eMat
-
-    @staticmethod
-    def writeEnergyMatrix(sith: SITH, fileName='E_RICs.txt') -> bool:
-        """
-        Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
-
-        -----
-        Data is in Hartrees and of the format row:DOF column:deformation structure.
-        """
-        try:
-            ePrint = SithWriter.buildEnergyMatrix(sith)
-            with open(sith._relaxedPath.parent.as_posix()+sith._relaxedPath.root+fileName, "w") as dq:
-                dq.writelines('\n'.join(ePrint))
-            return True
-        except IOError as e:
-            print(e)
-            return False
-        except e:
-            print("Non-IO Exception encountered:")
-            print(e)
-            return False
-
-    @staticmethod
-    def compareEnergies(sith: SITH) -> Tuple:
-        """
-        Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
-
-        -----
-        Expected Stress Energy: Total E deformed structure from input .fchk - total E relaxed structure from input .fchk
-        Stress Energy Error: calculated stress energy - Expected Stress Energy
-        %Error: Stress Energy Error / Expected Stress Energy"""
-        expectedDE = np.zeros((1, len(sith._deformed)))
-        for i in range(len(sith._deformed)):
-            expectedDE[0, i] = sith._deformed[i].energy - sith._relaxed.energy
-        errorDE = sith.deformationEnergy - expectedDE
-        pErrorDE = errorDE / expectedDE
-        return (expectedDE, errorDE, pErrorDE)
 
     @staticmethod
     def buildErrorStrings(sith: SITH):
@@ -249,22 +277,22 @@ class SithWriter:
                      ''.join(["{: >16.2%}".format(e) for e in pError[0]]))
         return lines
 
+# endregion
+
     @staticmethod
-    def writeError(sith: SITH, fileName='Error.txt') -> bool:
-        """Takes in SITH object sith, Writes error data, Returns True if successful
+    def compareEnergies(sith: SITH) -> Tuple:
+        """
+        Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
 
         -----
-        Writes to .txt file in directory of sith input files' parent"""
-        try:
-            lines = SithWriter.buildErrorStrings(sith)
-            with open(fileName, "w") as dq:
-                dq.writelines('\n'.join(lines))
-            return True
-        except IOError as e:
-            print(e)
-            return False
-        except e:
-            print("Non-IO Exception encountered:")
-            print(e)
-            return False
-
+        Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
+        Stress Energy Error: calculated stress energy - Expected Stress Energy
+        %Error: Stress Energy Error / Expected Stress Energy"""
+        assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no summary information available."
+        expectedDE = np.zeros((1, len(sith._deformed)))
+        for i in range(len(sith._deformed)):
+            expectedDE[0, i] = sith._deformed[i].energy - \
+                sith._reference.energy
+        errorDE = sith.deformationEnergy - expectedDE
+        pErrorDE = errorDE / expectedDE
+        return (expectedDE, errorDE, pErrorDE)

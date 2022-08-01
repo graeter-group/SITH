@@ -2,6 +2,7 @@ from array import array
 from multiprocessing.sharedctypes import Value
 from importlib.resources import path
 from pathlib import Path
+import pathlib
 from typing import Tuple
 from ase.units import Bohr
 
@@ -132,15 +133,15 @@ class LTMatrix(list):
                 L.append(uppermat[getUpperPosition(j, i, dimension)])
         return LTMatrix(L)
 
-# TODO: sandbox all variables meant to be publicly accessible as properties
-
 
 class Geometry:
     """Houses data associated with a molecular structure, all public variables are intended for access not modification."""
 
-    def __init__(self, name: str, nAtoms: int) -> None:
+    def __init__(self, name: str, path: pathlib.Path, nAtoms: int) -> None:
         self.name = name
         """Name of geometry, based off of stem of .fchk file path unless otherwise modified."""
+        self._path = path
+        """Path of geometry .fchk file."""
         self.ric = array('f')
         """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
         self.energy = None
@@ -242,12 +243,8 @@ class Geometry:
         for i in range(self.dims[1], self.dims[0]):
             self.ric[i] = self.ric[i] + np.pi
 
-#TODO: TEST remove from Hessian
     def _killDOFs(self, dofis: list[int]):
-        """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric and dimIndices, updates dims
-
-        -----
-        May need to also remove from the Hessian matrix if frozen length constraints produce artificial DOFs in Hessian"""
+        """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dimIndices, and hessian, updates dims"""
         self.ric = np.delete(self.ric, dofis)
         self.dimIndices = np.delete(self.dimIndices, dofis)
         lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
@@ -364,7 +361,7 @@ class Extractor:
                 if self.__numAtomsHeader in line:
                     splitLine = line.split()
                     numAtoms = int(splitLine[len(splitLine)-1])
-                    self.geometry = Geometry(self._name, numAtoms)
+                    self.geometry = Geometry(self._name, self._path, numAtoms)
 
                 elif self.__energyHeader in line:
                     splitLine = line.split()

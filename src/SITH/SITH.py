@@ -9,20 +9,21 @@ import numpy as np
 
 from src.SITH.Utilities import Extractor
 
-#TODO: Add a logger
+# TODO: Add a logger
+
 
 class SITH:
 
     #! Decide if just use one constructor and always pass explicit values, or make overloaded constructor
-    #! Change this so that there is a relaxed Energy ePath can be either a singular file
+    #! Change this so that there is a reference Energy ePath can be either a singular file
     def __init__(self, rePath='/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', dePath='/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk'):
-        """Takes in the relaxed geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
+        """Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
 
         Notes
         -----
         """
-        self._relaxedPath = Path(rePath)
-        """Path to relaxed geometry, specified on SITH construction"""
+        self._referencePath = Path(rePath)
+        """Path to reference geometry, specified on SITH construction"""
         self._deformedPath = Path(dePath)
         """Path to deformed geometry or directory of deformed geometries, specified on SITH construction"""
 
@@ -35,7 +36,7 @@ class SITH:
         -----
         While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result."""
         self.deformationEnergy = None
-        """Total stress energy associated with going from the relaxed structure to the ith deformed structure.
+        """Total stress energy associated with going from the reference structure to the ith deformed structure.
         
         Notes
         -----
@@ -48,14 +49,14 @@ class SITH:
         -----
         While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result."""
 
-        self._relaxed = None
-        """Relaxed Geometry object
+        self._reference = None
+        """Reference Geometry object
         
         Notes
         -----
         Please refrain from manually setting this value as other analysis variables depend upon it.
         
-        If you would like to manually change this value for a SITH object, instead implement the method setRelaxed() and the associated refactoring recommended in its documentation."""
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation."""
 
         self._deformed = None
         """List of deformed Geometry objects
@@ -65,7 +66,7 @@ class SITH:
         While this may be publicly accessed, please refrain from manually setting this value as other analysis variables depend upon it."""
 
         self.hessian = None
-        """Hessian matrix used to calculate the stress energy analysis, default value is that of the relaxed Geometry's Hessian.
+        """Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry's Hessian.
         
         Notes
         -----
@@ -73,14 +74,14 @@ class SITH:
         by a frequency analysis at the level of DFT or higher.
         
         While this value is publicly accessable for retrieval purposes, please refrain from manually setting it.
-        If you would like to manually change this value for a SITH object, instead implement the method setRelaxed() and the associated refactoring recommended in its documentation."""
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation."""
 
 # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
         self.q0 = None
-        """Vector of RIC values of relaxed geometry
+        """Vector of RIC values of reference geometry
         
-        q[d.o.f. index, 0] -> value of d.o.f. for relaxed geometry
+        q[d.o.f. index, 0] -> value of d.o.f. for reference geometry
 
         Notes
         -----
@@ -96,7 +97,7 @@ class SITH:
         Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it."""
 
         self.deltaQ = None
-        """Matrix of changes in RIC values from relaxed geometry to each deformed geometry.
+        """Matrix of changes in RIC values from reference geometry to each deformed geometry.
         
         deltaQ[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
 
@@ -123,7 +124,8 @@ class SITH:
         self.__killDOFs(self._killDOFs)
         dimsToKill = list()
         for atom in self._killAtoms:
-            dimsToKill.extend([dim for dim in self._relaxed.dimIndices if atom in dim])
+            dimsToKill.extend(
+                [dim for dim in self._reference.dimIndices if atom in dim])
         self.__killDOFs(dimsToKill)
 
         """Use Case Note:
@@ -145,7 +147,7 @@ class SITH:
     #     Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
     #     the geometries' RICs as well as from the Hessian matrix.
     #     """
-    #     dimsToKill = [dim for dim in self._relaxed.dimIndices if atom in dim]
+    #     dimsToKill = [dim for dim in self._reference.dimIndices if atom in dim]
     #     self.__killDOFs(dimsToKill)
 
     def __killDOFs(self, dofs: list[Tuple]):
@@ -156,11 +158,11 @@ class SITH:
         rIndices = list()
         dIndices = list()
         for dof in dofs:
-            rIndices.extend([i for i in range(self._relaxed.dims[0])
-                            if self._relaxed.dimIndices[i] == dof])
+            rIndices.extend([i for i in range(self._reference.dims[0])
+                            if self._reference.dimIndices[i] == dof])
             dIndices.extend([i for i in range(self._deformed[0].dims[0])
                             if self._deformed[0].dimIndices[i] == dof])
-        self._relaxed._killDOFs(rIndices)
+        self._reference._killDOFs(rIndices)
         # for deformation in self._deformed:
         #     deformation._killDOFs(dIndices)
 
@@ -169,11 +171,11 @@ class SITH:
 # region Public Functions meant to be used by novice-intermediate user
 
     @property
-    def relaxed(self):
+    def reference(self):
         """
-        Return the relaxed geometry (SITH_Utilities.Geometry)
+        Return the reference geometry (SITH_Utilities.Geometry)
         """
-        return getattr(self, '_relaxed')
+        return getattr(self, '_reference')
 
     @property
     def deformed(self):
@@ -184,7 +186,7 @@ class SITH:
 
     def setKillAtoms(self, atoms: list):
         """
-        Takes in the atoms which should be removed from the relaxed geometry, must be used prior to calling SITH.extractData(), which also
+        Takes in the atoms which should be removed from the reference geometry, must be used prior to calling SITH.extractData(), which also
         runs removeMismatchedDOFs.
         """
         self._killAtoms = atoms
@@ -192,7 +194,7 @@ class SITH:
 
     def setKillDOFs(self, dofs: list):
         """
-        Takes in the DOFs (degrees of freedom) which should be removed from the relaxed geometry, must be used prior to calling SITH.extractData(),
+        Takes in the DOFs (degrees of freedom) which should be removed from the reference geometry, must be used prior to calling SITH.extractData(),
         which also runs removeMismatchedDOFs.
         """
         self._killDOFs = dofs
@@ -200,21 +202,19 @@ class SITH:
 
     def removeMismatchedDOFs(self):
         """
-        Removes any DOFs which are not in the relaxed geometry to ensure that all geometries have the correct DOFs
+        Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs
         """
-        
+
         for deformation in self._deformed:
             dofsToRemove = list()
             j = 0
-            for i in range(self._relaxed.dims[0]):
-                if self._relaxed.dimIndices[i] != deformation.dimIndices[j]:
+            for i in range(self._reference.dims[0]):
+                if self._reference.dimIndices[i] != deformation.dimIndices[j]:
                     dofsToRemove.append(j)
                     j += 2
                 else:
                     j += 1
             deformation._killDOFs(dofsToRemove)
-
-
 
     def extractData(self):
         """
@@ -227,20 +227,20 @@ class SITH:
 
         self._getContents()
 
-        rExtractor = Extractor(self._relaxedPath, self.__rData)
+        rExtractor = Extractor(self._referencePath, self.__rData)
         rExtractor._extract()
-        # Create Geometry objects from relaxed and deformed data
-        self._relaxed = rExtractor.getGeometry()
+        # Create Geometry objects from reference and deformed data
+        self._reference = rExtractor.getGeometry()
         self._deformed = list()
         for dd in self.__dData:
             dExtractor = Extractor(dd[0], dd[1])
             dExtractor._extract()
             self._deformed.append(dExtractor.getGeometry())
 
-        # Defaults to the relaxed geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
-        # sake of clearer output files but implementation of SITH.SetRelaxed() as a public function would enable the user to
-        # manually swap the relaxed geometry with that of another geometry in the deformd list and then re-run analysis.
-        self.hessian = self._relaxed.hessian
+        # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
+        # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
+        # manually swap the reference geometry with that of another geometry in the deformd list and then re-run analysis.
+        self.hessian = self._reference.hessian
 
         # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
         # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
@@ -253,7 +253,6 @@ class SITH:
 
         self._populateQ()
 
-    # TODO: catch cases where extractData() hasn't been called and notify the user
     def energyAnalysis(self):
         """
         Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.
@@ -262,21 +261,24 @@ class SITH:
         -----
         Consists of the dot multiplication of the deformation vectors and the Hessian matrix 
         (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
-        between the relaxed structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+        between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
         each DOF (SITH.energies)."""
-        
+
         if self.deltaQ is None or self.q0 is None or self.qF is None:
-            raise Exception("Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().")
-        self.energies = np.zeros((self._relaxed.dims[0], len(self._deformed)))
+            raise Exception(
+                "Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().")
+        self.energies = np.zeros(
+            (self._reference.dims[0], len(self._deformed)))
         self.deformationEnergy = np.zeros((1, len(self._deformed)))
-        self.pEnergies = np.zeros((self._relaxed.dims[0], len(self._deformed)))
+        self.pEnergies = np.zeros(
+            (self._reference.dims[0], len(self._deformed)))
 
         for i in range(len(self._deformed)):
             self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
                 self.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
-            for j in range(self._relaxed.dims[0]):
+            for j in range(self._reference.dims[0]):
                 isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
-                    self._relaxed.dims[0]-j-1)))
+                    self._reference.dims[0]-j-1)))
                 self.energies[j, i] = 0.5 * \
                     (isolatedDOF).dot(self.hessian).dot(isolatedDOF)
             self.pEnergies[:, i] = float(
@@ -284,16 +286,18 @@ class SITH:
 
         print("Execute Order 67. Successful energy analysis completed.")
 
-    def setRelaxed(self, geometryName: str):
+    def setReference(self, geometryName: str):
         """
-        Replaces the current relaxed geometry used for calculation of stress energy with the specified geometry, pushing the current
-        relaxed geometry to the deforation list.
-        If the specified geometry does not exist or has no Hessian, the relaxed geometry will simply not be changed. Deformation
-        energy is still calculated for all geometries aside from the new relaxed geometry.
+        Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+        reference geometry to the deforation list.
+        If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+        energy is still calculated for all geometries aside from the new reference geometry.
         """
 
         """Implementation Instructions:
-        TODO"""
+        To implement this without re-extracting the data (which is basically the current workflow of creating a new SITH instead),
+        you must set the SITH._reference geometry to that with the new geometryName, move the old reference geometry into the list of
+        deformed geometries, and then _validateGeometries() _populateQ(). This seems unnecessary as the cost which it saves is minimal."""
         raise NotImplementedError(
             "Unimplemented due to current lack of necessity, contact @mmfarrugia on github for more info.")
         """Use Case Note:
@@ -308,16 +312,16 @@ class SITH:
         """
         Check that all files exist, are not empty, and whether the deformed path is a directory
         """
-        assert self._relaxedPath.exists(), "Path to relaxed geometry data does not exist."
+        assert self._referencePath.exists(), "Path to reference geometry data does not exist."
         assert self._deformedPath.exists(), "Path to deformed geometry data does not exist."
 
         self.__deformedIsDirectory = self._deformedPath.is_dir()
 
     def _validateGeometries(self):
         """
-        Ensure that the relaxed and deformed geometries are compatible(# atoms, # dofs, etc.)
+        Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        assert all([deformn.nAtoms == self._relaxed.nAtoms and all([deformn.dims[i] == self._relaxed.dims[i] for i in range(
+        assert all([deformn.nAtoms == self._reference.nAtoms and all([deformn.dims[i] == self._reference.dims[i] for i in range(
             4)]) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
 # endregion
@@ -327,9 +331,9 @@ class SITH:
         Gets the contents of the input files, including those in a deformed directory and verifies they are not empty.
         """
         try:
-            with self._relaxedPath.open() as rFile:
+            with self._referencePath.open() as rFile:
                 self.__rData = rFile.readlines()
-                assert len(self.__rData) > 0, "Relaxed data file is empty."
+                assert len(self.__rData) > 0, "Reference data file is empty."
 
             self.__dData = list()
             if self.__deformedIsDirectory:
@@ -353,10 +357,10 @@ class SITH:
             sys.exit(sys.exc_info()[0])
 
     def _populateQ(self):
-        """Populates the relaxed RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs."""
-        self.q0 = np.zeros((self._relaxed.dims[0], 1))
-        self.qF = np.zeros((self._relaxed.dims[0], 1))
-        self.q0[:, 0] = np.transpose(np.asarray(self._relaxed.ric))
+        """Populates the reference RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs."""
+        self.q0 = np.zeros((self._reference.dims[0], 1))
+        self.qF = np.zeros((self._reference.dims[0], 1))
+        self.q0[:, 0] = np.transpose(np.asarray(self._reference.ric))
         # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
         self.qF[:, 0] = np.transpose(np.asarray(self._deformed[0].ric))
@@ -371,12 +375,13 @@ class SITH:
         """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
-        # # TODO: make this more definitive because collagen use case phi psi angles often around pi regime, perhaps just convert domain of radians from (-pi, pi) -(+pi)-> (0, 2pi) when taking in coordinates initially?
+        # # TODO: make this more definitive than an arbitrary threshold, experient with -> 0 or -> - 2*pi etc.
+        angleThreshold = 0.05 #Current radian threshold
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
-             for dq in dqit:
-        #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
-        #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
-                if dq > (2*np.pi -0.05):
+            for dq in dqit:
+                #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
+                #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
+                if dq > (2*np.pi - angleThreshold):
                     blah = 3
                 dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
-                                                        0.05) else (dq + 2*np.pi if dq < -(2*np.pi - 0.05) else dq)
+                                                        angleThreshold) else (dq + 2*np.pi if dq < -(2*np.pi - angleThreshold) else dq)

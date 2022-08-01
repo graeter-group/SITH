@@ -1,7 +1,7 @@
 from numpy import float32
 import pytest
 from src.SITH.Utilities import *
-from src.SITH import SITH
+from src.SITH.SITH import SITH
 import pathlib
 
 """ LTMatrix has already been tested by its creator on github,
@@ -16,22 +16,22 @@ def test_atomCreation():
 
 
 def test_geometryName():
-    geo = Geometry('testName', 3)
+    geo = Geometry('testName', 'blah', 3)
     assert geo.name == 'testName'
 
 
 def test_geometryNAtoms():
-    geo = Geometry('testName', 3)
+    geo = Geometry('testName', 'blah', 3)
     assert geo.nAtoms == 3
 
 
 def test_dumbGeoCreationErrors():
-    geo = Geometry('blah', 6)
+    geo = Geometry('blah', 'blah', 6)
     assert geo.energy == None
 
 
 def test_getEnergyGood():
-    geo = Geometry('blah', 6)
+    geo = Geometry('blah', 'blah', 6)
     geo.energy = 42
     assert geo.energy == 42
 
@@ -73,7 +73,7 @@ dimIndices = [(1, 2), (1, 3), (1, 4), (1, 5), (5, 6), (2, 1, 3), (2, 1, 4), (2, 
 # endregion Testing Variables
 
 def test_buildRICGood():
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
@@ -83,11 +83,11 @@ def test_buildRICGood():
 def test_killDOFs():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillDOFs([(1, 2), (2, 1, 5, 6)])
-    sith._relaxed._killDOFs([(1,2)])
-    assert sith._relaxed.dimIndices == dimIndices[1:]
-    assert sith._relaxed.dims == [14, 4, 7, 3]
-    #assert sith._relaxed.hessian == 
+    sith.extractData()
+    sith._reference._killDOFs([0])
+    assert all(sith._reference.dimIndices == dimIndices[1:])
+    assert sith._reference.dims == array('i', [14, 4, 7, 3])
+    #assert sith._reference.hessian == 
 
 
 
@@ -95,7 +95,7 @@ def test_killDOFs():
 
 def test_moreCoords():
     coordsMore = coordLinesGoodInput + ['100.78943']
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesGoodInput, coordsMore)
     assert str(e.value) == "Mismatch between the number of degrees of freedom expected (" + \
@@ -104,7 +104,7 @@ def test_moreCoords():
 
 def test_lessCoords():
     coordsLess = coordLinesGoodInput[1:]
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesGoodInput, coordsLess)
     assert str(e.value) == "Mismatch between the number of degrees of freedom expected (" + \
@@ -150,7 +150,7 @@ dimIndicesNumI = ['           1           2           0           0           1 
 
 
 def test_riciBad():
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndices59, coordLinesGoodInput)
     assert str(
@@ -160,7 +160,7 @@ def test_riciBad():
 
 
 def test_riciLetters():
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesLetters, coordLinesGoodInput)
     assert str(
@@ -168,7 +168,7 @@ def test_riciLetters():
 
 
 def test_riciNumIndices():
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesNumI, coordLinesGoodInput)
     assert str(
@@ -178,14 +178,14 @@ def test_riciNumIndices():
 def test_riciInvalid():
     dimIndicesInvalid = [
         '           1           7           0           0           1           3']+dimIndicesGoodInput[1:]
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesInvalid, coords)
     assert str(e.value) == "Invalid atom index given as input."
 
 
 def test_buildRICBad():
-    geo = Geometry('methanol-test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesGoodInput[2:], coordLinesGoodInput)
     assert str(
@@ -205,11 +205,11 @@ def test_getAtoms():
 
 # endregion
 
-#region validity as relaxed or deformed (might move to extractor not Geometry? might not even need)
+#region validity as reference or deformed (might move to extractor not Geometry? might not even need)
 
-def test_validRelaxed():
+def test_validReference():
     pass
-def test_invalidRelaxed():
+def test_invalidReference():
     pass
 def test_validDeformed():
     pass
@@ -407,7 +407,7 @@ def test_extractedGeometry():
     # Geometry
     extractor._extract()
     geo = extractor.getGeometry()
-    egeo = Geometry(testPath.stem, 6)
+    egeo = Geometry(testPath.stem, 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     egeo.buildCartesian(cartesianLines)
@@ -419,7 +419,7 @@ def test_buildHessian():
     # Geometry
     extractor._extract()
     geo = extractor.getGeometry()
-    egeo = Geometry(testPath.stem, 6)
+    egeo = Geometry(testPath.stem, 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     egeo.buildCartesian(cartesianLines)
