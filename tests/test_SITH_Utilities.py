@@ -1,6 +1,7 @@
 from numpy import float32
 import pytest
 from src.SITH.Utilities import *
+from src.SITH import SITH
 import pathlib
 
 """ LTMatrix has already been tested by its creator on github,
@@ -77,6 +78,17 @@ def test_buildRICGood():
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
     assert [geo.ric[i] == coords[i] for i in range(len(coords))]
+
+#TODO
+def test_killDOFs():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.setKillDOFs([(1, 2), (2, 1, 5, 6)])
+    sith._relaxed._killDOFs([(1,2)])
+    assert sith._relaxed.dimIndices == dimIndices[1:]
+    assert sith._relaxed.dims == [14, 4, 7, 3]
+    #assert sith._relaxed.hessian == 
+
 
 
 # region bad coordinates

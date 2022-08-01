@@ -19,7 +19,7 @@ dependencies = [
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: GNU General Public License",
     "Operating System :: OS Independent",
 ]
 
@@ -32,4 +32,7 @@ ignore-vcs = true
 include = [
     "src/SITH/*.py",
     "/tests",
+]
+exclude = [
+    "/tests/*.txt",
 ]

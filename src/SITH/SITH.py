@@ -121,7 +121,10 @@ class SITH:
     def __kill(self):
         """Executes the removal of degrees of freedom (DOFs) specified and any associated with specified atoms."""
         self.__killDOFs(self._killDOFs)
-        self.__killAtoms(self._killAtoms)
+        dimsToKill = list()
+        for atom in self._killAtoms:
+            dimsToKill.extend([dim for dim in self._relaxed.dimIndices if atom in dim])
+        self.__killDOFs(dimsToKill)
 
         """Use Case Note:
         This is a private method to limit user error. Specification of these DOFs is made by the user programmatically with the public functions SetKillAtoms(atoms: list)
@@ -129,21 +132,21 @@ class SITH:
         number of DOFs in each geometry's coordinates and Hessian, this can be manually called after extractData()
         as well but is not recommended."""
 
-    def __killAtoms(self, atoms: list):
-        """
-        Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
-        the geometries' RICs as well as from the Hessian matrix.
-        """
-        for atomIndex in atoms:
-            self.__killAtom(atomIndex)
+    # def __killAtoms(self, atoms: list):
+    #     """
+    #     Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
+    #     the geometries' RICs as well as from the Hessian matrix.
+    #     """
+    #     for atomIndex in atoms:
+    #         self.__killAtom(atomIndex)
 
-    def __killAtom(self, atom: int):
-        """
-        Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
-        the geometries' RICs as well as from the Hessian matrix.
-        """
-        dimsToKill = [dim for dim in self._relaxed.dimIndices if atom in dim]
-        self.__killDOFs(dimsToKill)
+    # def __killAtom(self, atom: int):
+    #     """
+    #     Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
+    #     the geometries' RICs as well as from the Hessian matrix.
+    #     """
+    #     dimsToKill = [dim for dim in self._relaxed.dimIndices if atom in dim]
+    #     self.__killDOFs(dimsToKill)
 
     def __killDOFs(self, dofs: list[Tuple]):
         """
@@ -158,8 +161,8 @@ class SITH:
             dIndices.extend([i for i in range(self._deformed[0].dims[0])
                             if self._deformed[0].dimIndices[i] == dof])
         self._relaxed._killDOFs(rIndices)
-        for deformation in self._deformed:
-            deformation._killDOFs(dIndices)
+        # for deformation in self._deformed:
+        #     deformation._killDOFs(dIndices)
 
 # endregion
 
@@ -181,17 +184,37 @@ class SITH:
 
     def setKillAtoms(self, atoms: list):
         """
-        Takes in the atoms which should be removed from SITH analysis, must be used prior to calling SITH.extractData().
+        Takes in the atoms which should be removed from the relaxed geometry, must be used prior to calling SITH.extractData(), which also
+        runs removeMismatchedDOFs.
         """
         self._killAtoms = atoms
         self._kill = True
 
     def setKillDOFs(self, dofs: list):
         """
-        Takes in the DOFs (degrees of freedom) which should be removed from SITH analysis, must be used prior to calling SITH.extractData().
+        Takes in the DOFs (degrees of freedom) which should be removed from the relaxed geometry, must be used prior to calling SITH.extractData(),
+        which also runs removeMismatchedDOFs.
         """
         self._killDOFs = dofs
         self._kill = True
+
+    def removeMismatchedDOFs(self):
+        """
+        Removes any DOFs which are not in the relaxed geometry to ensure that all geometries have the correct DOFs
+        """
+        
+        for deformation in self._deformed:
+            dofsToRemove = list()
+            j = 0
+            for i in range(self._relaxed.dims[0]):
+                if self._relaxed.dimIndices[i] != deformation.dimIndices[j]:
+                    dofsToRemove.append(j)
+                    j += 2
+                else:
+                    j += 1
+            deformation._killDOFs(dofsToRemove)
+
+
 
     def extractData(self):
         """
@@ -223,6 +246,8 @@ class SITH:
         # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
         if self._kill:
             self.__kill()
+
+        self.removeMismatchedDOFs()
 
         self._validateGeometries()
 

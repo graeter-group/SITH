@@ -159,6 +159,9 @@ class Geometry:
         self.dimIndices = list()
         """List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric"""
 
+        self.hessian = None
+        """Hessian matrix associated with the geometry"""
+
     # TODO: Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
         """Takes in a list of str containing the lines of a .xyz file, populates self.atoms
@@ -239,6 +242,7 @@ class Geometry:
         for i in range(self.dims[1], self.dims[0]):
             self.ric[i] = self.ric[i] + np.pi
 
+#TODO: TEST remove from Hessian
     def _killDOFs(self, dofis: list[int]):
         """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric and dimIndices, updates dims
 
@@ -250,11 +254,14 @@ class Geometry:
         anglesDeleted = sum(
             x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dofis)
         dihedralsDeleted = sum(
-            x < self.dims[0] and x >= self.dims[2] for x in dofis)
+            x < self.dims[0] and x >= self.dims[2] + self.dims[1] for x in dofis)
         self.dims[0] -= len(dofis)
         self.dims[1] -= lengthsDeleted
         self.dims[2] -= anglesDeleted
         self.dims[3] -= dihedralsDeleted
+        if(self.hessian is not None):
+                self.hessian = np.delete(self.hessian, dofis, axis = 0)
+                self.hessian = np.delete(self.hessian, dofis, axis = 1)
 
     def __eq__(self, __o: object) -> bool:
         b = True

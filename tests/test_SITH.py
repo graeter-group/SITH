@@ -102,7 +102,7 @@ def test_killDOFsBAD2():
 def test_killAtoms():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillAtoms([1])
+    sith.setKillAtoms([2])
     sith.extractData()
 
 # region invalid Geometries (might be unnecessary or more for extractors?)
