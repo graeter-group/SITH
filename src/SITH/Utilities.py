@@ -9,7 +9,8 @@ from ase.units import Bohr
 import numpy as np
 from openbabel import openbabel as ob
 
-#TODO: Add a logger
+# TODO: Add a logger
+
 
 class LTMatrix(list):
     """LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py"""
@@ -163,7 +164,6 @@ class Geometry:
         self.hessian = None
         """Hessian matrix associated with the geometry"""
 
-    # TODO: Need to adapt to new format, make sure to specify and/or convert units
     def buildCartesian(self, lines: list):
         """Takes in a list of str containing the lines of a .xyz file, populates self.atoms
 
@@ -191,6 +191,8 @@ class Geometry:
             coordLines: list of strings of each line of RICs
         """
         self.dims = array('i', [int(d) for d in dims])
+        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
+            dims) == 4, "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
 
         # region Indices
         # Parses through the 'dimILines' input which indicates which atoms (by index)
@@ -207,9 +209,12 @@ class Geometry:
 
         # Check that # indices is divisible by 4
         assert len(rawIndices) % 4 == 0 and len(
-            rawIndices) == self.dims[0] * 4, "Redundant internal coordinate indices input has invalid dimensions."
+            rawIndices) == self.dims[0] * 4, "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
 
         # Parse into sets of 4, then into tuples of the relevant number of values
+        lengthsCount = 0
+        anglesCount = 0
+        dihedsCount = 0
         for i in range(0, len(rawIndices), 4):
             a1 = rawIndices[i]
             a2 = rawIndices[i+1]
@@ -217,20 +222,29 @@ class Geometry:
             a4 = rawIndices[i+3]
             # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
             # These should line up with self.dims correctly
-            assert a1 <= self.nAtoms and a2 <= self.nAtoms and a3 <= self.nAtoms and a4 <= self.nAtoms, "Invalid atom index given as input."
+            assert all([(x <= self.nAtoms and x >= 0)
+                       for x in rawIndices[i:i+4]]), "Invalid atom index given as input."
+            assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
+                a3 != a4 or a3 == 0), "Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom."
             assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
             # bond lengths check
             if i < self.dims[1]*4:
                 assert a3 == 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2))
+                lengthsCount += 1
             # bond angles check
             elif i < (self.dims[1] + self.dims[2])*4:
                 assert a3 != 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2, a3))
+                anglesCount += 1
             # dihedral angles check
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
                 assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
                 self.dimIndices.append((a1, a2, a3, a4))
+                dihedsCount += 1
+
+        assert lengthsCount == self.dims[1] and anglesCount == self.dims[2] and dihedsCount == self.dims[
+            3], "Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given."
 
         # endregion
 
@@ -240,6 +254,8 @@ class Geometry:
         assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
             dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
 
+        # Angles are moved from (-pi, pi) --> (0, 2pi) because abs(angles) are often around pi (phi, psi angles especially)
+        # so when calculating deltaQ this is more convenient
         for i in range(self.dims[1], self.dims[0]):
             self.ric[i] = self.ric[i] + np.pi
 
@@ -257,8 +273,8 @@ class Geometry:
         self.dims[2] -= anglesDeleted
         self.dims[3] -= dihedralsDeleted
         if(self.hessian is not None):
-                self.hessian = np.delete(self.hessian, dofis, axis = 0)
-                self.hessian = np.delete(self.hessian, dofis, axis = 1)
+            self.hessian = np.delete(self.hessian, dofis, axis=0)
+            self.hessian = np.delete(self.hessian, dofis, axis=1)
 
     def __eq__(self, __o: object) -> bool:
         b = True
@@ -333,7 +349,7 @@ class Extractor:
 
         self.__lines = linesList
 
-    # TODO: maybe move this to Geometry constructor or make a static method of SITH
+    # This is kept because using SithWriter.writeXYZ(self.geometry) would cause circular dependency
     def _writeXYZ(self):
         """
         Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
@@ -356,8 +372,8 @@ class Extractor:
             while i < len(self.__lines):
                 line = self.__lines[i]
 
-                # This all must be in order
-                #! Sandbox this ASAP you dummy
+                # This all must be in order because of the way things show up in the fchk file, it makes no sense to build
+                # these out separately to reduce dependencies because it will just increase the number of times to traverse the data.
                 if self.__numAtomsHeader in line:
                     splitLine = line.split()
                     numAtoms = int(splitLine[len(splitLine)-1])
@@ -377,12 +393,11 @@ class Extractor:
                     stop = int(line.split()[-1])
                     count = 0
                     while count < stop:
-                        count+= len(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
                         i += 1
                     xrDims = self.__lines[rdiStart:i+1]
-                    #! assert validation of number of degrees of freedom?
                     assert len(
-                        xrDims) > 0, "Missing 'Redundant internal coordinate indices'."
+                        xrDims) > 0, "Missing Redundant internal coordinate indices."
 
                 if self.__ricHeader in line:
                     i = i+1
@@ -390,11 +405,10 @@ class Extractor:
                     stop = int(line.split()[-1])
                     count = 0
                     while count < stop:
-                        count+= len(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
                         i += 1
                     xrRaw = self.__lines[xrStart:i]
                     self.geometry.buildRIC(rDims, xrDims, xrRaw)
-                    # TODO: build in validation for RICs in ^ if not already there
 
                 elif self.__hessianHeader in line:
                     i = i+1
@@ -411,6 +425,8 @@ class Extractor:
             self.buildHessian()
 
             print("Translating .fchk file to new .xyz file with OpenBabel...")
+            # Using the SithWriter method here would cause a circular dependency
+            # TODO: remedy this by building it out separately if possible, but not a big deal as long as only write method
             self._writeXYZ()
 
             print("Opening .xyz file...")

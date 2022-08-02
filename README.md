@@ -1,5 +1,5 @@
 # SITH
-repo for refactorization of JEDI code
+redesign and simplification of JEDI approach
 
 Sectioning/Subdivision/Sundering of
 Internal
@@ -12,6 +12,16 @@ Traversal of
 Hessian
 
 Stress energy
-Investigated by
+Investigated via
 Traversal of
 Hessian 
+
+Stress
+Interspersed
+Traversal of
+Hessian
+
+Scattering/Sharing/Sectioning of
+Internal
+Tension based on
+Hessian

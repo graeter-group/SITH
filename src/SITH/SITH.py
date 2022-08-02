@@ -13,9 +13,45 @@ from src.SITH.Utilities import Extractor
 
 
 class SITH:
+    """A class to calculate & house SITH analysis data. Publicly accessable variables & methods:
 
-    #! Decide if just use one constructor and always pass explicit values, or make overloaded constructor
-    #! Change this so that there is a reference Energy ePath can be either a singular file
+    ...
+
+    Attributes
+    ----------
+    q0 : numpy.ndarray
+        RIC values of reference geometry [DOF index, deformation index]
+    qF : numpy.ndarray
+        RIC value matrix  of deformed geometries [DOF index, deformation index]
+    deltaQ : numpy.ndarray
+        RIC value matrix  of deformed - reference [DOF index, deformation index]
+    hessian : numpy.ndarray
+        Hessian matrix of reference geometry
+    energies : numpy.ndarray
+        stress energy per DOF per deformation [DOF index, deformation index]
+    pEnergies : numpy.ndarray
+        Proportion of total stress energy [DOF index, deformation index]
+    deformationEnergy : numpy.ndarray
+        Total stress energy per deformation [deformation index]
+
+    Methods
+    -------
+    reference():
+        Returns the reference geometry.
+    deformed():
+        Returns the list of deformed geometries.
+    setKillAtoms(atoms: list[int]):
+        Marks atoms to be ignored and removed from the reference geometry upon extraction.
+    setKillDOFs(dofs: list[Tuple]):
+        Marks DOFs to be ignored and removed from the reference geometry upon extraction.
+    removeMismatchedDOFs():
+        Removes DOFs from the deformed geometry which do not appear in the reference geometry upon extraction.
+    extractData():
+        Indicates that any killing of atoms and DOFs is finished, begins extraction and organization of data from input .fchk files.
+    energyAnalysis():
+        Conducts the SITH energy analysis.
+    """
+
     def __init__(self, rePath='/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', dePath='/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk'):
         """Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
 
@@ -42,7 +78,7 @@ class SITH:
         -----
         While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result."""
         self.pEnergies = None
-        """Ratio of contribution of stress energy in each degree of freedom to the each structure's total stress energy 
+        """Proportion of stress energy in each degree of freedom to the each structure's total stress energy 
         in the form [DOF index, deformation index]
         
         Notes
@@ -134,21 +170,6 @@ class SITH:
         number of DOFs in each geometry's coordinates and Hessian, this can be manually called after extractData()
         as well but is not recommended."""
 
-    # def __killAtoms(self, atoms: list):
-    #     """
-    #     Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
-    #     the geometries' RICs as well as from the Hessian matrix.
-    #     """
-    #     for atomIndex in atoms:
-    #         self.__killAtom(atomIndex)
-
-    # def __killAtom(self, atom: int):
-    #     """
-    #     Removes the indicated atoms from the JEDI analysis, as such it removes any associated degrees of freedom from
-    #     the geometries' RICs as well as from the Hessian matrix.
-    #     """
-    #     dimsToKill = [dim for dim in self._reference.dimIndices if atom in dim]
-    #     self.__killDOFs(dimsToKill)
 
     def __killDOFs(self, dofs: list[Tuple]):
         """
@@ -163,8 +184,6 @@ class SITH:
             dIndices.extend([i for i in range(self._deformed[0].dims[0])
                             if self._deformed[0].dimIndices[i] == dof])
         self._reference._killDOFs(rIndices)
-        # for deformation in self._deformed:
-        #     deformation._killDOFs(dIndices)
 
 # endregion
 
