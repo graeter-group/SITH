@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-sith.egg-info/PKG-INFO
-sith.egg-info/SOURCES.txt
-sith.egg-info/dependency_links.txt
-sith.egg-info/requires.txt
-sith.egg-info/top_level.txt

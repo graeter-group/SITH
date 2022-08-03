@@ -1,0 +1,40 @@
+Metadata-Version: 2.1
+Name: SITH
+Version: 0.0.5
+Summary: Subdivision of Internal Tension via Hessian
+Author: Hits_mbm
+Author-email: mikaela.farrugia@h-its.org
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+License-File: LICENSE
+
+# SITH
+redesign and simplification of JEDI approach
+
+Sectioning/Subdivision/Sundering of
+Internal
+Transformation/Tension
+Heat
+
+Stress
+Induced
+Traversal of
+Hessian
+
+Stress energy
+Investigated via
+Traversal of
+Hessian 
+
+Stress
+Interspersed
+Traversal of
+Hessian
+
+Scattering/Sharing/Sectioning of
+Internal
+Tension based on
+Hessian
