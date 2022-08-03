@@ -25,3 +25,5 @@ Scattering/Sharing/Sectioning of
 Internal
 Tension based on
 Hessian
+
+Strain
