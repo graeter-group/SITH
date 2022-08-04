@@ -2,11 +2,11 @@ from ase.visualize import view
 import numpy as np
 
 
-class SithViewer:
+class MoleculeViewer:
     def __init__(self, atoms):
-        ''' Set of graphic tools to see the distribution
+        """ Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
-        (lengths, angles, dihedrals)'''
+        (lengths, angles, dihedrals)"""
         self.atoms = atoms
         self.viewer = view(atoms, viewer='ngl')
         self.bonds = {}
@@ -17,14 +17,15 @@ class SithViewer:
 
     def add_bond(self, atom1index, atom2index,
                  color=[0.5, 0.5, 0.5], radius=0.1):
-        ''' Add a bond between two atoms:
+        """ Add a bond between two atoms:
         atom1 and atom2
 
         Parameters
         ==========
 
         atom1index (and atom2index): int
-            Indexes of the atoms to be connected.
+            Indexes of the atoms to be connected according with g09
+            convention.
 
         color: list. Default gray([0.5, 0.5, 0.5])
             RGB triplet.
@@ -36,15 +37,15 @@ class SithViewer:
         ======
 
         Return the bonds int the system
-        '''
+        """
 
         indexes = [atom1index, atom2index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
 
         self.remove_bond(atom1index, atom2index)
-        b = self.shape.add_cylinder(self.atoms[atom1index].position,
-                                    self.atoms[atom2index].position,
+        b = self.shape.add_cylinder(self.atoms[atom1index-1].position,
+                                    self.atoms[atom2index-1].position,
                                     color,
                                     radius)
 
@@ -53,7 +54,7 @@ class SithViewer:
         return self.bonds[name]
 
     def add_bonds(self, atoms1indexes, atoms2indexes, colors=None, radii=None):
-        ''' Add a bond between each pair of atoms corresponding to
+        """ Add a bond between each pair of atoms corresponding to
         two lists of atoms:
         atoms1 and atoms.
 
@@ -61,7 +62,8 @@ class SithViewer:
         ==========
 
         atom1index (and atom2index): int
-            Indexes of the atoms to be connected
+            Indexes of the atoms to be connected according with g09
+            convention.
         color: list of color lists. Default all gray([0.5, 0.5, 0.5])
             RGB triplets for each of the bonds. It can be one a triplet
             in case of just one color in all bonds.
@@ -72,7 +74,7 @@ class SithViewer:
         ======
 
         Return the bonds int the system
-        '''
+        """
 
         if colors is None:
             colors = [0.5, 0.5, 0.5]
@@ -101,7 +103,7 @@ class SithViewer:
         return self.bonds
 
     def remove_bond(self, atom1index, atom2index):
-        ''' Remove a bond between two atoms:
+        """ Remove a bond between two atoms:
         atoms1 and atoms2.
 
         Parameters
@@ -115,7 +117,7 @@ class SithViewer:
         ======
 
         Return the bonds int the system
-        '''
+        """
         indexes = [atom1index, atom2index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
@@ -123,9 +125,11 @@ class SithViewer:
         if name in self.bonds.keys():
             self.viewer.view.remove_component(self.bonds[name])
             del self.bonds[name]
+            print(f"angle {name} removed")
+        return self.bonds
 
     def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
-        ''' remove several bonds in the plot between two list of atoms:
+        """ remove several bonds in the plot between two list of atoms:
         atoms1 and atoms2.
 
         Parameters
@@ -137,7 +141,7 @@ class SithViewer:
         Note: if atoms2 is None, all bonds with atoms1 will me removed.
         If atoms1 and atoms2 are None, all bonds in the structure are
         removed.
-        '''
+        """
 
         if (atoms1indexes is None) and (atoms2indexes is None):
             for name in self.bonds.keys():
@@ -164,8 +168,12 @@ class SithViewer:
              zip(atoms1indexes, atoms2indexes)]
             return self.bonds
 
+    def remove_all_bonds(self):
+        """ remove all bonds"""
+        return self.remove_bonds()
+
     def plot_arc(self, vertex, arcdots, color):
-        ''' Add an arc using triangles.
+        """ Add an arc using triangles.
 
         Parameters
         ==========
@@ -180,7 +188,7 @@ class SithViewer:
         ======
 
         Return the triangles in the angle.
-        '''
+        """
 
         triangles = []
         for i in range(len(arcdots)-1):
@@ -194,7 +202,7 @@ class SithViewer:
 
     def add_angle(self, atom1index, atom2index, atom3index,
                   color=[0.5, 0.5, 0.5], n=0):
-        ''' Add an angle to between three atoms:
+        """ Add an angle to between three atoms:
         atom1, atom2 and atom3
         - with the vertex in the atom2
 
@@ -212,7 +220,7 @@ class SithViewer:
         Output
         ======
         Return the angles in the system
-        '''
+        """
 
         indexes = [atom1index, atom2index, atom3index]
         indexes.sort()
@@ -220,9 +228,9 @@ class SithViewer:
         self.remove_angle(atom1index, atom2index, atom3index)
         self.angles[name] = []
 
-        vertex = self.atoms[atom2index].position
-        side1 = self.atoms[atom1index].position - vertex
-        side2 = self.atoms[atom3index].position - vertex
+        vertex = self.atoms[atom2index-1].position
+        side1 = self.atoms[atom1index-1].position - vertex
+        side2 = self.atoms[atom3index-1].position - vertex
         lenside1 = np.linalg.norm(side1)
         lenside2 = np.linalg.norm(side2)
         lensides = min(lenside1, lenside2)
@@ -244,7 +252,7 @@ class SithViewer:
         return self.angles[name]
 
     def intermedia_vectors(self, a, b, n):
-        ''' Define the intermedia arc dots between two vectors
+        """ Define the intermedia arc dots between two vectors
 
         Parameters
         ==========
@@ -257,7 +265,7 @@ class SithViewer:
         Output
         ======
         Return the intermedia vectors between two side vectors.
-        '''
+        """
 
         if n == 0:
             return []
@@ -282,7 +290,7 @@ class SithViewer:
         return intermedia
 
     def remove_angle(self, atom1index, atom2index, atom3index):
-        '''
+        """
         Remove an angle if it exists
 
         Parameters
@@ -295,7 +303,7 @@ class SithViewer:
         Output
         ======
         Return the angles
-        '''
+        """
         indexes = [atom1index, atom2index, atom3index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
@@ -308,7 +316,7 @@ class SithViewer:
         return self.angles
 
     def remove_all_angles(self):
-        ''' remove all angles'''
+        """ remove all angles"""
         names = self.angles.keys()
 
         for name in names:
@@ -318,7 +326,7 @@ class SithViewer:
 
     def add_dihedral(self, atom1index, atom2index, atom3index,
                      atom4index, color=[0.5, 0.5, 0.5], n=0):
-        ''' Add an dihedral angle between four atoms:
+        """ Add an dihedral angle between four atoms:
         atom1, atom2, atom3 and atom4
         - with the vertex in the midle of the atom 2 and 3
 
@@ -336,19 +344,19 @@ class SithViewer:
         Output
         ======
         Return the dihedral angles
-        '''
+        """
         indexes = [atom1index, atom2index, atom3index, atom4index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
 
-        axis = (self.atoms[atom3index].position -
-                self.atoms[atom2index].position)
-        vertex = 0.5 * (self.atoms[atom3index].position +
-                        self.atoms[atom2index].position)
-        axis1 = (self.atoms[atom1index].position -
-                 self.atoms[atom2index].position)
-        axis2 = (self.atoms[atom4index].position -
-                 self.atoms[atom3index].position)
+        axis = (self.atoms[atom3index-1].position -
+                self.atoms[atom2index-1].position)
+        vertex = 0.5 * (self.atoms[atom3index-1].position +
+                        self.atoms[atom2index-1].position)
+        axis1 = (self.atoms[atom1index-1].position -
+                 self.atoms[atom2index-1].position)
+        axis2 = (self.atoms[atom4index-1].position -
+                 self.atoms[atom3index-1].position)
 
         side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
         side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
@@ -374,7 +382,7 @@ class SithViewer:
         return self.dihedrals[name]
 
     def remove_dihedral(self, atom1index, atom2index, atom3index, atom4index):
-        ''' Remove the dihedral angle between 4 atoms:
+        """ Remove the dihedral angle between 4 atoms:
 
         atom1, atom2, atom3 and atom4
 
@@ -388,7 +396,7 @@ class SithViewer:
         ======
 
         Return the dihedral angles
-        '''
+        """
         indexes = [atom1index, atom2index, atom3index, atom4index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
@@ -400,7 +408,7 @@ class SithViewer:
         return self.dihedrals
 
     def remove_all_dihedrals(self):
-        ''' remove all dihedral angles'''
+        """ remove all dihedral angles"""
         names = self.dihedrals.keys()
 
         for name in names:
