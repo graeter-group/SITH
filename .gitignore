@@ -263,3 +263,5 @@ doc-1/latex/namespaces.tex
 doc-1/latex/namespaceSITH_1_1SITH.tex
 doc-1/latex/refman.tex
 doc-1/latex/tabu_doxygen.sty
+src/SITH/__pycache__/SithWriter.cpython-39.pyc
+src/SITH/__pycache__/Utilities.cpython-39.pyc

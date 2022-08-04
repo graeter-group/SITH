@@ -24,10 +24,11 @@ dimIndicesGoodInput = ['           1           2           0           0        
 coordLinesGoodInput = ['  2.06335755E+00  2.07679249E+00  2.07679461E+00  2.73743812E+00  1.83354933E+00',
                        '  1.90516186E+00  1.90518195E+00  1.84167462E+00  1.91434964E+00  1.94775283E+00',
                        '  1.94775582E+00  1.96310537E+00 -3.14097002E+00 -1.07379153E+00  1.07501112E+00']
-coords = np.array([float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933, 1.90516186E+00+np.pi,
-                   1.90518195+np.pi,  1.84167462+np.pi,  1.91434964+np.pi,  1.94775283 +
-                   np.pi, 1.94775582+np.pi,  1.96310537+np.pi, -3.14097002+np.pi,
-                   -1.07379153+np.pi,  1.07501112E+00+np.pi], dtype=float32)
+                       
+coords = np.array([ float32(2.06335755E+00),  float32(2.07679249),  float32(2.07679461),  float32(2.73743812),  float32(1.83354933),  float32(1.90516186E+00)+np.pi,
+                    float32(1.90518195E+00)+np.pi,   float32(1.84167462)+np.pi,   float32(1.91434964)+np.pi,   float32(1.94775283) +
+                   np.pi,  float32(1.94775582)+np.pi,   float32(1.96310537)+np.pi,  float32(-3.14097002)+np.pi,
+                    float32(-1.07379153)+np.pi,   float32(1.07501112E+00)+np.pi], dtype=float32)
 bonds = [float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933]
 angles = [1.90516186E+00+np.pi, 1.90518195+np.pi,  1.84167462+np.pi,
           1.91434964+np.pi,  1.94775283+np.pi, 1.94775582+np.pi,  1.96310537+np.pi]
@@ -412,53 +413,40 @@ fullHessianMOH = [[3.60723640e-01, -1.02888793e-03, -1.02902258e-03,  4.74000287
 def test_atomCreation():
     atom = Atom('C', [2.3, 4.6, 7.8])
     assert atom.element is 'C'
+    assert atom.coords == [2.3, 4.6, 7.8]
 
 # region Geometry Tests
 
 
-def test_geometryName():
+def test_geometry():
     geo = Geometry('testName', 'blah', 3)
     assert geo.name == 'testName'
-
-
-def test_geometryNAtoms():
-    geo = Geometry('testName', 'blah', 3)
+    assert geo._path == 'blah'
     assert geo.nAtoms == 3
-
-
-def test_dumbGeoCreationErrors():
-    geo = Geometry('blah', 'blah', 6)
     assert geo.energy == None
 
-
-def test_getEnergyGood():
+def test_geo_energy():
     geo = Geometry('blah', 'blah', 6)
     geo.energy = 42
+    assert geo.name == 'blah'
+    assert geo.nAtoms == 6
     assert geo.energy == 42
-
 
 def test_buildRICGood():
     geo = Geometry('methanol-test', 'blah', 6)
     geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
-    assert [geo.ric[i] == coords[i] for i in range(len(coords))]
-
-# TODO
-
-
-def test_killDOFs():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.extractData()
-    assert (sith._reference.hessian == eHessFull).all()
-    sith._reference._killDOFs([0])
-    assert all(sith._reference.dimIndices == dimIndices[1:])
-    assert sith._reference.dims == array('i', [14, 4, 7, 3])
-    assert (sith._reference.hessian == eHessKill0).all()
-
+    assert all([geo.ric[i] == coords[i] for i in range(len(coords))])
 
 # region bad coordinates
+
+def test_letterCoord():
+    letterCoord = coordLinesGoodInput + ['blah']
+    geo = Geometry('methanol-test', 'blah', 6)
+    with pytest.raises(Exception) as e:
+        geo.buildRIC(dims, dimIndicesGoodInput, letterCoord)
+    assert str(e.value) == "Redundant internal coordinates contains invalid values, such as strings."
 
 def test_moreCoords():
     coordsMore = coordLinesGoodInput + ['100.78943']
@@ -489,7 +477,10 @@ def test_riciBad():
         geo.buildRIC(dims, dimIndices59, coordLinesGoodInput)
     assert str(
         e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
-
+    with pytest.raises(Exception) as e:
+        geo.buildRIC(dims, dimIndices59[1:], coordLinesGoodInput)
+    assert str(
+        e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
 
 def test_riciLetters():
     geo = Geometry('methanol-test', 'blah', 6)
@@ -516,7 +507,7 @@ def test_riciInvalid():
     assert str(e.value) == "Invalid atom index given as input."
 
 
-def test_buildRICBad():
+def test_buildRICIBad():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesGoodInput[2:], coordLinesGoodInput)
@@ -525,8 +516,20 @@ def test_buildRICBad():
 
 # endregion
 
+def test_buildRIC_badDims():
+    geo = Geometry('methanol-test', 'blah', 6)
+    with pytest.raises(Exception) as e:
+        geo.buildRIC([16, 5, 7, 3], dimIndicesGoodInput, coordLinesGoodInput)
+    assert str(
+        e.value) == "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
+    with pytest.raises(Exception) as e:
+        geo.buildRIC([16, 'h', 7, 3], dimIndicesGoodInput, coordLinesGoodInput)
+    assert str(
+        e.value) == "Invalid input given for Redundant internal dimensions."
+
 # region Cartesian
 
+#TODO
 def test_buildCartesian():
     pass
 
@@ -535,6 +538,21 @@ def test_getAtoms():
     pass
 
 # endregion
+
+
+# TODO
+
+def test_killDOFs():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
+    assert (sith._reference.hessian == eHessFull).all()
+    sith._reference._killDOFs([0])
+    assert all(sith._reference.dimIndices == dimIndices[1:])
+    assert sith._reference.dims == array('i', [14, 4, 7, 3])
+    assert (sith._reference.hessian == eHessKill0).all()
+
+
 
 # region validity as reference or deformed (might move to extractor not Geometry? might not even need)
 
