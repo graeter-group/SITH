@@ -24,11 +24,12 @@ dimIndicesGoodInput = ['           1           2           0           0        
 coordLinesGoodInput = ['  2.06335755E+00  2.07679249E+00  2.07679461E+00  2.73743812E+00  1.83354933E+00',
                        '  1.90516186E+00  1.90518195E+00  1.84167462E+00  1.91434964E+00  1.94775283E+00',
                        '  1.94775582E+00  1.96310537E+00 -3.14097002E+00 -1.07379153E+00  1.07501112E+00']
-                       
-coords = np.array([ float32(2.06335755E+00),  float32(2.07679249),  float32(2.07679461),  float32(2.73743812),  float32(1.83354933),  float32(1.90516186E+00)+np.pi,
-                    float32(1.90518195E+00)+np.pi,   float32(1.84167462)+np.pi,   float32(1.91434964)+np.pi,   float32(1.94775283) +
-                   np.pi,  float32(1.94775582)+np.pi,   float32(1.96310537)+np.pi,  float32(-3.14097002)+np.pi,
-                    float32(-1.07379153)+np.pi,   float32(1.07501112E+00)+np.pi], dtype=float32)
+
+coords = np.array([float32(2.06335755E+00),  float32(2.07679249),  float32(2.07679461),  float32(2.73743812),  float32(1.83354933),  float32(1.90516186E+00)+np.pi,
+                   float32(1.90518195E+00)+np.pi,   float32(1.84167462)+np.pi,   float32(1.91434964)+np.pi,   float32(1.94775283) +
+                   np.pi,  float32(
+                       1.94775582)+np.pi,   float32(1.96310537)+np.pi,  float32(-3.14097002)+np.pi,
+                   float32(-1.07379153)+np.pi,   float32(1.07501112E+00)+np.pi], dtype=float32)
 bonds = [float(2.06335755E+00), 2.07679249, 2.07679461, 2.73743812, 1.83354933]
 angles = [1.90516186E+00+np.pi, 1.90518195+np.pi,  1.84167462+np.pi,
           1.91434964+np.pi,  1.94775283+np.pi, 1.94775582+np.pi,  1.96310537+np.pi]
@@ -425,12 +426,14 @@ def test_geometry():
     assert geo.nAtoms == 3
     assert geo.energy == None
 
+
 def test_geo_energy():
     geo = Geometry('blah', 'blah', 6)
     geo.energy = 42
     assert geo.name == 'blah'
     assert geo.nAtoms == 6
     assert geo.energy == 42
+
 
 def test_buildRICGood():
     geo = Geometry('methanol-test', 'blah', 6)
@@ -441,12 +444,15 @@ def test_buildRICGood():
 
 # region bad coordinates
 
+
 def test_letterCoord():
     letterCoord = coordLinesGoodInput + ['blah']
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
         geo.buildRIC(dims, dimIndicesGoodInput, letterCoord)
-    assert str(e.value) == "Redundant internal coordinates contains invalid values, such as strings."
+    assert str(
+        e.value) == "Redundant internal coordinates contains invalid values, such as strings."
+
 
 def test_moreCoords():
     coordsMore = coordLinesGoodInput + ['100.78943']
@@ -482,6 +488,7 @@ def test_riciBad():
     assert str(
         e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
 
+
 def test_riciLetters():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
@@ -516,6 +523,7 @@ def test_buildRICIBad():
 
 # endregion
 
+
 def test_buildRIC_badDims():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
@@ -529,7 +537,9 @@ def test_buildRIC_badDims():
 
 # region Cartesian
 
-#TODO
+# TODO
+
+
 def test_buildCartesian():
     pass
 
@@ -541,49 +551,24 @@ def test_getAtoms():
 
 
 # TODO
-
 def test_killDOFs():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.extractData()
+    a = sith._reference.hessian == eHessFull
     assert (sith._reference.hessian == eHessFull).all()
     sith._reference._killDOFs([0])
+    b = sith._reference.dimIndices == dimIndices[1:]
     assert all(sith._reference.dimIndices == dimIndices[1:])
+    c = sith._reference.dims == array('i', [14, 4, 7, 3])
     assert sith._reference.dims == array('i', [14, 4, 7, 3])
+    d = sith._reference.hessian == eHessKill0
     assert (sith._reference.hessian == eHessKill0).all()
 
-
-
-# region validity as reference or deformed (might move to extractor not Geometry? might not even need)
-
-
-def test_validReference():
-    pass
-
-
-def test_invalidReference():
-    pass
-
-
-def test_validDeformed():
-    pass
-
-
-def test_invalidDeformed():
-    pass
-
 # endregion
+
 
 # region Extractor Tests
-
-
-# region Cartesian
-
-#TODO also put in test_SithWriter
-def test_writeXYZ():
-    pass
-
-# endregion
 
 
 def test_creationEmptyList():
@@ -591,17 +576,19 @@ def test_creationEmptyList():
     assert extractor._path == testPath
     assert extractor._name == testPath.stem
 
+#TODO
+def test_writeXYZ():
+    pass
+
 
 def test_extract():
     extractor = Extractor(testPath, frankenLines)
-    # Geometry
     extractor._extract()
     assert extractor.hRaw == ehRaw
 
 
 def test_extractedGeometry():
     extractor = Extractor(testPath, frankenLines)
-    # Geometry
     extractor._extract()
     geo = extractor.getGeometry()
     egeo = Geometry(testPath.stem, 'blah', 6)
@@ -613,7 +600,6 @@ def test_extractedGeometry():
 
 def test_buildHessian():
     extractor = Extractor(testPath, frankenLines)
-    # Geometry
     extractor._extract()
     geo = extractor.getGeometry()
     egeo = Geometry(testPath.stem, 'blah', 6)
@@ -626,15 +612,19 @@ def test_buildHessian():
 
 
 def test_getGeometry():
-    pass
-
-
-def test_getHessian():
-    pass
+    extractor = Extractor(testPath, frankenLines)
+    egeo = Geometry('testName', 'blah', 3)
+    with pytest.raises(Exception) as e:
+        geo = extractor.getGeometry()
+    assert str(e.value) == "There is no geometry."
+    extractor.geometry = Geometry('testName', 'blah', 3)
+    geo = extractor.getGeometry()
+    assert geo == egeo
 
 
 # endregion
 
-# region Unit Converter Tests
-
-# endregion
+def test_units():
+    assert UnitConverter.angstromToBohr(1.3) == float32(2.456644)
+    assert UnitConverter.bohrToAngstrom(1.3) == float32(0.68793035)
+    assert UnitConverter.radianToDegree(1.3) == float32(74.48451)
