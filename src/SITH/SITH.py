@@ -52,6 +52,7 @@ class SITH:
         Conducts the SITH energy analysis.
     """
 
+    # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
     def __init__(self, rePath='/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', dePath='/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk'):
         """Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
 
@@ -112,7 +113,7 @@ class SITH:
         While this value is publicly accessable for retrieval purposes, please refrain from manually setting it.
         If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation."""
 
-# qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
         self.q0 = None
         """Vector of RIC values of reference geometry
@@ -169,7 +170,6 @@ class SITH:
         and SetKillDOFs(dofs: list) prior to data extraction by calling SITH.extractData(). If no mismatch between
         number of DOFs in each geometry's coordinates and Hessian, this can be manually called after extractData()
         as well but is not recommended."""
-
 
     def __killDOFs(self, dofs: list[Tuple]):
         """
@@ -246,12 +246,12 @@ class SITH:
 
         self._getContents()
 
-        rExtractor = Extractor(self._referencePath, self.__rData)
+        rExtractor = Extractor(self._referencePath, self._rData)
         rExtractor._extract()
         # Create Geometry objects from reference and deformed data
         self._reference = rExtractor.getGeometry()
         self._deformed = list()
-        for dd in self.__dData:
+        for dd in self._dData:
             dExtractor = Extractor(dd[0], dd[1])
             dExtractor._extract()
             self._deformed.append(dExtractor.getGeometry())
@@ -329,7 +329,7 @@ class SITH:
 
     def _validateFiles(self):
         """
-        Check that all files exist, are not empty, and whether the deformed path is a directory
+        Check that all files exist and whether the deformed path is a directory
         """
         assert self._referencePath.exists(), "Path to reference geometry data does not exist."
         assert self._deformedPath.exists(), "Path to deformed geometry data does not exist."
@@ -351,10 +351,10 @@ class SITH:
         """
         try:
             with self._referencePath.open() as rFile:
-                self.__rData = rFile.readlines()
-                assert len(self.__rData) > 0, "Reference data file is empty."
+                self._rData = rFile.readlines()
+                assert len(self._rData) > 0, "Reference data file is empty."
 
-            self.__dData = list()
+            self._dData = list()
             if self.__deformedIsDirectory:
                 dPaths = list(sorted(self._deformedPath.glob('*.fchk')))
                 dPaths = [pathlib.Path(dp) for dp in dPaths]
@@ -367,10 +367,13 @@ class SITH:
                     dLines = dFile.readlines()
                     assert len(
                         dLines) > 0, "One or more deformed files are empty."
-                    self.__dData.append((dp, dLines))
+                    self._dData.append((dp, dLines))
 
+        except AssertionError:
+            # This exception catch is specific so that the AssertionErrors are not caught and only "raise" is called so as to maintain the original
+            # stack trace
+            raise
         except:
-            # This exception catch can be made more specific if necessary, but it really shouldn't be needed
             print(
                 "An exception occurred during the extraction of the input files' contents.")
             sys.exit(sys.exc_info()[0])
@@ -395,7 +398,7 @@ class SITH:
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
         # # TODO: make this more definitive than an arbitrary threshold, experient with -> 0 or -> - 2*pi etc.
-        angleThreshold = 0.05 #Current radian threshold
+        angleThreshold = 0.05  # Current radian threshold
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
             for dq in dqit:
                 #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -

@@ -1,7 +1,7 @@
 from array import array
 from pathlib import Path
 import pathlib
-from typing import Tuple
+from typing import Iterable, Tuple
 
 from ase.units import Bohr
 import numpy as np
@@ -294,8 +294,8 @@ class Geometry:
         b = b and self.energy == __o.energy
         b = b and self.atoms == __o.atoms
         b = b and self.nAtoms == __o.nAtoms
-        b = b and self.dims == __o.dims
-        b = b and self.dimIndices == __o.dimIndices
+        b = b and np.array_equal(self.dims, __o.dims)
+        b = b and np.array_equal(self.dimIndices, __o.dimIndices)
         return b
 
 
