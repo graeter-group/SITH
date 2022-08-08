@@ -101,30 +101,6 @@ def test_getContentsDir():
     assert sith._dData[0][1] == frankenLines
     assert sith._dData[1][1] == frankenLines
     
-def test_noKill():
-    pass
-
-def test_setKillDOFs():
-    pass
-
-def test_setKillAtoms():
-    pass
-
-def test_kill():
-    pass
-
-def test_removeMismatchedDOFs_noKill():
-    pass
-
-def test_removeMismatchedDOFs_killed():
-    pass
-
-def test_validateGeometries():
-    pass
-
-def test_populatQ():
-    pass
-
 def test_extractDataFile():
     sith = SITH(frankensteinPath, frankensteinPath)
     sith.extractData()
@@ -146,6 +122,46 @@ def test_extractDataDir():
     assert sith._deformed[1] == refGeoCopy
     assert np.array_equal(sith.hessian, refGeo.hessian)
     assert not sith._kill
+
+def test_setKillDOFs():
+    sith = SITH(frankensteinPath, frankensteinPath)
+    killDOFs = [(1, 2), (2, 1, 3)]
+    sith.setKillDOFs(killDOFs)
+    assert sith._kill
+    assert np.array_equal(sith._killDOFs, killDOFs)
+
+def test_setKillAtoms():
+    sith = SITH(frankensteinPath, frankensteinPath)
+    killAtoms = [1, 6]
+    sith.setKillDOFs(killAtoms)
+    assert sith._kill
+    assert np.array_equal(sith._killDOFs, killAtoms)
+
+def test_killDOFs():
+    pass
+
+def test_kill():
+    sith = SITH(frankensteinPath, frankensteinPath)
+    killDOFs = [(1, 2)]
+    sith.setKillDOFs(killDOFs)
+    sith.extractData()
+    #TODO finish this
+
+
+def test_kill_bad():
+    pass
+
+def test_removeMismatchedDOFs_noKill():
+    pass
+
+def test_removeMismatchedDOFs_killed():
+    pass
+
+def test_validateGeometries():
+    pass
+
+def test_populatQ():
+    pass
 
 
 
