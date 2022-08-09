@@ -40,6 +40,10 @@ def test_buildRICGood():
     assert geo.dimIndices == dimIndices
     assert all([geo.ric[i] == coords[i] for i in range(len(coords))])
 
+def test_equals():
+    geoCopy = deepcopy(refGeo)
+    assert geoCopy == refGeo
+
 # region bad coordinates
 
 
