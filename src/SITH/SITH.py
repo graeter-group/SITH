@@ -177,12 +177,8 @@ class SITH:
         as well as from the Hessian matrix.
         """
         rIndices = list()
-        dIndices = list()
         for dof in dofs:
-            rIndices.extend([i for i in range(self._reference.dims[0])
-                            if self._reference.dimIndices[i] == dof])
-            dIndices.extend([i for i in range(self._deformed[0].dims[0])
-                            if self._deformed[0].dimIndices[i] == dof])
+            rIndices.extend([i for i in range(self._reference.dims[0]) if self._reference.dimIndices[i] == dof])
         self._reference._killDOFs(rIndices)
 
 # endregion
@@ -221,18 +217,22 @@ class SITH:
 
     def removeMismatchedDOFs(self):
         """
-        Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs
+        Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs.
+
+        -----
+        NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+        and indicates an issue with the calculation which must be fixed in the generation of input. Solution: https://gaussian.com/gic/ specify Active GIC in deformed opt
         """
 
         for deformation in self._deformed:
             dofsToRemove = list()
-            j = 0
-            for i in range(self._reference.dims[0]):
-                if self._reference.dimIndices[i] != deformation.dimIndices[j]:
-                    dofsToRemove.append(j)
-                    j += 2
-                else:
-                    j += 1
+            for j in range(max(deformation.dims[0], self._reference.dims[0])):
+                if j < deformation.dims[0]:
+                    if deformation.dimIndices[j] not in list(self._reference.dimIndices): #deformed not in reference
+                        dofsToRemove.append(j)
+                if j < self._reference.dims[0]: #reference not in deformed
+                    assert self._reference.dimIndices[j] in deformation.dimIndices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(self._reference.dimIndices[j])+"."
+
             deformation._killDOFs(dofsToRemove)
 
     def extractData(self):
