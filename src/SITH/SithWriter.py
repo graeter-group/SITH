@@ -17,7 +17,7 @@ class SithWriter:
         return SithWriter.writeSummary(sith) and SithWriter.writeDeltaQ(sith) and SithWriter.writeEnergyMatrix(sith) and SithWriter.writeError(sith)
 
     @staticmethod
-    def writeSummary(sith: SITH, fileName='summary.txt') -> bool:
+    def writeSummary(sith: SITH, fileName='summary.txt', includeXYZ=False) -> bool:
         """
         Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
 
@@ -46,11 +46,34 @@ class SithWriter:
                 s.write(
                     "Deformation        \u0394E          \u0025Error          Error\n")
                 for i in range(len(sith._deformed)):
-                    s.write("{: <12s}{: >16.6E}{: >12.2%}{: >16.6E}\n".format(
+                    s.write("{: <12s}{: >16.6E}{: >12.2}{: >16.6E}\n".format(
                         sith._deformed[i].name, sith.deformationEnergy[0, i], pErrorDE[0, i], errorDE[0, i]))
 
                 s.write("Energy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
+
+                if includeXYZ:
+                    obConversion = ob.OBConversion()
+                    obConversion.SetInAndOutFormats("fchk", "xyz")
+
+                    mol = ob.OBMol()
+                    assert sith.reference._path.exists(), "Path to fchk file does not exist"
+                    assert obConversion.ReadFile(mol, sith.reference._path.as_posix(
+                    )), "Reading fchk file ("+sith.reference._path.as_posix(
+                    )+") with openbabel failed."
+                    xyzString = obConversion.WriteString(mol)
+                    s.write("\nXYZ FILES APPENDED\nReference .XYZ\n")
+                    s.writelines(xyzString)
+
+                    for geometry in sith.deformed:
+                        assert geometry._path.exists(), "Path to fchk file does not exist"
+                        assert obConversion.ReadFile(mol, geometry._path.as_posix(
+                        )), "Reading fchk file ("+geometry._path.as_posix(
+                        )+") with openbabel failed."
+                        xyzString = obConversion.WriteString(mol)
+                        s.write(geometry.name+" .XYZ\n")
+                        s.writelines(xyzString)
+
                 return True
         except IOError as e:
             print(e)
@@ -274,8 +297,9 @@ class SithWriter:
         lines.append("{: <12}".format('Signed Error') +
                      ''.join(["{: >16.6E}".format(e) for e in error[0]]))
         lines.append("{: <12}".format("\u0025Error") +
-                     ''.join(["{: >16.2%}".format(e) for e in pError[0]]))
+                     ''.join(["{: >16.2}".format(e) for e in pError[0]]))
         return lines
+        
 
 # endregion
 
@@ -294,5 +318,5 @@ class SithWriter:
             expectedDE[0, i] = sith._deformed[i].energy - \
                 sith._reference.energy
         errorDE = sith.deformationEnergy - expectedDE
-        pErrorDE = errorDE / expectedDE
+        pErrorDE = (errorDE / expectedDE) * 100
         return (expectedDE, errorDE, pErrorDE)

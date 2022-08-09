@@ -42,3 +42,12 @@ def test_writeAll():
     jp = SithWriter()
     assert jp.writeAll(sith)
     blah = 2
+
+def test_writeSummaryXYZ():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
+    sith.energyAnalysis()
+    jp = SithWriter()
+    assert jp.writeSummary(sith, "xyzSummary.txt", includeXYZ=True)
+    blah = 2
