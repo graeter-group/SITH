@@ -296,7 +296,7 @@ class Geometry:
         b = b and self.nAtoms == __o.nAtoms
         b = b and np.array_equal(self.dims, __o.dims)
         b = b and np.array_equal(self.dimIndices, __o.dimIndices)
-        b = b and ((self.hessian is None and __o.hessian is None) or np.array_equal(self.dimIndices, __o.dimIndices))
+        b = b and ((self.hessian is None and __o.hessian is None) or np.array_equal(self.hessian, __o.hessian))
         return b
 
 

@@ -226,13 +226,14 @@ def test_extract():
 
 
 def test_extractedGeometry():
-    extractor = Extractor(testPath, frankenNoLines)
+    extractor = Extractor(frankensteinPath, frankenNoLines)
     extractor._extract()
     geo = extractor.getGeometry()
-    egeo = Geometry(testPath.stem, 'blah', 6)
+    egeo = Geometry(frankensteinPath.stem, 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     egeo.buildCartesian(cartesianLines)
+    egeo.hessian = eHessFull
     assert geo == egeo
 
 

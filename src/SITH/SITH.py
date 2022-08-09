@@ -102,17 +102,6 @@ class SITH:
         -----
         While this may be publicly accessed, please refrain from manually setting this value as other analysis variables depend upon it."""
 
-        self.hessian = None
-        """Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry's Hessian.
-        
-        Notes
-        -----
-        Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
-        by a frequency analysis at the level of DFT or higher.
-        
-        While this value is publicly accessable for retrieval purposes, please refrain from manually setting it.
-        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation."""
-
         # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
         # qF[d.o.f. index, row or deformed geometry index] -> value of d.o.f. for deformed geometry at index of self.deformed
         self.q0 = None
@@ -178,7 +167,8 @@ class SITH:
         """
         rIndices = list()
         for dof in dofs:
-            rIndices.extend([i for i in range(self._reference.dims[0]) if self._reference.dimIndices[i] == dof])
+            rIndices.extend([i for i in range(self._reference.dims[0])
+                            if self._reference.dimIndices[i] == dof])
         self._reference._killDOFs(rIndices)
 
 # endregion
@@ -198,6 +188,19 @@ class SITH:
         Return the list of deformed geometries (list<SITH_Utilities.Geometry>)
         """
         return getattr(self, '_deformed')
+
+    @property
+    def hessian(self):
+        """Returns Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry's Hessian.
+
+        Notes
+        -----
+        Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+        by a frequency analysis at the level of DFT or higher.
+
+        While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation."""
+        return self.reference.hessian
 
     def setKillAtoms(self, atoms: list):
         """
@@ -228,10 +231,12 @@ class SITH:
             dofsToRemove = list()
             for j in range(max(deformation.dims[0], self._reference.dims[0])):
                 if j < deformation.dims[0]:
-                    if deformation.dimIndices[j] not in list(self._reference.dimIndices): #deformed not in reference
+                    # deformed not in reference
+                    if deformation.dimIndices[j] not in list(self._reference.dimIndices):
                         dofsToRemove.append(j)
-                if j < self._reference.dims[0]: #reference not in deformed
-                    assert self._reference.dimIndices[j] in deformation.dimIndices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(self._reference.dimIndices[j])+"."
+                if j < self._reference.dims[0]:  # reference not in deformed
+                    assert self._reference.dimIndices[j] in deformation.dimIndices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(
+                        self._reference.dimIndices[j])+"."
 
             deformation._killDOFs(dofsToRemove)
 
@@ -259,7 +264,6 @@ class SITH:
         # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
         # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
         # manually swap the reference geometry with that of another geometry in the deformd list and then re-run analysis.
-        self.hessian = self._reference.hessian
 
         # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
         # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
@@ -294,12 +298,12 @@ class SITH:
 
         for i in range(len(self._deformed)):
             self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
-                self.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
+                self._reference.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
             for j in range(self._reference.dims[0]):
                 isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
                     self._reference.dims[0]-j-1)))
                 self.energies[j, i] = 0.5 * \
-                    (isolatedDOF).dot(self.hessian).dot(isolatedDOF)
+                    (isolatedDOF).dot(self._reference.hessian).dot(isolatedDOF)
             self.pEnergies[:, i] = float(
                 100) * self.energies[:, i] / self.deformationEnergy[0, i]
 
