@@ -43,6 +43,29 @@ def test_buildRICGood():
 def test_equals():
     geoCopy = deepcopy(refGeo)
     assert geoCopy == refGeo
+    assert refGeo != Geometry('test', 'test', 6)
+    geo = Geometry('methanol-test', 'blah', 6)
+    geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
+    assert refGeo != geo
+    geoCopy.name = 'blah'
+    assert geoCopy != refGeo
+    geoCopy.name = refGeo.name
+    geoCopy.hessian = geoCopy.hessian[1:]
+    assert geoCopy != refGeo
+    geoCopy.hessian = refGeo.hessian
+    geoCopy.atoms[3] = Atom('C', (1., 1., 1.))
+    assert geoCopy != refGeo
+    geoCopy.atoms = refGeo.atoms
+    assert geoCopy == refGeo
+    geoCopy.energy = 0
+    assert geoCopy != refGeo
+    geoCopy.energy = refGeo.energy
+    geoCopy.ric[2] = 26
+    assert geoCopy != refGeo
+    geoCopy.ric = refGeo.ric
+    geoCopy.dimIndices[2] = (1, 2)
+    assert geoCopy != refGeo
+
 
 # region bad coordinates
 
