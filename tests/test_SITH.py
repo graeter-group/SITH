@@ -251,33 +251,64 @@ def test_removeMismatchedDOFs_kill():
 
 
 def test_validateGeometries():
-    pass
+    ditto = deepcopy(refGeo)
+    ditto._killDOFs([1])
+    sith = SITH()
+    sith._reference = refGeo
+    sith._deformed = [ditto]
+    with pytest.raises(Exception) as e:
+        sith._validateGeometries()
+    assert str(
+        e.value) == "Incompatible number of atoms or dimensions amongst input files."
+
+    ditto = deepcopy(refGeo)
+    ditto.nAtoms -= 1
+    sith = SITH()
+    sith._reference = refGeo
+    sith._deformed = [ditto]
+    with pytest.raises(Exception) as e:
+        sith._validateGeometries()
+    assert str(
+        e.value) == "Incompatible number of atoms or dimensions amongst input files."
 
 
-def test_populatQ():
-    pass
+def test_populateQ():
+    sith = SITH(frankensteinPath, frankensteinPath)
+    sith._reference = refGeo
+    sith._deformed = [refGeo]
+    sith._populateQ()
+    coords2D = np.array(coords)[np.newaxis]
+    assert np.array_equal(sith.q0, np.transpose(coords2D))
+    assert np.array_equal(sith.qF, np.transpose(coords2D))
+    assert np.array_equal(sith.deltaQ, np.zeros((len(coords), 1)))
+
+    sith = SITH(frankensteinPath, frankensteinPath)
+    sith._reference = refGeo
+    ditto = deepcopy(refGeo)
+    ditto.ric = 0.5 * ditto.ric
+    sith._deformed = [ditto]
+    sith._populateQ()
+    coords2D = np.array(coords)[np.newaxis]
+    assert np.array_equal(sith.q0, np.transpose(coords2D))
+    assert np.array_equal(sith.qF, np.transpose(coords2D)*0.5)
+    assert np.array_equal(sith.deltaQ, -np.transpose(coords2D)*0.5)
 
 
 # region File Input
 
-#setKill, extract, analysis
-
-
-def test_singleGood():
+def test_energyAnalysis():
     sith = SITH()
-    assert sith._referencePath == defaultRefPath
-    assert sith._deformedPath == defaultDefPath
-    assert sith.energies is None
-    assert sith.deformationEnergy is None
-    assert sith.pEnergies is None
-    assert sith.reference is None
-    assert sith.deformed is None
-    assert sith.q0 is None
-    assert sith.qF is None
-    assert sith.deltaQ is None
-    assert not sith._kill
-    assert sith._killAtoms == list()
-    assert sith._killDOFs == list()
+    sith.extractData()
+    sith.energyAnalysis()
+
+def test_energyAnalysis_Same():
+    sith = SITH(frankensteinPath, frankensteinPath)
+    sith.extractData()
+    sith.energyAnalysis()
+
+def test_full_killed():
+    pass
+
 
 
 def test_multiDeformedGood():
@@ -286,38 +317,6 @@ def test_multiDeformedGood():
 
 
 # endregion
-
-
-def test_basic():
-    sith = SITH()
-
-
-def test_multiDeformed():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-
-    sith.extractData()
-    sith.energyAnalysis()
-
-
-def test_populateQ():
-    sith = SITH()
-    # check that q0, qF, and delta_q are all correct
-
-
-def test_totalEnergies():
-    sith = SITH()
-
-
-def test_energyMatrix():
-    sith = SITH()
-
-
-def test_fullEnergyAnalysis():
-    sith = SITH()
-    sith.extractData()
-    # set manual values for each and check dot multiplication
-    sith.energyAnalysis()
 
 
 def test_fullRun():
@@ -344,13 +343,6 @@ def test_killDOFsBAD2():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.setKillDOFs([(1, 6)])
-    sith.extractData()
-
-
-def test_killAtoms():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillAtoms([2])
     sith.extractData()
 
 # region invalid Geometries (might be unnecessary or more for extractors?)

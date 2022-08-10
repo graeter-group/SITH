@@ -344,8 +344,7 @@ class SITH:
         """
         Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        assert all([deformn.nAtoms == self._reference.nAtoms and all([deformn.dims[i] == self._reference.dims[i] for i in range(
-            4)]) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
+        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
 # endregion
 
