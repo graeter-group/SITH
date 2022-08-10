@@ -201,6 +201,20 @@ def test_kill_bad():
     assert sith.deformed[0] == refGeo
 
 
+def test_killDOFsBAD():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.setKillDOFs([(1, 6), (2, 1, 5, 6)])
+    sith.extractData()
+
+
+def test_killDOFsBAD2():
+    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.setKillDOFs([(1, 6)])
+    sith.extractData()
+
+
 def test_removeMismatchedDOFs_noKill():
     # no atoms specified for kill and no mismatch
     sith = SITH(frankensteinPath, frankensteinPath)
@@ -294,82 +308,35 @@ def test_populateQ():
     assert np.array_equal(sith.deltaQ, -np.transpose(coords2D)*0.5)
 
 
-# region File Input
-
 def test_energyAnalysis():
     sith = SITH()
     sith.extractData()
     sith.energyAnalysis()
+
 
 def test_energyAnalysis_Same():
     sith = SITH(frankensteinPath, frankensteinPath)
     sith.extractData()
     sith.energyAnalysis()
 
-def test_full_killed():
-    pass
 
-
-
-def test_multiDeformedGood():
+def test_full_killed():  # full with no mismatched, kill valid, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-
-
-# endregion
-
-
-def test_fullRun():
-    sith = SITH()
+    sith.setKillDOFs([(1, 2), (1, 3)])
     sith.extractData()
     sith.energyAnalysis()
+    
 
 
-def test_killDOFs():
+def test_multiDeformedGood(): # full no mismatched to remove, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillDOFs([(1, 2), (2, 1, 5, 6)])
-    sith.extractData()
 
 
-def test_killDOFsBAD():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillDOFs([(1, 6), (2, 1, 5, 6)])
-    sith.extractData()
-
-
-def test_killDOFsBAD2():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-    sith.setKillDOFs([(1, 6)])
-    sith.extractData()
-
-# region invalid Geometries (might be unnecessary or more for extractors?)
-
-
-def test_badReference():
-    pass
-
-
-def test_badDeformed():
-    pass
-
-
-def test_incompleteReference():
-    pass
-
-
-def test_incompleteDeformed():
-    pass
-
-# endregion
-
-
-def test_AAfromDaniel():
+def test_Glycine():  # full with mismatched to remove, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/Gly-x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed')
-    sith.setKillDOFs([(1, 16)])
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
@@ -377,7 +344,7 @@ def test_AAfromDaniel():
     jp.writeSummary(sith)
 
 
-def test_alanine():
+def test_Alanine():  # full with valid kill invalid results
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/Ala-stretched00.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/Ala-stretched10.fchk')
     sith.setKillDOFs([(1, 19)])
@@ -392,8 +359,3 @@ def test_movedx0():
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.extractData()
     sith.energyAnalysis()
-    jp = SithWriter()
-    jp.writeDeltaQ(sith, "1.7-dq.txt")
-    jp.writeError(sith, "1.7-error.txt")
-    jp.writeEnergyMatrix(sith, "1.7-energy.txt")
-    jp.writeSummary(sith, "1.7-summary.txt")
