@@ -311,25 +311,40 @@ def test_populateQ():
 def test_energyAnalysis():
     sith = SITH()
     sith.extractData()
+    sith.deltaQ = dqSmall
+    sith._reference.hessian = hessSmall
+    sith._reference.dims = np.array([3, 1, 1, 1])
     sith.energyAnalysis()
+    expectedDefE = np.transpose(dqSmall).dot(hessSmall).dot(dqSmall) / 2.
+    assert sith.deformationEnergy == expectedDefE
+    expectedEnergies = [(dqSmall[i] * 0.5 * hessSmall.dot(dqSmall))[i] for i in range(3)]
+    assert np.array_equal(sith.energies, expectedEnergies)
+    blah = [sum(sith.pEnergies[:,i]) for i in range(len(sith.deformed))]
+    assert all(x == 100 for x in [sum(sith.pEnergies[:,i]) for i in range(len(sith.deformed))])
 
 
 def test_energyAnalysis_Same():
     sith = SITH(frankensteinPath, frankensteinPath)
+    with pytest.raises(Exception) as e:
+        sith.energyAnalysis()
+    assert str(e.value) == "Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData()."
     sith.extractData()
     sith.energyAnalysis()
+    assert np.array_equal(sith.energies, np.zeros((sith.reference.dims[0], 1)))
+    assert sith.deformationEnergy[0, 0] == 0
+    assert all([np.isnan(pE[0]) for pE in sith.pEnergies])
 
 
+#TODO
 def test_full_killed():  # full with no mismatched, kill valid, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.setKillDOFs([(1, 2), (1, 3)])
     sith.extractData()
     sith.energyAnalysis()
-    
 
 
-def test_multiDeformedGood(): # full no mismatched to remove, deformed directory
+def test_multiDeformedGood():  # full no mismatched to remove, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
 

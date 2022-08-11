@@ -291,7 +291,7 @@ class SITH:
             raise Exception(
                 "Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().")
         self.energies = np.zeros(
-            (self._reference.dims[0], len(self._deformed)))
+            (self.reference.dims[0], len(self._deformed)))
         self.deformationEnergy = np.zeros((1, len(self._deformed)))
         self.pEnergies = np.zeros(
             (self._reference.dims[0], len(self._deformed)))
@@ -303,7 +303,7 @@ class SITH:
                 isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
                     self._reference.dims[0]-j-1)))
                 self.energies[j, i] = 0.5 * \
-                    (isolatedDOF).dot(self._reference.hessian).dot(isolatedDOF)
+                    (isolatedDOF).dot(self._reference.hessian).dot(self.deltaQ[:,i])
             self.pEnergies[:, i] = float(
                 100) * self.energies[:, i] / self.deformationEnergy[0, i]
 
