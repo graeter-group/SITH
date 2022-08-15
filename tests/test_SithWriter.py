@@ -2,6 +2,9 @@ from src.SITH.Utilities import *
 from src.SITH.SITH import SITH
 from src.SITH.SithWriter import SithWriter
 
+"""There aren't necessarily very many options for testing here which are not unnecessarily detailed so 
+the testing of SithWriter is kept to a minimum of simply 'it works' and manually checking the output files. 
+This can be expanded upon later if necessary."""
 
 def test_buildDQ():
     sith = SITH()
@@ -29,10 +32,10 @@ def test_compareEnergies():
     sith.energyAnalysis()
     jp = SithWriter()
     blah = jp.buildDeltaQString(sith)
-    jp.writeDeltaQ(sith)
-    jp.compareEnergies(sith)
-    jp.writeEnergyMatrix(sith)
-    jp.writeSummary(sith)
+    assert jp.writeDeltaQ(sith)
+    assert jp.writeError(sith)
+    assert jp.writeEnergyMatrix(sith)
+    assert jp.writeSummary(sith)
     
 def test_writeAll():
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
@@ -50,4 +53,3 @@ def test_writeSummaryXYZ():
     sith.energyAnalysis()
     jp = SithWriter()
     assert jp.writeSummary(sith, "xyzSummary.txt", includeXYZ=True)
-    blah = 2
