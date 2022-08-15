@@ -1,3 +1,4 @@
+import os
 import pytest
 
 from src.SITH.SITH import SITH
@@ -6,7 +7,8 @@ from tests.test_variables import *
 
 
 def test_initDefault():
-    sith = SITH()
+
+    sith = SITH(x0string, xFstring)
     # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
     assert sith._referencePath == defaultRefPath
     assert sith._deformedPath == defaultDefPath
@@ -24,7 +26,7 @@ def test_initDefault():
 
 
 def test_initDir():
-    sith = SITH(defaultRefPath, defDirPath)
+    sith = SITH(x0string, deformedString)
     # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
     assert sith._referencePath == defaultRefPath
     assert sith._deformedPath == defDirPath
@@ -42,7 +44,7 @@ def test_initDir():
 
 
 def test_initFile():
-    sith = SITH(defaultRefPath, defaultDefPath)
+    sith = SITH(x0string, xFstring)
     # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
     assert sith._referencePath == defaultRefPath
     assert sith._deformedPath == defaultDefPath
@@ -80,11 +82,11 @@ def test_hessianProp():
 
 def test_validateFiles():
     with pytest.raises(Exception) as e:
-        sith = SITH(dnePath)
+        sith = SITH(dnePath, xFstring)
     assert str(e.value) == "Path to reference geometry data does not exist."
 
     with pytest.raises(Exception) as e:
-        sith = SITH(dePath=dnePath)
+        sith = SITH(x0string, dePath=dnePath)
     assert str(e.value) == "Path to deformed geometry data does not exist."
 
 # tests _getContents
@@ -92,17 +94,17 @@ def test_validateFiles():
 
 def test_emptyInput():
     with pytest.raises(Exception) as e:
-        sith = SITH(emptyPath)
+        sith = SITH(emptyPath, xFstring)
         sith.extractData()
     assert str(e.value) == "Reference data file is empty."
 
     with pytest.raises(Exception) as e:
-        sith = SITH(dePath=emptyPath)
+        sith = SITH(x0string, dePath=emptyPath)
         sith.extractData()
     assert str(e.value) == "One or more deformed files are empty."
 
     with pytest.raises(Exception) as e:
-        sith = SITH(dePath=emptyDir)
+        sith = SITH(x0string, dePath=emptyDir)
         sith.extractData()
     assert str(e.value) == "Deformed directory is empty."
 
@@ -112,7 +114,8 @@ def test_getContents():
     sith._getContents()
     assert sith._rData == frankenLines
     assert len(sith._dData) == 1
-    assert sith._dData[0] == (frankensteinPath, frankenLines)
+    assert sith._dData[0] == (
+        Path(os.getcwd()+'/'+frankensteinPath), frankenLines)
 
 
 def test_getContentsDir():
@@ -200,15 +203,13 @@ def test_kill_bad():
 
 
 def test_killDOFsBAD():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.setKillDOFs([(1, 6), (2, 1, 5, 6)])
     sith.extractData()
 
 
 def test_killDOFsBAD2():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.setKillDOFs([(1, 6)])
     sith.extractData()
 
@@ -224,8 +225,8 @@ def test_removeMismatchedDOFs_noKill():
     assert sith.deformed[0] == refGeo
 
     # no atoms specified for kill but should kill DOF (1, 16) from deformed cus not in reference
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/Gly-x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed/Gly-streched4.fchk')
+    sith = SITH('tests/glycine-ds-test/Gly-x0.fchk',
+                'tests/glycine-ds-test/deformed/Gly-streched4.fchk')
     sith._getContents()
     extractor = Extractor(sith._referencePath, sith._rData)
     extractor._extract()
@@ -244,8 +245,8 @@ def test_removeMismatchedDOFs_noKill():
 
 def test_removeMismatchedDOFs_kill():
     # atoms specified for kill but should kill DOF (1, 16) from deformed cus not in reference
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/Gly-x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed/Gly-streched4.fchk')
+    sith = SITH('/tests/glycine-ds-test/Gly-x0.fchk',
+                'tests/glycine-ds-test/deformed/Gly-streched4.fchk')
     sith._getContents()
     extractor = Extractor(sith._referencePath, sith._rData)
     extractor._extract()
@@ -265,7 +266,7 @@ def test_removeMismatchedDOFs_kill():
 def test_validateGeometries():
     ditto = deepcopy(refGeo)
     ditto._killDOFs([1])
-    sith = SITH()
+    sith = SITH(x0string, xFstring)
     sith._reference = refGeo
     sith._deformed = [ditto]
     with pytest.raises(Exception) as e:
@@ -275,7 +276,7 @@ def test_validateGeometries():
 
     ditto = deepcopy(refGeo)
     ditto.nAtoms -= 1
-    sith = SITH()
+    sith = SITH(x0string, xFstring)
     sith._reference = refGeo
     sith._deformed = [ditto]
     with pytest.raises(Exception) as e:
@@ -307,7 +308,7 @@ def test_populateQ():
 
 
 def test_energyAnalysis():
-    sith = SITH()
+    sith = SITH(x0string, xFstring)
     sith.extractData()
     sith.deltaQ = dqSmall
     sith._reference.hessian = hessSmall
@@ -338,8 +339,7 @@ def test_energyAnalysis_Same():
 # region Integration Tests and Examples
 
 def test_full_killed():  # full with no mismatched, kill valid, deformed directory, just check doesn't crash
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.setKillDOFs([(1, 2), (1, 3)])
     sith.extractData()
     sith.energyAnalysis()
@@ -352,8 +352,7 @@ def test_full_killed():  # full with no mismatched, kill valid, deformed directo
 
 
 def test_multiDeformedGood():  # full no mismatched to remove, deformed directory
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
     assert sith.energies.shape == (15, 5)
@@ -365,8 +364,8 @@ def test_multiDeformedGood():  # full no mismatched to remove, deformed director
 
 
 def test_Glycine():  # full with mismatched to remove, deformed directory
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/Gly-x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed')
+    sith = SITH('tests/glycine-ds-test/Gly-x0.fchk',
+                'tests/glycine-ds-test/deformed')
     sith.extractData()
     sith.energyAnalysis()
     assert sith.energies.shape == (80, 10)
@@ -378,8 +377,8 @@ def test_Glycine():  # full with mismatched to remove, deformed directory
 
 
 def test_Alanine():  # full with valid kill invalid results
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/Ala-stretched00.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/Ala-stretched10.fchk')
+    sith = SITH('tests/Ala-stretched00.fchk',
+                'tests/Ala-stretched10.fchk')
     sith.setKillDOFs([(1, 19)])
     with pytest.raises(Exception) as e:
         sith.extractData()
@@ -388,8 +387,8 @@ def test_Alanine():  # full with valid kill invalid results
 
 
 def test_movedx0():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/moh-x0-1.7.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH('tests/moh-x0-1.7.fchk',
+                'tests/deformed')
     sith.extractData()
     sith.energyAnalysis()
     assert sith.energies.shape == (15, 5)

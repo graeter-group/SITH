@@ -1,4 +1,5 @@
-"""File description docstring TODO"""
+"""SITH class: calculates & houses SITH analysis data."""
+import os
 import sys
 from typing import Tuple
 
@@ -50,16 +51,33 @@ class SITH:
     """
 
     # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
-    def __init__(self, rePath='/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', dePath='/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk'):
+    def __init__(self, rePath='', dePath=''):
         """Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
 
         Notes
         -----
         """
-        self._referencePath = Path(rePath)
+        self._workingPath = Path(os.getcwd())
+
+        self._referencePath = None
         """Path to reference geometry, specified on SITH construction"""
-        self._deformedPath = Path(dePath)
+
+        self._deformedPath = None
         """Path to deformed geometry or directory of deformed geometries, specified on SITH construction"""
+
+        if(rePath == ''):
+            self._referencePath = Path(
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk')
+            self._referencePath = Path(os.getcwd()+'/x0.fchk')
+        else:
+            self._referencePath = Path(os.getcwd()+'/'+rePath)
+
+        if(dePath == ''):
+            self._deformedPath = Path(
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk')
+            self._deformedPath = Path(os.getcwd()+'/xF.fchk')
+        else:
+            self._deformedPath = Path(os.getcwd()+'/'+dePath)
 
         # region variable documentation
 

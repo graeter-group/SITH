@@ -7,14 +7,18 @@ from src.SITH.Utilities import *
 # region SITH Variables
 
 defaultRefPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk')
-dnePath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/dne.fchk')
+dnePath = 'tests/dne.fchk'
 defaultDefPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk')
 defDirPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
-emptyPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/empty.fchk')
-emptyDir = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/empty-test-dir')
+emptyPath = 'tests/empty.fchk'
+emptyDir = 'tests/empty-test-dir'
 
-frankensteinPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk')
-frankensteinDir = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/franken-Dir')
+x0string = 'tests/x0.fchk'
+xFstring = 'tests/xF.fchk'
+deformedString = 'tests/deformed'
+
+frankensteinPath = 'tests/frankenTest-methanol.fchk'
+frankensteinDir = 'tests/franken-Dir'
 frankenLines = ["Title Card Required                                                     \n",
                 "Freq      RBMK                                                        6-31+G              \n",
                 "Number of atoms                            I                6\n",
@@ -574,7 +578,7 @@ fullHessianMOH = [[3.60723640e-01, -1.02888793e-03, -1.02902258e-03,  4.74000287
 
 # endregion
 
-refExtractor = Extractor(frankensteinPath, frankenNoLines)
+refExtractor = Extractor(Path('/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
 refExtractor._extract()
 refGeo = refExtractor.getGeometry()
 refGeoCopy = deepcopy(refGeo)
