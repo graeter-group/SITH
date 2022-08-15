@@ -1,9 +1,7 @@
 import pytest
-from pathlib import Path
 
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import *
-from src.SITH.SithWriter import SithWriter
 from tests.test_variables import *
 
 
@@ -317,10 +315,12 @@ def test_energyAnalysis():
     sith.energyAnalysis()
     expectedDefE = np.transpose(dqSmall).dot(hessSmall).dot(dqSmall) / 2.
     assert sith.deformationEnergy == expectedDefE
-    expectedEnergies = [(dqSmall[i] * 0.5 * hessSmall.dot(dqSmall))[i] for i in range(3)]
+    expectedEnergies = [(dqSmall[i] * 0.5 * hessSmall.dot(dqSmall))[i]
+                        for i in range(3)]
     assert np.array_equal(sith.energies, expectedEnergies)
-    blah = [sum(sith.pEnergies[:,i]) for i in range(len(sith.deformed))]
-    assert all(x == 100 for x in [sum(sith.pEnergies[:,i]) for i in range(len(sith.deformed))])
+    blah = [sum(sith.pEnergies[:, i]) for i in range(len(sith.deformed))]
+    assert all(x == 100 for x in [sum(sith.pEnergies[:, i])
+               for i in range(len(sith.deformed))])
 
 
 def test_energyAnalysis_Same():
@@ -335,18 +335,33 @@ def test_energyAnalysis_Same():
     assert all([np.isnan(pE[0]) for pE in sith.pEnergies])
 
 
-#TODO
-def test_full_killed():  # full with no mismatched, kill valid, deformed directory
+# region Integration Tests and Examples
+
+def test_full_killed():  # full with no mismatched, kill valid, deformed directory, just check doesn't crash
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.setKillDOFs([(1, 2), (1, 3)])
     sith.extractData()
     sith.energyAnalysis()
+    assert sith.energies.shape == (13, 5)
+    assert sith.pEnergies.shape == (13, 5)
+    blah = [sum(sith.pEnergies[:, i]) <=
+            100.000001 for i in range(len(sith.deformed))]
+    assert all(blah)
+    assert sith.deformationEnergy.shape == (1, 5)
 
 
 def test_multiDeformedGood():  # full no mismatched to remove, deformed directory
     sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith.extractData()
+    sith.energyAnalysis()
+    assert sith.energies.shape == (15, 5)
+    assert sith.pEnergies.shape == (15, 5)
+    blah = [sum(sith.pEnergies[:, i]) <=
+            100.000001 for i in range(len(sith.deformed))]
+    assert all(blah)
+    assert sith.deformationEnergy.shape == (1, 5)
 
 
 def test_Glycine():  # full with mismatched to remove, deformed directory
@@ -354,9 +369,12 @@ def test_Glycine():  # full with mismatched to remove, deformed directory
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/glycine-ds-test/deformed')
     sith.extractData()
     sith.energyAnalysis()
-    jp = SithWriter()
-    blah = jp.buildDeltaQString(sith)
-    jp.writeSummary(sith)
+    assert sith.energies.shape == (80, 10)
+    assert sith.pEnergies.shape == (80, 10)
+    blah = [sum(sith.pEnergies[:, i]) <=
+            100.000001 for i in range(len(sith.deformed))]
+    assert all(blah)
+    assert sith.deformationEnergy.shape == (1, 10)
 
 
 def test_Alanine():  # full with valid kill invalid results
@@ -374,3 +392,11 @@ def test_movedx0():
                 '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
     sith.extractData()
     sith.energyAnalysis()
+    assert sith.energies.shape == (15, 5)
+    assert sith.pEnergies.shape == (15, 5)
+    blah = [sum(sith.pEnergies[:, i]) <=
+            100.000001 for i in range(len(sith.deformed))]
+    assert all(blah)
+    assert sith.deformationEnergy.shape == (1, 5)
+
+# endregion
