@@ -1,18 +1,10 @@
 from array import array
 from pathlib import Path
 import pathlib
-from typing import Iterable, Tuple
 
 from ase.units import Bohr
 import numpy as np
 from openbabel import openbabel as ob
-from ase.visualize import view
-from ase import Atoms
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from ipywidgets import HBox, VBox, Output
-
-# TODO: Add a logger
 
 
 class LTMatrix(list):
@@ -197,7 +189,8 @@ class Geometry:
         try:
             self.dims = array('i', [int(d) for d in dims])
         except ValueError:
-            raise Exception("Invalid input given for Redundant internal dimensions.")
+            raise Exception(
+                "Invalid input given for Redundant internal dimensions.")
         assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
             dims) == 4, "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
 
@@ -259,7 +252,8 @@ class Geometry:
             for line in coordLines:
                 self.ric.extend([float(ric) for ric in line.split()])
         except ValueError:
-            raise(Exception("Redundant internal coordinates contains invalid values, such as strings."))
+            raise(Exception(
+                "Redundant internal coordinates contains invalid values, such as strings."))
 
         self.ric = np.asarray(self.ric, dtype=np.float32)
         assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
@@ -296,7 +290,8 @@ class Geometry:
         b = b and self.nAtoms == __o.nAtoms
         b = b and np.array_equal(self.dims, __o.dims)
         b = b and np.array_equal(self.dimIndices, __o.dimIndices)
-        b = b and ((self.hessian is None and __o.hessian is None) or np.array_equal(self.hessian, __o.hessian))
+        b = b and ((self.hessian is None and __o.hessian is None)
+                   or np.array_equal(self.hessian, __o.hessian))
         return b
 
 

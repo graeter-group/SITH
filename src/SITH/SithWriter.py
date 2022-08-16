@@ -1,3 +1,4 @@
+from pickletools import string1
 from typing import Tuple
 
 import numpy as np
@@ -13,11 +14,11 @@ class SithWriter:
 #region: Write
 
     @staticmethod
-    def writeAll(sith: SITH) -> bool:
-        return SithWriter.writeSummary(sith) and SithWriter.writeDeltaQ(sith) and SithWriter.writeEnergyMatrix(sith) and SithWriter.writeError(sith)
+    def writeAll(sith: SITH, filePrefix="") -> bool:
+        return SithWriter.writeSummary(sith, filePrefix) and SithWriter.writeDeltaQ(sith, filePrefix) and SithWriter.writeEnergyMatrix(sith, filePrefix) and SithWriter.writeError(sith, filePrefix)
 
     @staticmethod
-    def writeSummary(sith: SITH, fileName='summary.txt', includeXYZ=False) -> bool:
+    def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
         """
         Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
 
@@ -28,11 +29,12 @@ class SithWriter:
         totE = SithWriter.buildTotEnergiesString(sith)
         dq = SithWriter.buildDeltaQString(sith)
         ric = SithWriter.buildInternalCoordsString(sith)
+        error = SithWriter.buildErrorStrings(sith)
         expectedDE, errorDE, pErrorDE = SithWriter.compareEnergies(sith)
         energies = SithWriter.buildEnergyMatrix(sith)
 
         try:
-            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+sith._referencePath.stem+fileName, "w") as s:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+sith._referencePath.stem+filePrefix+"summary.txt", "w") as s:
                 s.write("Summary of SITH analysis\n")
                 s.write(
                     "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
@@ -43,11 +45,7 @@ class SithWriter:
                 s.write(
                     "\n\n***********************\n**  Energy Analysis  **\n***********************\n")
                 s.write("Overall Structural Energies\n")
-                s.write(
-                    "Deformation        \u0394E          \u0025Error          Error\n")
-                for i in range(len(sith._deformed)):
-                    s.write("{: <12s}{: >16.6E}{: >12.2}{: >16.6E}\n".format(
-                        sith._deformed[i].name, sith.deformationEnergy[0, i], pErrorDE[0, i], errorDE[0, i]))
+                s.writelines('\n'.join(error))
 
                 s.write("Energy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
@@ -84,7 +82,7 @@ class SithWriter:
             return False
 
     @staticmethod
-    def writeTotEnergiesString(sith: SITH, fileName="totalStressEnergy.txt") -> True:
+    def writeTotEnergiesString(sith: SITH, filePrefix="") -> True:
         """
         Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
 
@@ -93,7 +91,7 @@ class SithWriter:
         """
         try:
             lines = SithWriter.buildTotEnergiesString(sith)
-            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"totalStressEnergy.txt", "w") as dq:
                 dq.writelines('\n'.join(lines))
             return True
         except IOError as e:
@@ -105,7 +103,7 @@ class SithWriter:
             return False
 
     @staticmethod
-    def writeDeltaQ(sith: SITH, fileName="delta_q.txt") -> bool:
+    def writeDeltaQ(sith: SITH, filePrefix="") -> bool:
         """
         Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
 
@@ -114,7 +112,7 @@ class SithWriter:
         """
         try:
             dqPrint = SithWriter.buildDeltaQString(sith)
-            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"delta_q.txt", "w") as dq:
                 dq.writelines('\n'.join(dqPrint))
             return True
         except IOError as e:
@@ -126,14 +124,14 @@ class SithWriter:
             return False
 
     @staticmethod
-    def writeError(sith: SITH, fileName='Error.txt') -> bool:
+    def writeError(sith: SITH, filePrefix="") -> bool:
         """Takes in SITH object sith, Writes error data, Returns True if successful
 
         -----
         Writes to .txt file in directory of sith input files' parent"""
         try:
             lines = SithWriter.buildErrorStrings(sith)
-            with open(fileName, "w") as dq:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'Error.txt', "w") as dq:
                 dq.writelines('\n'.join(lines))
             return True
         except IOError as e:
@@ -145,7 +143,7 @@ class SithWriter:
             return False
 
     @staticmethod
-    def writeEnergyMatrix(sith: SITH, fileName='E_RICs.txt') -> bool:
+    def writeEnergyMatrix(sith: SITH, filePrefix='') -> bool:
         """
         Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
 
@@ -154,7 +152,7 @@ class SithWriter:
         """
         try:
             ePrint = SithWriter.buildEnergyMatrix(sith)
-            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+fileName, "w") as dq:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'E_RICs.txt', "w") as dq:
                 dq.writelines('\n'.join(ePrint))
             return True
         except IOError as e:
@@ -288,20 +286,16 @@ class SithWriter:
         """
         expected, error, pError = SithWriter.compareEnergies(sith)
         lines = list()
-        header = "            "
-        for deformation in sith._deformed:
-            header += "{: ^16s}".format(deformation.name)
-        lines.append(header)
-        lines.append("{: <12}".format('Expected Energy') +
-                     ''.join(["{: >16.6E}".format(e) for e in expected[0]]))
-        lines.append("{: <12}".format('Signed Error') +
-                     ''.join(["{: >16.6E}".format(e) for e in error[0]]))
-        lines.append("{: <12}".format("\u0025Error") +
-                     ''.join(["{: >16.2}".format(e) for e in pError[0]]))
+        lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format('Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
+            #"Deformation        \u0394E          Expected \u0394E       \u0025Error        Error")
+        for i in range(len(sith._deformed)):
+            lines.append("{: <12s}{: >16.6E}{: >16.6E}{: >12.2f}{: >16.6E}".format(
+                sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
         return lines
-        
+
 
 # endregion
+
 
     @staticmethod
     def compareEnergies(sith: SITH) -> Tuple:

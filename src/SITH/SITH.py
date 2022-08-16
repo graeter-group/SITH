@@ -1,5 +1,5 @@
-"""File description docstring TODO"""
-from operator import contains, indexOf
+"""SITH class: calculates & houses SITH analysis data."""
+import os
 import sys
 from typing import Tuple
 
@@ -8,8 +8,6 @@ from pathlib import Path
 import numpy as np
 
 from src.SITH.Utilities import Extractor
-
-# TODO: Add a logger
 
 
 class SITH:
@@ -53,16 +51,33 @@ class SITH:
     """
 
     # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
-    def __init__(self, rePath='/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk', dePath='/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk'):
+    def __init__(self, rePath='', dePath=''):
         """Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
 
         Notes
         -----
         """
-        self._referencePath = Path(rePath)
+        self._workingPath = Path(os.getcwd())
+
+        self._referencePath = None
         """Path to reference geometry, specified on SITH construction"""
-        self._deformedPath = Path(dePath)
+
+        self._deformedPath = None
         """Path to deformed geometry or directory of deformed geometries, specified on SITH construction"""
+
+        if(rePath == ''):
+            self._referencePath = Path(
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk')
+            self._referencePath = Path(os.getcwd()+'/x0.fchk')
+        else:
+            self._referencePath = Path(os.getcwd()+'/'+rePath)
+
+        if(dePath == ''):
+            self._deformedPath = Path(
+                '/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk')
+            self._deformedPath = Path(os.getcwd()+'/xF.fchk')
+        else:
+            self._deformedPath = Path(os.getcwd()+'/'+dePath)
 
         # region variable documentation
 
@@ -142,17 +157,20 @@ class SITH:
         # endregion
 
         self._validateFiles()
+        print("Successfully initialized SITH object with given input files...")
 
 # region Atomic Homicide
 
     def __kill(self):
         """Executes the removal of degrees of freedom (DOFs) specified and any associated with specified atoms."""
+        print("Killing atoms and degrees of freedom...")
         self.__killDOFs(self._killDOFs)
         dimsToKill = list()
         for atom in self._killAtoms:
             dimsToKill.extend(
                 [dim for dim in self._reference.dimIndices if atom in dim])
         self.__killDOFs(dimsToKill)
+        print("Atoms and DOFs killed...")
 
         """Use Case Note:
         This is a private method to limit user error. Specification of these DOFs is made by the user programmatically with the public functions SetKillAtoms(atoms: list)
@@ -209,6 +227,7 @@ class SITH:
         """
         self._killAtoms = atoms
         self._kill = True
+        print("Atoms to be killed are set...")
 
     def setKillDOFs(self, dofs: list):
         """
@@ -217,6 +236,7 @@ class SITH:
         """
         self._killDOFs = dofs
         self._kill = True
+        print("DOFs to be killed are set...")
 
     def removeMismatchedDOFs(self):
         """
@@ -226,7 +246,7 @@ class SITH:
         NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
         and indicates an issue with the calculation which must be fixed in the generation of input. Solution: https://gaussian.com/gic/ specify Active GIC in deformed opt
         """
-
+        print("Removing DOFs in the deformed geometries which are not present in the reference geometry...")
         for deformation in self._deformed:
             dofsToRemove = list()
             for j in range(max(deformation.dims[0], self._reference.dims[0])):
@@ -248,7 +268,7 @@ class SITH:
         Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
         SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
         the relevant data."""
-
+        print("Beginning data extraction...")
         self._getContents()
 
         rExtractor = Extractor(self._referencePath, self._rData)
@@ -260,6 +280,8 @@ class SITH:
             dExtractor = Extractor(dd[0], dd[1])
             dExtractor._extract()
             self._deformed.append(dExtractor.getGeometry())
+
+        print("Finished data extraction...")
 
         # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
         # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
@@ -275,6 +297,7 @@ class SITH:
         self._validateGeometries()
 
         self._populateQ()
+        print("Finished setting up for energy analysis...")
 
     def energyAnalysis(self):
         """
@@ -286,7 +309,7 @@ class SITH:
         (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
         between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
         each DOF (SITH.energies)."""
-
+        print("Performing energy analysis...")
         if self.deltaQ is None or self.q0 is None or self.qF is None:
             raise Exception(
                 "Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().")
@@ -303,7 +326,8 @@ class SITH:
                 isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
                     self._reference.dims[0]-j-1)))
                 self.energies[j, i] = 0.5 * \
-                    (isolatedDOF).dot(self._reference.hessian).dot(self.deltaQ[:,i])
+                    (isolatedDOF).dot(self._reference.hessian).dot(
+                        self.deltaQ[:, i])
             self.pEnergies[:, i] = float(
                 100) * self.energies[:, i] / self.deformationEnergy[0, i]
 
@@ -335,6 +359,7 @@ class SITH:
         """
         Check that all files exist and whether the deformed path is a directory
         """
+        print("Validating input files...")
         assert self._referencePath.exists(), "Path to reference geometry data does not exist."
         assert self._deformedPath.exists(), "Path to deformed geometry data does not exist."
 
@@ -344,7 +369,9 @@ class SITH:
         """
         Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
-        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
+        print("Validating geometries...")
+        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(
+            deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
 # endregion
 
@@ -352,6 +379,7 @@ class SITH:
         """
         Gets the contents of the input files, including those in a deformed directory and verifies they are not empty.
         """
+        print("Retrieving file contents...")
         try:
             with self._referencePath.open() as rFile:
                 self._rData = rFile.readlines()
@@ -383,6 +411,7 @@ class SITH:
 
     def _populateQ(self):
         """Populates the reference RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs."""
+        print("Populating RIC vectors and calculating \u0394q...")
         self.q0 = np.zeros((self._reference.dims[0], 1))
         self.qF = np.zeros((self._reference.dims[0], 1))
         self.q0[:, 0] = np.transpose(np.asarray(self._reference.ric))
@@ -400,7 +429,7 @@ class SITH:
         """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
         coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
         instead of what it should be: k + l"""
-        # # TODO: make this more definitive than an arbitrary threshold, experient with -> 0 or -> - 2*pi etc.
+        # # TODO: make this more definitive than an arbitrary threshold, experiment with -> 0 or -> - 2*pi etc.
         angleThreshold = 0.05  # Current radian threshold
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
             for dq in dqit:

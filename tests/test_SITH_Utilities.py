@@ -176,8 +176,7 @@ def test_getAtoms():
 
 
 def test_killDOF():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     a = sith._reference.hessian == eHessFull
     assert (sith._reference.hessian == eHessFull).all()
@@ -190,8 +189,7 @@ def test_killDOF():
     assert (sith._reference.hessian == eHessKill0).all()
 
 def test_killDOFs():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     a = sith._reference.hessian == eHessFull
     assert (sith._reference.hessian == eHessFull).all()
@@ -226,10 +224,10 @@ def test_extract():
 
 
 def test_extractedGeometry():
-    extractor = Extractor(frankensteinPath, frankenNoLines)
+    extractor = Extractor(Path('/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
     extractor._extract()
     geo = extractor.getGeometry()
-    egeo = Geometry(frankensteinPath.stem, 'blah', 6)
+    egeo = Geometry('frankenTest-methanol', 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     egeo.buildCartesian(cartesianLines)

@@ -1,4 +1,3 @@
-from ase import Atoms
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from ipywidgets import HBox, Output
@@ -11,7 +10,7 @@ class MoleculeViewer:
         """ Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
         (lengths, angles, dihedrals)
-        
+
         alignment: list[int]
             list of three indexes corresponding to the
             indexes of the atoms in the xy plane. the first
@@ -432,6 +431,38 @@ class MoleculeViewer:
                 self.viewer.view.remove_component(triangle)
         self.dihedrals.clear()
 
+    def add_axis(self, length=1, radius=0.1):
+        """
+        Add xyz axis.
+
+        Parameters
+        ==========
+
+        length: float
+            indicates the length of the axis in the visualization. Default=1
+        radius: float
+            thickness of the xyz axis
+        """
+        self.axis = {}
+
+        unit_vectors = np.array([[length, 0, 0],
+                                 [0, length, 0],
+                                 [0, 0, length]])
+        for i in range(3):
+            a = self.shape.add_cylinder([0, 0, 0],
+                                        unit_vectors[i],
+                                        unit_vectors[i]/length,
+                                        radius)
+            self.axis[str(i)] = a
+
+    def remove_axis(self):
+        """
+        remove xyz axis
+        """
+        for name in self.axis.keys():
+            self.viewer.view.remove_component(self.axis[name])
+        self.axis.clear()
+
     def download_image(self):
         self.viewer.view.download_image()
 
@@ -440,7 +471,8 @@ class MoleculeViewer:
 
 
 class VisualizeEnergies(MoleculeViewer):
-    def __init__(self, sith_object, idef=0, alignment=None, axis=False, **kwargs):
+    def __init__(self, sith_info, idef=0, alignment=None, axis=False,
+                 background='#ffc', **kwargs):
         """
         Set of tools to show a molecule and the
         distribution of energies in the different DOF.
@@ -448,48 +480,42 @@ class VisualizeEnergies(MoleculeViewer):
         Params
         ======
 
-        sith_object :
-            sith object
+        sith_info :
+            sith object or sith.utilities.ReadSummary object
         idef: int
             number of the deformation to be analized. Default=0
+        alignment: list
+            3 indexes to fix the correspondig atoms in the xy plane.
+        axis: bool
+            add xyz axis
+        background: color
+            background color. Default: '#ffc'
         """
         self.idef = idef
-        self.sith = sith_object
+        self.sith = sith_info
         if self.sith.energies is None:
             self._analize_energies(**kwargs)
 
-        # CHANGE: this could be imported directly from
-        # sith as an ase.Atoms object or, at least, coordinates
-        # must be float from sith.
-        molecule = ''.join([atom.element for atom in
-                            self.sith._deformed[idef].atoms])
-        positions = [[float(component) for component in atom.coords]
-                     for atom in self.sith._deformed[idef].atoms]
-        atoms = Atoms(molecule, positions)
+        atoms = self.sith._deformed[self.idef].atoms
 
         MoleculeViewer.__init__(self, atoms, alignment, axis)
+
+        self.viewer.view.background = background
 
         dims = self.sith._reference.dims
         self.nbonds = dims[1]
         self.nangles = dims[2]
         self.ndihedral = dims[3]
 
-    def _analize_energies(self, dofs=[]):
+    def _analize_energies(self):
         """
-        Execute JEDI method to obtain the energies of the
+        Execute JEDI method to obtain the energies of each
         DOFs
 
-        see:
-        Parameters
-        ==========
-
-        dofs : list of tuples
-            Degrees of freedom to be removed from the analysis.
+        see: https://doi.org/10.1063/1.4870334
         """
-        if self.sith.energies is None:
-            self.sith.setKillDOFs([])
-            self.sith.extractData()
-            self.sith.energyAnalysis()
+        self.sith.extractData()
+        self.sith.energyAnalysis()
 
     def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
         """
@@ -690,45 +716,50 @@ class VisualizeEnergies(MoleculeViewer):
         """
         return self.box
 
-    # HERE STARTS ALIGNMENT PART
+    # Alignment
 
     def rot_x(self, angle):
         c = np.cos(angle)
         s = np.sin(angle)
-        R = np.array([[ 1,  0,  0],
-                    [ 0,  c, -s],
-                    [ 0,  s,  c]])
+        R = np.array([[1, 0, 0],
+                      [0, c, -s],
+                      [0, s, c]])
         return R
 
     def rot_y(self, angle):
         c = np.cos(angle)
         s = np.sin(angle)
-        R = np.array([[ c,  0,  s],
-                    [ 0,  1,  0],
-                    [-s,  0,  c]])
+        R = np.array([[c, 0, s],
+                      [0, 1, 0],
+                      [-s, 0, c]])
         return R
 
     def rot_z(self, angle):
         c = np.cos(angle)
         s = np.sin(angle)
-        R = np.array([[ c, -s,  0],
-                    [ s,  c,  0],
-                    [ 0,  0,  1]])
+        R = np.array([[c, -s, 0],
+                      [s, c, 0],
+                      [0, 0, 1]])
         return R
 
     def align_axis(self, vector):
-        """Apply the necessary rotations to achieve
-        vector aligned with x axis"""
+        """
+        Apply the necessary rotations to set a
+        vector aligned with positive x axis
+        """
         xyproj = vector.copy()
         xyproj[2] = 0
         phi = np.arcsin(vector[2]/np.linalg.norm(vector))
-        theta  = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
         if vector[1] < 0:
             theta *= -1
         trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
         return trans
 
     def align_plane(self, vector):
+        """
+        Rotation around x axis to set a vector in the xy plane
+        """
         reference = vector.copy()
         reference[0] = 0
         angle = np.arccos(reference[1]/np.linalg.norm(reference))
@@ -737,6 +768,10 @@ class VisualizeEnergies(MoleculeViewer):
         return self.rot_x(-angle)
 
     def apply_trans(self, trans):
+        """
+        Apply a transformation to all vector positions of the
+        atoms object
+        """
         new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
         self.atoms.set_positions(new_positions)
         return new_positions
@@ -746,7 +781,7 @@ class VisualizeEnergies(MoleculeViewer):
         transforme the positions of the atoms such that
         the atoms of indexes 1 and 2 are aligned in the
         x axis
-        
+
         the atom 3 is in the xy plane"""
         # center
         center = (self.atoms[index1].position+self.atoms[index2].position)/2
@@ -756,21 +791,3 @@ class VisualizeEnergies(MoleculeViewer):
         third = self.atoms[index3].position
         self.apply_trans(self.align_plane(third))
         return self.atoms.positions
-
-    def add_axis(self, l=1, radius=0.1):
-        self.axis = {}
-
-        unit_vectors = np.array([[l, 0, 0],
-                                 [0, l, 0],
-                                 [0, 0, l]])
-        for i in range(3):
-            a = self.shape.add_cylinder([0, 0, 0],
-                                        unit_vectors[i],
-                                        unit_vectors[i]/l,
-                                        radius)
-            self.axis[str(i)] = a
-
-    def remove_axis(self):
-        for name in self.axis.keys():
-            self.viewer.view.remove_component(self.axis[name])
-        self.axis.clear()

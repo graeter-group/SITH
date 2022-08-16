@@ -1,10 +1,14 @@
 from src.SITH.Utilities import *
 from src.SITH.SITH import SITH
 from src.SITH.SithWriter import SithWriter
+from tests.test_variables import *
 
+"""There aren't necessarily very many options for testing here which are not unnecessarily detailed so 
+the testing of SithWriter is kept to a minimum of simply 'it works' and manually checking the output files. 
+This can be expanded upon later if necessary."""
 
 def test_buildDQ():
-    sith = SITH()
+    sith = SITH(x0string, xFstring)
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
@@ -13,8 +17,7 @@ def test_buildDQ():
 
 
 def test_buildDQ2():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
@@ -23,20 +26,18 @@ def test_buildDQ2():
 
 
 def test_compareEnergies():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
     blah = jp.buildDeltaQString(sith)
-    jp.writeDeltaQ(sith)
-    jp.compareEnergies(sith)
-    jp.writeEnergyMatrix(sith)
-    jp.writeSummary(sith)
+    assert jp.writeDeltaQ(sith)
+    assert jp.writeError(sith)
+    assert jp.writeEnergyMatrix(sith)
+    assert jp.writeSummary(sith)
     
 def test_writeAll():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
@@ -44,10 +45,8 @@ def test_writeAll():
     blah = 2
 
 def test_writeSummaryXYZ():
-    sith = SITH('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk',
-                '/hits/fast/mbm/farrugma/sw/SITH/tests/deformed')
+    sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
     jp = SithWriter()
     assert jp.writeSummary(sith, "xyzSummary.txt", includeXYZ=True)
-    blah = 2
