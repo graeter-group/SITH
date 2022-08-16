@@ -47,7 +47,7 @@ class SithWriter:
                 s.write("Overall Structural Energies\n")
                 s.writelines('\n'.join(error))
 
-                s.write("Energy per DOF (RIC)\n")
+                s.write("\nEnergy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
 
                 if includeXYZ:
@@ -72,6 +72,7 @@ class SithWriter:
                         s.write(geometry.name+" .XYZ\n")
                         s.writelines(xyzString)
 
+                s.write('\n')
                 return True
         except IOError as e:
             print(e)
@@ -93,6 +94,7 @@ class SithWriter:
             lines = SithWriter.buildTotEnergiesString(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"totalStressEnergy.txt", "w") as dq:
                 dq.writelines('\n'.join(lines))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -114,6 +116,7 @@ class SithWriter:
             dqPrint = SithWriter.buildDeltaQString(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"delta_q.txt", "w") as dq:
                 dq.writelines('\n'.join(dqPrint))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -133,6 +136,7 @@ class SithWriter:
             lines = SithWriter.buildErrorStrings(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'Error.txt', "w") as dq:
                 dq.writelines('\n'.join(lines))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -154,6 +158,7 @@ class SithWriter:
             ePrint = SithWriter.buildEnergyMatrix(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'E_RICs.txt', "w") as dq:
                 dq.writelines('\n'.join(ePrint))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -286,8 +291,9 @@ class SithWriter:
         """
         expected, error, pError = SithWriter.compareEnergies(sith)
         lines = list()
-        lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format('Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
-            #"Deformation        \u0394E          Expected \u0394E       \u0025Error        Error")
+        lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format(
+            'Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
+        # "Deformation        \u0394E          Expected \u0394E       \u0025Error        Error")
         for i in range(len(sith._deformed)):
             lines.append("{: <12s}{: >16.6E}{: >16.6E}{: >12.2f}{: >16.6E}".format(
                 sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
