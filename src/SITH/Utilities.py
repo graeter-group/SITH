@@ -358,21 +358,6 @@ class Extractor:
 
         self.__lines = linesList
 
-    # This is kept because using SithWriter.writeXYZ(self.geometry) would cause circular dependency
-    def _writeXYZ(self):
-        """
-        Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
-        """
-        obConversion = ob.OBConversion()
-        obConversion.SetInAndOutFormats("fchk", "xyz")
-
-        mol = ob.OBMol()
-        assert self._path.exists(), "Path to fchk file does not exist"
-        assert obConversion.ReadFile(mol, self._path.as_posix(
-        )), "Reading fchk file with openbabel failed."
-        assert obConversion.WriteFile(mol, str(
-            self._path.parent.as_posix()+self._path.root+self._path.stem+".xyz")), "Could not write XYZ file."
-
     def _extract(self) -> bool:
         """Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful"""
 
@@ -434,14 +419,16 @@ class Extractor:
             self.buildHessian()
 
             print("Translating .fchk file to new .xyz file with OpenBabel...")
-            # Using the SithWriter method here would cause a circular dependency
-            # TODO: remedy this by building it out separately if possible, but not a big deal as long as only write method
-            self._writeXYZ()
 
-            print("Opening .xyz file...")
-            with open(self._path.parent.as_posix()+self._path.root + self._path.stem + ".xyz", "r") as xyz:
-                xyzLines = xyz.readlines()
-                self.geometry.buildCartesian(xyzLines)
+            obConversion = ob.OBConversion()
+            obConversion.SetInAndOutFormats("fchk", "xyz")
+            mol = ob.OBMol()
+            assert self._path.exists(), "Path to fchk file does not exist"
+            assert obConversion.ReadFile(mol, self._path.as_posix(
+            )), "Reading fchk file ("+self._path.as_posix()+") with openbabel failed."
+            xyzString = obConversion.WriteString(mol)
+            self.geometry.buildCartesian(xyzString.split('\n'))
+
             print("Cartesian data extracted successfully.")
             return True
         except Exception as e:

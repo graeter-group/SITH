@@ -1,5 +1,4 @@
 """SITH class: calculates & houses SITH analysis data."""
-import os
 import sys
 from typing import Tuple
 
