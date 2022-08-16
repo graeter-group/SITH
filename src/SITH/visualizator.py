@@ -2,23 +2,35 @@ from ase import Atoms
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from ipywidgets import HBox, Output
-from src.SITH.visualizator import MoleculeViewer
 import numpy as np
 from ase.visualize import view
 
 
 class MoleculeViewer:
-    def __init__(self, atoms):
+    def __init__(self, atoms, alignment=None, axis=False):
         """ Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
-        (lengths, angles, dihedrals)"""
-        self.atoms = atoms
-        self.viewer = view(atoms, viewer='ngl')
+        (lengths, angles, dihedrals)
+        
+        alignment: list[int]
+            list of three indexes corresponding to the
+            indexes of the atoms in the xy plane. the first
+            two atoms are set to the x axis.
+        """
+        self.atoms = atoms.copy()
+
+        if alignment is not None:
+            index1, index2, index3 = alignment
+            self.xy_alignment(index1, index2, index3)
+
+        self.viewer = view(self.atoms, viewer='ngl')
         self.bonds = {}
         self.angles = {}
         self.dihedrals = {}
         self.shape = self.viewer.view.shape
         self.box = self.viewer
+        if axis:
+            self.add_axis()
 
     def add_bond(self, atom1index, atom2index,
                  color=[0.5, 0.5, 0.5], radius=0.1):
@@ -41,7 +53,7 @@ class MoleculeViewer:
         Output
         ======
 
-        Return the bonds int the system
+        Return the bonds in the system
         """
 
         indexes = [atom1index, atom2index]
@@ -78,7 +90,7 @@ class MoleculeViewer:
         Output
         ======
 
-        Return the bonds int the system
+        Return the bonds in the system
         """
 
         if colors is None:
@@ -121,7 +133,7 @@ class MoleculeViewer:
         Output
         ======
 
-        Return the bonds int the system
+        Return the bonds in the system
         """
         indexes = [atom1index, atom2index]
         indexes.sort()
@@ -130,7 +142,6 @@ class MoleculeViewer:
         if name in self.bonds.keys():
             self.viewer.view.remove_component(self.bonds[name])
             del self.bonds[name]
-            print(f"angle {name} removed")
         return self.bonds
 
     def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
@@ -429,7 +440,7 @@ class MoleculeViewer:
 
 
 class VisualizeEnergies(MoleculeViewer):
-    def __init__(self, sith_object, idef=0, **kwargs):
+    def __init__(self, sith_object, idef=0, alignment=None, axis=False, **kwargs):
         """
         Set of tools to show a molecule and the
         distribution of energies in the different DOF.
@@ -451,12 +462,12 @@ class VisualizeEnergies(MoleculeViewer):
         # sith as an ase.Atoms object or, at least, coordinates
         # must be float from sith.
         molecule = ''.join([atom.element for atom in
-                            self.sith._reference.atoms])
+                            self.sith._deformed[idef].atoms])
         positions = [[float(component) for component in atom.coords]
-                     for atom in self.sith._reference.atoms]
+                     for atom in self.sith._deformed[idef].atoms]
         atoms = Atoms(molecule, positions)
 
-        MoleculeViewer.__init__(self, atoms)
+        MoleculeViewer.__init__(self, atoms, alignment, axis)
 
         dims = self.sith._reference.dims
         self.nbonds = dims[1]
@@ -678,3 +689,88 @@ class VisualizeEnergies(MoleculeViewer):
         Show the molecule.
         """
         return self.box
+
+    # HERE STARTS ALIGNMENT PART
+
+    def rot_x(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[ 1,  0,  0],
+                    [ 0,  c, -s],
+                    [ 0,  s,  c]])
+        return R
+
+    def rot_y(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[ c,  0,  s],
+                    [ 0,  1,  0],
+                    [-s,  0,  c]])
+        return R
+
+    def rot_z(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[ c, -s,  0],
+                    [ s,  c,  0],
+                    [ 0,  0,  1]])
+        return R
+
+    def align_axis(self, vector):
+        """Apply the necessary rotations to achieve
+        vector aligned with x axis"""
+        xyproj = vector.copy()
+        xyproj[2] = 0
+        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
+        theta  = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        if vector[1] < 0:
+            theta *= -1
+        trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
+        return trans
+
+    def align_plane(self, vector):
+        reference = vector.copy()
+        reference[0] = 0
+        angle = np.arccos(reference[1]/np.linalg.norm(reference))
+        if reference[2] < 0:
+            angle *= -1
+        return self.rot_x(-angle)
+
+    def apply_trans(self, trans):
+        new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
+        self.atoms.set_positions(new_positions)
+        return new_positions
+
+    def xy_alignment(self, index1, index2, index3):
+        """
+        transforme the positions of the atoms such that
+        the atoms of indexes 1 and 2 are aligned in the
+        x axis
+        
+        the atom 3 is in the xy plane"""
+        # center
+        center = (self.atoms[index1].position+self.atoms[index2].position)/2
+        self.atoms.set_positions(self.atoms.positions - center)
+        axis = self.atoms[index2].position
+        self.apply_trans(self.align_axis(axis))
+        third = self.atoms[index3].position
+        self.apply_trans(self.align_plane(third))
+        return self.atoms.positions
+
+    def add_axis(self, l=1, radius=0.1):
+        self.axis = {}
+
+        unit_vectors = np.array([[l, 0, 0],
+                                 [0, l, 0],
+                                 [0, 0, l]])
+        for i in range(3):
+            a = self.shape.add_cylinder([0, 0, 0],
+                                        unit_vectors[i],
+                                        unit_vectors[i]/l,
+                                        radius)
+            self.axis[str(i)] = a
+
+    def remove_axis(self):
+        for name in self.axis.keys():
+            self.viewer.view.remove_component(self.axis[name])
+        self.axis.clear()
