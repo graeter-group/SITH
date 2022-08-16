@@ -222,7 +222,7 @@ class SithWriter:
         dqAngstroms = list()
         header = "DOF         "
         for deformation in sith._deformed:
-            header += "{: ^12s}".format(deformation.name)
+            header += "{: ^16s}".format(deformation.name)
         dqAngstroms.append(header)
         dqAng = [uc.bohrToAngstrom(dq)
                  for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
@@ -230,20 +230,20 @@ class SithWriter:
         for dof in range(sith._reference.dims[1]):
             if len(sith._deformed) > 1:
                 line = "{: <12}".format(
-                    dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
+                    dof+1) + ''.join(["{: >16.6e}".format(dqa) for dqa in dqAng[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = "{: <12}{: >12.8f}".format(dof+1, dqAng[dof][0])
+                line = "{: <12}{: >16.6e}".format(dof+1, dqAng[dof][0])
                 dqAngstroms.append(line)
         dqDeg = np.degrees(sith.deltaQ[sith._reference.dims[1]:, :])
         dqDeg = np.asarray(dqDeg)
         for dof in range(sith._reference.dims[2]+sith._reference.dims[3]):
             if len(sith._deformed) > 1:
                 line = "{:< 12}".format(dof+1+sith._reference.dims[1]) + ''.join(
-                    ["{: >12.8f}".format(dqd) for dqd in dqDeg[dof, :]])
+                    ["{: >16.6e}".format(dqd) for dqd in dqDeg[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = "{:< 12}{: >12.8f}".format(
+                line = "{:< 12}{: >16.6e}".format(
                     dof+1+sith._reference.dims[1], dqDeg[dof][0])
                 dqAngstroms.append(line)
 
