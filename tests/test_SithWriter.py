@@ -7,6 +7,7 @@ from tests.test_variables import *
 the testing of SithWriter is kept to a minimum of simply 'it works' and manually checking the output files. 
 This can be expanded upon later if necessary."""
 
+
 def test_buildDQ():
     sith = SITH(x0string, xFstring)
     sith.extractData()
@@ -35,7 +36,8 @@ def test_compareEnergies():
     assert jp.writeError(sith)
     assert jp.writeEnergyMatrix(sith)
     assert jp.writeSummary(sith)
-    
+
+
 def test_writeAll():
     sith = SITH(x0string, deformedString)
     sith.extractData()
@@ -43,6 +45,7 @@ def test_writeAll():
     jp = SithWriter()
     assert jp.writeAll(sith)
     blah = 2
+
 
 def test_writeSummaryXYZ():
     sith = SITH(x0string, deformedString)

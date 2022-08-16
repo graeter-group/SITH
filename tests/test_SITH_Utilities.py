@@ -40,6 +40,7 @@ def test_buildRICGood():
     assert geo.dimIndices == dimIndices
     assert all([geo.ric[i] == coords[i] for i in range(len(coords))])
 
+
 def test_equals():
     geoCopy = deepcopy(refGeo)
     assert geoCopy == refGeo
@@ -162,11 +163,13 @@ def test_buildRIC_badDims():
 
 # region Cartesian
 
+
 def test_buildCartesian():
     geo = Geometry('methanol-test', 'blah', 6)
     geo.buildCartesian(cartesianLines)
     assert geo.nAtoms == 6 == len(geo.atoms)
     assert all([geo.atoms[i] == refAtoms[i] for i in range(len(refAtoms))])
+
 
 def test_buildCartesian_integrated():
     assert refGeo.nAtoms == 6 == len(refGeo.atoms)
@@ -188,6 +191,7 @@ def test_killDOF():
     assert sith._reference.dims == array('i', [14, 4, 7, 3])
     d = sith._reference.hessian == eHessKill0
     assert (sith._reference.hessian == eHessKill0).all()
+
 
 def test_killDOFs():
     sith = SITH(x0string, deformedString)
@@ -213,10 +217,6 @@ def test_creationEmptyList():
     assert extractor._path == testPath
     assert extractor._name == testPath.stem
 
-#TODO
-def test_writeXYZ():
-    pass
-
 
 def test_extract():
     extractor = Extractor(testPath, frankenNoLines)
@@ -225,7 +225,8 @@ def test_extract():
 
 
 def test_extractedGeometry():
-    extractor = Extractor(Path('/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
+    extractor = Extractor(Path(
+        '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
     extractor._extract()
     geo = extractor.getGeometry()
     egeo = Geometry('frankenTest-methanol', 'blah', 6)
