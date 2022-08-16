@@ -162,15 +162,16 @@ def test_buildRIC_badDims():
 
 # region Cartesian
 
-# TODO
-
-
 def test_buildCartesian():
-    pass
+    geo = Geometry('methanol-test', 'blah', 6)
+    geo.buildCartesian(cartesianLines)
+    assert geo.nAtoms == 6 == len(geo.atoms)
+    assert all([geo.atoms[i] == refAtoms[i] for i in range(len(refAtoms))])
 
+def test_buildCartesian_integrated():
+    assert refGeo.nAtoms == 6 == len(refGeo.atoms)
+    assert all([refGeo.atoms[i] == refAtoms[i] for i in range(len(refAtoms))])
 
-def test_getAtoms():
-    pass
 
 # endregion
 

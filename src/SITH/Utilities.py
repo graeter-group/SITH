@@ -172,10 +172,11 @@ class Geometry:
                 raise Exception("Mismatch in number of atoms.")
         for line in lines:
             sLine = line.split()
-            if len(sLine) > 1 and len(sLine) < 5:
-                a = Atom(sLine[0], sLine[1:4])
+            if len(sLine) == 4:
+                coords = [float(x) for x in sLine[1:4]]
+                a = Atom(sLine[0], coords)
                 self.atoms.append(a)
-            elif len(sLine) >= 5:
+            else:
                 pass
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
@@ -303,7 +304,7 @@ class Atom:
         self.coords = coords
 
     def __eq__(self, __o: object) -> bool:
-        return self.element == __o.element and self.coords == __o.coords
+        return self.element == __o.element and all([self.coords[i] == __o.coords[i] for i in range(3)])
 
 
 class UnitConverter:

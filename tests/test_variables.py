@@ -582,3 +582,10 @@ refExtractor = Extractor(Path('/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest
 refExtractor._extract()
 refGeo = refExtractor.getGeometry()
 refGeoCopy = deepcopy(refGeo)
+
+refAtoms = (Atom('C', (0.68485, -0.02290,-0.00000)),
+            Atom('H',( 1.08036,  0.99483, 0.00066)),
+            Atom('H',( 1.03884, -0.54798, 0.89820)),
+            Atom('H',( 1.03895, -0.54688,-0.89880)),
+            Atom('O',(-0.75654,  0.12140,-0.00000)),
+            Atom('H',(-1.21495, -0.73375,-0.00001)))
