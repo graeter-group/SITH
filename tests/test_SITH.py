@@ -245,7 +245,7 @@ def test_removeMismatchedDOFs_noKill():
 
 def test_removeMismatchedDOFs_kill():
     # atoms specified for kill but should kill DOF (1, 16) from deformed cus not in reference
-    sith = SITH('/tests/glycine-ds-test/Gly-x0.fchk',
+    sith = SITH('tests/glycine-ds-test/Gly-x0.fchk',
                 'tests/glycine-ds-test/deformed/Gly-streched4.fchk')
     sith._getContents()
     extractor = Extractor(sith._referencePath, sith._rData)
