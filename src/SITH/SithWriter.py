@@ -1,4 +1,3 @@
-from pickletools import string1
 from typing import Tuple
 
 import numpy as np
@@ -47,7 +46,7 @@ class SithWriter:
                 s.write("Overall Structural Energies\n")
                 s.writelines('\n'.join(error))
 
-                s.write("Energy per DOF (RIC)\n")
+                s.write("\nEnergy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
 
                 if includeXYZ:
@@ -72,6 +71,7 @@ class SithWriter:
                         s.write(geometry.name+" .XYZ\n")
                         s.writelines(xyzString)
 
+                s.write('\n')
                 return True
         except IOError as e:
             print(e)
@@ -93,6 +93,7 @@ class SithWriter:
             lines = SithWriter.buildTotEnergiesString(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"totalStressEnergy.txt", "w") as dq:
                 dq.writelines('\n'.join(lines))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -114,6 +115,7 @@ class SithWriter:
             dqPrint = SithWriter.buildDeltaQString(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"delta_q.txt", "w") as dq:
                 dq.writelines('\n'.join(dqPrint))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -133,6 +135,7 @@ class SithWriter:
             lines = SithWriter.buildErrorStrings(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'Error.txt', "w") as dq:
                 dq.writelines('\n'.join(lines))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -154,6 +157,7 @@ class SithWriter:
             ePrint = SithWriter.buildEnergyMatrix(sith)
             with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'E_RICs.txt', "w") as dq:
                 dq.writelines('\n'.join(ePrint))
+                dq.write('\n')
             return True
         except IOError as e:
             print(e)
@@ -217,7 +221,7 @@ class SithWriter:
         dqAngstroms = list()
         header = "DOF         "
         for deformation in sith._deformed:
-            header += "{: ^12s}".format(deformation.name)
+            header += "{: ^16s}".format(deformation.name)
         dqAngstroms.append(header)
         dqAng = [uc.bohrToAngstrom(dq)
                  for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
@@ -225,20 +229,20 @@ class SithWriter:
         for dof in range(sith._reference.dims[1]):
             if len(sith._deformed) > 1:
                 line = "{: <12}".format(
-                    dof+1) + ''.join(["{: >12.8f}".format(dqa) for dqa in dqAng[dof, :]])
+                    dof+1) + ''.join(["{: >16.6e}".format(dqa) for dqa in dqAng[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = "{: <12}{: >12.8f}".format(dof+1, dqAng[dof][0])
+                line = "{: <12}{: >16.6e}".format(dof+1, dqAng[dof][0])
                 dqAngstroms.append(line)
         dqDeg = np.degrees(sith.deltaQ[sith._reference.dims[1]:, :])
         dqDeg = np.asarray(dqDeg)
         for dof in range(sith._reference.dims[2]+sith._reference.dims[3]):
             if len(sith._deformed) > 1:
                 line = "{:< 12}".format(dof+1+sith._reference.dims[1]) + ''.join(
-                    ["{: >12.8f}".format(dqd) for dqd in dqDeg[dof, :]])
+                    ["{: >16.6e}".format(dqd) for dqd in dqDeg[dof, :]])
                 dqAngstroms.append(line)
             else:
-                line = "{:< 12}{: >12.8f}".format(
+                line = "{:< 12}{: >16.6e}".format(
                     dof+1+sith._reference.dims[1], dqDeg[dof][0])
                 dqAngstroms.append(line)
 
@@ -286,8 +290,9 @@ class SithWriter:
         """
         expected, error, pError = SithWriter.compareEnergies(sith)
         lines = list()
-        lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format('Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
-            #"Deformation        \u0394E          Expected \u0394E       \u0025Error        Error")
+        lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format(
+            'Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
+        # "Deformation        \u0394E          Expected \u0394E       \u0025Error        Error")
         for i in range(len(sith._deformed)):
             lines.append("{: <12s}{: >16.6E}{: >16.6E}{: >12.2f}{: >16.6E}".format(
                 sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))

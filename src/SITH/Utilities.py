@@ -1,7 +1,7 @@
 from array import array
 from pathlib import Path
 import pathlib
-
+from ase import Atoms
 from ase.units import Bohr
 import numpy as np
 from openbabel import openbabel as ob
@@ -172,10 +172,11 @@ class Geometry:
                 raise Exception("Mismatch in number of atoms.")
         for line in lines:
             sLine = line.split()
-            if len(sLine) > 1 and len(sLine) < 5:
-                a = Atom(sLine[0], sLine[1:4])
+            if len(sLine) == 4:
+                coords = [float(x) for x in sLine[1:4]]
+                a = Atom(sLine[0], coords)
                 self.atoms.append(a)
-            elif len(sLine) >= 5:
+            else:
                 pass
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
@@ -303,7 +304,7 @@ class Atom:
         self.coords = coords
 
     def __eq__(self, __o: object) -> bool:
-        return self.element == __o.element and self.coords == __o.coords
+        return self.element == __o.element and all([self.coords[i] == __o.coords[i] for i in range(3)])
 
 
 class UnitConverter:
@@ -357,21 +358,6 @@ class Extractor:
         self.geometry = None
 
         self.__lines = linesList
-
-    # This is kept because using SithWriter.writeXYZ(self.geometry) would cause circular dependency
-    def _writeXYZ(self):
-        """
-        Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
-        """
-        obConversion = ob.OBConversion()
-        obConversion.SetInAndOutFormats("fchk", "xyz")
-
-        mol = ob.OBMol()
-        assert self._path.exists(), "Path to fchk file does not exist"
-        assert obConversion.ReadFile(mol, self._path.as_posix(
-        )), "Reading fchk file with openbabel failed."
-        assert obConversion.WriteFile(mol, str(
-            self._path.parent.as_posix()+self._path.root+self._path.stem+".xyz")), "Could not write XYZ file."
 
     def _extract(self) -> bool:
         """Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful"""
@@ -434,14 +420,16 @@ class Extractor:
             self.buildHessian()
 
             print("Translating .fchk file to new .xyz file with OpenBabel...")
-            # Using the SithWriter method here would cause a circular dependency
-            # TODO: remedy this by building it out separately if possible, but not a big deal as long as only write method
-            self._writeXYZ()
 
-            print("Opening .xyz file...")
-            with open(self._path.parent.as_posix()+self._path.root + self._path.stem + ".xyz", "r") as xyz:
-                xyzLines = xyz.readlines()
-                self.geometry.buildCartesian(xyzLines)
+            obConversion = ob.OBConversion()
+            obConversion.SetInAndOutFormats("fchk", "xyz")
+            mol = ob.OBMol()
+            assert self._path.exists(), "Path to fchk file does not exist"
+            assert obConversion.ReadFile(mol, self._path.as_posix(
+            )), "Reading fchk file ("+self._path.as_posix()+") with openbabel failed."
+            xyzString = obConversion.WriteString(mol)
+            self.geometry.buildCartesian(xyzString.split('\n'))
+
             print("Cartesian data extracted successfully.")
             return True
         except Exception as e:
@@ -461,3 +449,147 @@ class Extractor:
             return self.geometry
         else:
             raise Exception("There is no geometry.")
+
+
+class void:
+    pass
+
+
+class ReadSummary:
+    def __init__(self, file):
+        """
+        Extract the data in a summary file 
+        """
+        with open(file) as data:
+            self.info = data.readlines()
+            
+        self._reference = void()
+        self._deformed = list()
+            
+        self.read_all()
+        
+    
+
+    def read_section(self, header, tail, iplus=0, jminus=0):
+        """
+        Take any block of a set of lines separated by header 
+        and tail as references
+        
+        lines: list
+            set of lines to extract the blocks
+        header:
+            line that marks the start of the block. It is included
+            in the block.
+        tail:
+            line that marks the end of the block. It is not included
+            in the block.
+        iplus: int
+            number of lines to ignore after header
+        jminus:
+            number of lines to ignore before the tail
+        """
+        i = self.info.index(header)
+        j = self.info.index(tail)
+        data = self.info[i+iplus:j-jminus]
+        return data
+
+    def read_dofs(self):
+        """
+        read the degrees of freedom in the summary file
+        
+        return the dofs in a list.
+        """
+
+        lines = self.read_section('Redundant Internal Coordinate Definitions\n',
+                                  'Changes in internal coordinates (Delta q)\n',
+                                  iplus=2)
+        return [np.fromstring(line.replace('(',
+                                           '').replace(',',
+                                                       '').replace(')',
+                                                                   ''), sep=' ',
+                              dtype=int)[1:].tolist() for line in lines]
+
+    def read_changes(self):
+        """
+        read the changes in the degrees of freedom in the summary file
+        
+        return a list of lists where the i-th list is the changes in the
+        i-th deformed config.
+        """
+        lines = self.read_section('Changes in internal coordinates (Delta q)\n',
+                                  '**  Energy Analysis  **\n',
+                                  iplus=3, jminus=2)
+        return np.array([np.fromstring(line, sep=' ')[1:] for line in lines]).T
+
+    def read_accuracy(self):
+        """
+        read the accuracy in the total difference of energy.
+        
+        return a list lists where each element corresponds with the
+        energy-analysis of each deformed config saved as
+        [energy diff predicted with harmonic approx, percentaje_error, Error]
+        """
+        lines = self.read_section('Overall Structural Energies\n',
+                                  'Energy per DOF (RIC)\n',
+                                  iplus=2)
+
+        return np.array([np.array(line.split()[1:],
+                                  dtype=float)
+                         for line in lines]).T
+    
+    def read_energies(self, ndofs):
+        """
+        read the energies in each degree of freedom
+        
+        return a list lists where each element corresponds to the
+        distribution of energies of each deformed config
+        """
+        lines = self.read_section('Energy per DOF (RIC)\n',
+                                  'Energy per DOF (RIC)\n',
+                                  iplus=2, jminus=-ndofs-2)
+
+        return np.array([np.array(line.split(),
+                                  dtype=float)
+                         for line in lines])
+
+    def read_structures(self):
+        """
+        Creates the ase.Atoms objects of each structure.
+        """
+        init = self.info.index("XYZ FILES APPENDED\n") +1
+        n_configs = len(self.deltaQ) + 1 # deformed plus reference
+        length = int(len(self.info[init:])/n_configs)
+        n_atoms = int(self.info[init+1])
+
+        configs = [self.info[init+i*(length):init+(i+1)*length] for i in range(n_configs)]
+        configs = [[atom.split() for atom in config] for config in configs]
+        molecule = ''.join([atom[0] for atom in configs[0][-n_atoms:]])
+        positions = np.array([[np.array(atom[1:], dtype=float) for atom in config[-n_atoms:]] for config in configs])
+        
+        atoms = [Atoms(molecule, config) for config in positions]
+        
+        return atoms[0], atoms[1:]
+        
+
+    def read_all(self):
+        """
+        Read all summary file and save the info in instances
+        """
+        self.dimIndices = self.read_dofs()
+        dims = [len(self.dimIndices), 0, 0, 0]
+        for dof in test.dimIndices:
+            dims[len(dof)-1] += 1
+        self._reference.dims = dims
+        self.deltaQ = self.read_changes()
+        self.accuracy = self.read_accuracy()
+        assert len(self.dimIndices) == len(self.deltaQ[0]), f'{len(self.dimIndices)} DOF' +\
+            f'but {len(self.deltaQ[0])} changes are reported'
+
+        self.energies = self.read_energies(len(self.deltaQ[0]))
+        self._reference.atoms, deformed = self.read_structures()
+        [self._deformed.append(void()) for _ in range(len(deformed))]
+
+        for i in range(len(deformed)):
+            self._deformed[i].atoms = deformed[i]
+
+        self._reference.dimIndices = self.dimIndices

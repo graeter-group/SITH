@@ -1,5 +1,6 @@
 import os
 import pytest
+from pathlib import Path
 
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import *
@@ -9,9 +10,8 @@ from tests.test_variables import *
 def test_initDefault():
 
     sith = SITH(x0string, xFstring)
-    # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
-    assert sith._referencePath == defaultRefPath
-    assert sith._deformedPath == defaultDefPath
+    assert sith._referencePath == Path.cwd() / x0string
+    assert sith._deformedPath == Path.cwd() / xFstring
     assert sith.energies is None
     assert sith.deformationEnergy is None
     assert sith.pEnergies is None
@@ -27,9 +27,8 @@ def test_initDefault():
 
 def test_initDir():
     sith = SITH(x0string, deformedString)
-    # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
-    assert sith._referencePath == defaultRefPath
-    assert sith._deformedPath == defDirPath
+    assert sith._referencePath == Path.cwd() / x0string
+    assert sith._deformedPath == Path.cwd() / deformedString
     assert sith.energies is None
     assert sith.deformationEnergy is None
     assert sith.pEnergies is None
@@ -45,9 +44,8 @@ def test_initDir():
 
 def test_initFile():
     sith = SITH(x0string, xFstring)
-    # TODO change this to check that it's just working directory plus x0.fchk and xF.fchk
-    assert sith._referencePath == defaultRefPath
-    assert sith._deformedPath == defaultDefPath
+    assert sith._referencePath == Path.cwd() / x0string
+    assert sith._deformedPath == Path.cwd() / xFstring
     assert sith.energies is None
     assert sith.deformationEnergy is None
     assert sith.pEnergies is None
@@ -245,7 +243,7 @@ def test_removeMismatchedDOFs_noKill():
 
 def test_removeMismatchedDOFs_kill():
     # atoms specified for kill but should kill DOF (1, 16) from deformed cus not in reference
-    sith = SITH('/tests/glycine-ds-test/Gly-x0.fchk',
+    sith = SITH('tests/glycine-ds-test/Gly-x0.fchk',
                 'tests/glycine-ds-test/deformed/Gly-streched4.fchk')
     sith._getContents()
     extractor = Extractor(sith._referencePath, sith._rData)
