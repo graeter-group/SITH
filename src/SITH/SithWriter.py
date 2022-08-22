@@ -3,7 +3,7 @@ from typing import Tuple
 import numpy as np
 import openbabel as ob
 
-from src.SITH import SITH
+from src.SITH.SITH import SITH
 from src.SITH.Utilities import Geometry, UnitConverter
 
 

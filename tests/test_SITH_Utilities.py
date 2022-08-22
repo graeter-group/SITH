@@ -1,7 +1,8 @@
 from numpy import float32
 import pytest
+from ase import Atom
 
-from src.SITH.Utilities import *
+from src.SITH.Utilities import Extractor, Geometry, UnitConverter
 from src.SITH.SITH import SITH
 from tests.test_variables import *
 
@@ -11,8 +12,8 @@ from tests.test_variables import *
 
 def test_atomCreation():
     atom = Atom('C', [2.3, 4.6, 7.8])
-    assert atom.element is 'C'
-    assert atom.coords == [2.3, 4.6, 7.8]
+    assert atom.symbol is 'C'
+    assert np.array_equal(atom.position, [2.3, 4.6, 7.8])
 
 # region Geometry Tests
 
