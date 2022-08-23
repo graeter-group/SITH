@@ -241,9 +241,6 @@ def test_buildAtoms():
     extractor._extract()
     geo = extractor.getGeometry()
     assert geo.atoms.get_chemical_formula() == refAtoms.get_chemical_formula()
-    print(geo.atoms.positions)
-    print(refAtoms.positions)
-    print(geo.atoms.positions.flatten() - refAtoms.positions.flatten())
     assert geo.atoms.positions.flatten() == approx(refAtoms.positions.flatten(), abs=1E-5)
 
 
