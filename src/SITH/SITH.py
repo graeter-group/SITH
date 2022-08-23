@@ -1,11 +1,9 @@
 """SITH class: calculates & houses SITH analysis data."""
 import sys
 from typing import Tuple
-
 import pathlib
 from pathlib import Path
 import numpy as np
-
 from src.SITH.Utilities import Extractor
 
 

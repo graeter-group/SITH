@@ -1,19 +1,16 @@
 from numpy import float32
 import pytest
+from pytest import approx
 from ase import Atom
 
 from src.SITH.Utilities import Extractor, Geometry, UnitConverter
 from src.SITH.SITH import SITH
 from tests.test_variables import *
+from ase import Atom
 
 """ LTMatrix has already been tested by its creator on github,
  but should add in their testing just in case """
 
-
-def test_atomCreation():
-    atom = Atom('C', [2.3, 4.6, 7.8])
-    assert atom.symbol is 'C'
-    assert np.array_equal(atom.position, [2.3, 4.6, 7.8])
 
 # region Geometry Tests
 
@@ -55,8 +52,8 @@ def test_equals():
     geoCopy.hessian = geoCopy.hessian[1:]
     assert geoCopy != refGeo
     geoCopy.hessian = refGeo.hessian
-    geoCopy.atoms.numbers[3] = 6
-    geoCopy.atoms.positions[3] = (1., 1., 1.)
+    geoCopy.atoms[3].symbol = 'C'
+    geoCopy.atoms[3].position = [1., 1., 1.]
     assert geoCopy != refGeo
     geoCopy.atoms = refGeo.atoms
     assert geoCopy == refGeo
@@ -232,22 +229,25 @@ def test_extractedGeometry():
     geo = extractor.getGeometry()
     egeo = Geometry('frankenTest-methanol', 'blah', 6)
     egeo.energy = energy
+    egeo.atoms = geo.atoms
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     egeo.buildAtoms(cartesianCoords, atomicList)
     egeo.hessian = eHessFull
     assert geo == egeo
 
+def test_buildAtoms():
+    extractor = Extractor(Path(
+        '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
+    extractor._extract()
+    geo = extractor.getGeometry()
+    assert geo.atoms.get_chemical_formula() == refAtoms.get_chemical_formula()
+    assert geo.atoms.positions.flatten() == approx(refAtoms.positions.flatten(), abs=1E-5)
+
 
 def test_buildHessian():
     extractor = Extractor(testPath, frankenNoLines)
     extractor._extract()
-    geo = extractor.getGeometry()
-    egeo = Geometry(testPath.stem, 'blah', 6)
-    egeo.energy = energy
-    egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
-    egeo.buildAtoms(cartesianCoords, atomicList)
     hess = extractor.hessian
-
     assert (eHessFull == hess).all()
 
 
