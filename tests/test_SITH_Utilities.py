@@ -1,5 +1,6 @@
 from numpy import float32
 import pytest
+from pytest import approx
 from ase import Atom
 
 from src.SITH.Utilities import Extractor, Geometry, UnitConverter
@@ -236,6 +237,17 @@ def test_extractedGeometry():
     egeo.buildAtoms(cartesianCoords, atomicList)
     egeo.hessian = eHessFull
     assert geo == egeo
+
+def test_buildAtoms():
+    extractor = Extractor(Path(
+        '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
+    extractor._extract()
+    geo = extractor.getGeometry()
+    assert geo.atoms.get_chemical_formula() == refAtoms.get_chemical_formula()
+    print(geo.atoms.positions)
+    print(refAtoms.positions)
+    print(geo.atoms.positions.flatten() - refAtoms.positions.flatten())
+    assert geo.atoms.positions.flatten() == approx(refAtoms.positions.flatten(), abs=1E-5)
 
 
 def test_buildHessian():
