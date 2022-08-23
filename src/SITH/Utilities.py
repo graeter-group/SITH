@@ -2,6 +2,8 @@ from array import array
 from pathlib import Path
 import pathlib
 from ase import Atoms, Atom
+from ase import Atoms
+from ase.data import chemical_symbols
 from ase.units import Bohr
 import numpy as np
 
@@ -159,15 +161,12 @@ class Geometry:
         """Hessian matrix associated with the geometry. If 'None', then the associated fchk file did not contain any Hessian,
         in the case of Gaussian the Hessian is generated when a freq analysis is performed."""
 
-    def buildAtoms(self, rawCoords:list, atomNumbers:list):
-        assert len(rawCoords) == len(atomNumbers) * 3, str(len(rawCoords))+" cartesian coordinates given, incorrect for "+str(len(atomNumbers))+" atoms."
+    def buildAtoms(self, raw_coords:list, atomic_num:list):
+        assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+" cartesian coordinates given, incorrect for "+str(len(atomic_num))+" atoms."
         j = 0
-        atomsList = list()
-        while j < len(atomNumbers):
-            atomsList.append(Atom(symbol=int(atomNumbers[j]), position= (Bohr * float(rawCoords[j*3]), Bohr * float(rawCoords[j*3 + 1]), Bohr * float(rawCoords[j*3+2]))))
-            j += 1
-        self.atoms = Atoms(atomsList)
-
+        atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
+        molecule = ''.join([chemical_symbols[i] for i in atomic_num])
+        self.atoms = Atoms(molecule, atomic_coord)
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
         """
@@ -284,17 +283,6 @@ class Geometry:
         b = b and ((self.hessian is None and __o.hessian is None)
                    or np.array_equal(self.hessian, __o.hessian))
         return b
-
-
-# class Atom:
-#     """Holds Cartesian coordinate data as well as element data"""
-
-#     def __init__(self, element: str, coords: list) -> None:
-#         self.element = element
-#         self.coords = coords
-
-#     def __eq__(self, __o: object) -> bool:
-#         return self.element == __o.element and all([self.coords[i] == __o.coords[i] for i in range(3)])
 
 
 class UnitConverter:
@@ -427,21 +415,42 @@ class Extractor:
                         rowsplit = row.split()
                         self.hRaw.extend([float(i) for i in rowsplit])
                         i = i+1
+                
+                if self.__atomicNumsHeader in line:
+                    splitLine = line.split()
+                    numAtoms = int(splitLine[-1])
+                    i += 1
+                    count = 0
+                    atomic_num = list()
+                    while count < numAtoms:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        atomic_num.extend([int(j) for j in rowsplit])
+                        count = len(atomic_num)
+                        i += 1
 
+                if self.__cartesianCoordsHeader in line:
+                    splitLine = line.split()
+                    num_coords = int(splitLine[-1])
+                    i += 1
+                    count = 0
+                    atomic_coords = list()
+                    while count < num_coords:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        atomic_coords.extend([float(j) for j in rowsplit])
+                        count = len(atomic_coords)
+                        i += 1
+
+                    
+                    atomic_coords = np.array(atomic_coords) * Bohr
+                    atomic_coords = atomic_coords.reshape(int(num_coords/3), 3)
+                    
                 i = i + 1
+            self.geometry.buildAtoms(atomic_num, atomic_coords)
             print("Building full Hessian matrix.")
             self.buildHessian()
 
-            #print("Translating .fchk file to new .xyz file with OpenBabel...")
-
-            # obConversion = ob.OBConversion()
-            # obConversion.SetInAndOutFormats("fchk", "xyz")
-            # mol = ob.OBMol()
-            # assert self._path.exists(), "Path to fchk file does not exist"
-            # assert obConversion.ReadFile(mol, self._path.as_posix(
-            # )), "Reading fchk file ("+self._path.as_posix()+") with openbabel failed."
-            # xyzString = obConversion.WriteString(mol)
-            # self.geometry.buildCartesian(xyzString.split('\n'))
 
             print("Cartesian data extracted successfully.")
             return True
@@ -468,7 +477,7 @@ class void:
     pass
 
 
-class ReadSummary:
+class SummaryReader:
     def __init__(self, file):
         """
         Extract the data in a summary file 
