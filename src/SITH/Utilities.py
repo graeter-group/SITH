@@ -2,7 +2,6 @@ from array import array
 from pathlib import Path
 import pathlib
 from ase import Atoms, Atom
-from ase import Atoms
 from ase.data import chemical_symbols
 from ase.units import Bohr
 import numpy as np
@@ -143,7 +142,7 @@ class Geometry:
         """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
         self.energy = None
         """Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input"""
-        self.atoms = None
+        self.atoms = list()
         """<ase.Atoms> object associated with geometry."""
         self.nAtoms = nAtoms
         """Number of atoms"""
@@ -163,9 +162,9 @@ class Geometry:
 
     def buildAtoms(self, raw_coords:list, atomic_num:list):
         assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+" cartesian coordinates given, incorrect for "+str(len(atomic_num))+" atoms."
-        j = 0
         atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
-        molecule = ''.join([chemical_symbols[i] for i in atomic_num])
+        atomic_coord = np.reshape(atomic_coord, (self.nAtoms, 3))
+        molecule = ''.join([chemical_symbols[int(i)] for i in atomic_num])
         self.atoms = Atoms(molecule, atomic_coord)
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
@@ -415,39 +414,10 @@ class Extractor:
                         rowsplit = row.split()
                         self.hRaw.extend([float(i) for i in rowsplit])
                         i = i+1
+
                 
-                if self.__atomicNumsHeader in line:
-                    splitLine = line.split()
-                    numAtoms = int(splitLine[-1])
-                    i += 1
-                    count = 0
-                    atomic_num = list()
-                    while count < numAtoms:
-                        row = self.__lines[i]
-                        rowsplit = row.split()
-                        atomic_num.extend([int(j) for j in rowsplit])
-                        count = len(atomic_num)
-                        i += 1
-
-                if self.__cartesianCoordsHeader in line:
-                    splitLine = line.split()
-                    num_coords = int(splitLine[-1])
-                    i += 1
-                    count = 0
-                    atomic_coords = list()
-                    while count < num_coords:
-                        row = self.__lines[i]
-                        rowsplit = row.split()
-                        atomic_coords.extend([float(j) for j in rowsplit])
-                        count = len(atomic_coords)
-                        i += 1
-
-                    
-                    atomic_coords = np.array(atomic_coords) * Bohr
-                    atomic_coords = atomic_coords.reshape(int(num_coords/3), 3)
                     
                 i = i + 1
-            self.geometry.buildAtoms(atomic_num, atomic_coords)
             print("Building full Hessian matrix.")
             self.buildHessian()
 
