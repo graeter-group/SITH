@@ -450,23 +450,20 @@ class void:
 class SummaryReader:
     def __init__(self, file):
         """
-        Extract the data in a summary file 
+        Extract the data in a summary file
         """
         with open(file) as data:
             self.info = data.readlines()
-            
+
         self._reference = void()
         self._deformed = list()
-            
         self.read_all()
-        
-    
 
     def read_section(self, header, tail, iplus=0, jminus=0):
         """
-        Take any block of a set of lines separated by header 
+        Take any block of a set of lines separated by header
         and tail as references
-        
+
         lines: list
             set of lines to extract the blocks
         header:
@@ -488,27 +485,31 @@ class SummaryReader:
     def read_dofs(self):
         """
         read the degrees of freedom in the summary file
-        
+
         return the dofs in a list.
         """
 
-        lines = self.read_section('Redundant Internal Coordinate Definitions\n',
-                                  'Changes in internal coordinates (Delta q)\n',
+        lines = self.read_section('Redundant Internal Coordinate' +
+                                  ' Definitions\n',
+                                  'Changes in internal coordinates' +
+                                  ' (Delta q)\n',
                                   iplus=2)
         return [np.fromstring(line.replace('(',
                                            '').replace(',',
                                                        '').replace(')',
-                                                                   ''), sep=' ',
-                              dtype=int)[1:].tolist() for line in lines]
+                                                                   ''),
+                sep=' ', dtype=int)[1:].tolist()
+                for line in lines]
 
     def read_changes(self):
         """
         read the changes in the degrees of freedom in the summary file
-        
+
         return a list of lists where the i-th list is the changes in the
         i-th deformed config.
         """
-        lines = self.read_section('Changes in internal coordinates (Delta q)\n',
+        lines = self.read_section('Changes in internal coordinates' +
+                                  ' (Delta q)\n',
                                   '**  Energy Analysis  **\n',
                                   iplus=3, jminus=2)
         return np.array([np.fromstring(line, sep=' ')[1:] for line in lines]).T
@@ -516,11 +517,11 @@ class SummaryReader:
     def read_accuracy(self):
         """
         read the accuracy in the total difference of energy.
-        
+
         return a list lists where each element corresponds with the
         energy-analysis of each deformed config saved as
         [energy diff predicted with harmonic approx, percentaje_error, Error]
-        """
+         """
         lines = self.read_section('Overall Structural Energies\n',
                                   'Energy per DOF (RIC)\n',
                                   iplus=2)
@@ -528,11 +529,11 @@ class SummaryReader:
         return np.array([np.array(line.split()[1:],
                                   dtype=float)
                          for line in lines]).T
-    
+
     def read_energies(self, ndofs):
         """
         read the energies in each degree of freedom
-        
+
         return a list lists where each element corresponds to the
         distribution of energies of each deformed config
         """
@@ -548,20 +549,22 @@ class SummaryReader:
         """
         Creates the ase.Atoms objects of each structure.
         """
-        init = self.info.index("XYZ FILES APPENDED\n") +1
-        n_configs = len(self.deltaQ) + 1 # deformed plus reference
+        init = self.info.index("XYZ FILES APPENDED\n") + 1
+        n_configs = len(self.deltaQ) + 1  # deformed plus reference
         length = int(len(self.info[init:])/n_configs)
         n_atoms = int(self.info[init+1])
 
-        configs = [self.info[init+i*(length):init+(i+1)*length] for i in range(n_configs)]
+        configs = [self.info[init+i*(length):init+(i+1)*length]
+                   for i in range(n_configs)]
         configs = [[atom.split() for atom in config] for config in configs]
         molecule = ''.join([atom[0] for atom in configs[0][-n_atoms:]])
-        positions = np.array([[np.array(atom[1:], dtype=float) for atom in config[-n_atoms:]] for config in configs])
-        
+        positions = np.array([[np.array(atom[1:], dtype=float)
+                              for atom in config[-n_atoms:]]
+                              for config in configs])
+
         atoms = [Atoms(molecule, config) for config in positions]
-        
+
         return atoms[0], atoms[1:]
-        
 
     def read_all(self):
         """
@@ -574,7 +577,8 @@ class SummaryReader:
         self._reference.dims = dims
         self.deltaQ = self.read_changes()
         self.accuracy = self.read_accuracy()
-        assert len(self.dimIndices) == len(self.deltaQ[0]), f'{len(self.dimIndices)} DOF' +\
+        assert len(self.dimIndices) == len(self.deltaQ[0]), \
+            f'{len(self.dimIndices)} DOF' +\
             f'but {len(self.deltaQ[0])} changes are reported'
 
         self.energies = self.read_energies(len(self.deltaQ[0]))
