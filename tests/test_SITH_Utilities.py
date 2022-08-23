@@ -55,7 +55,8 @@ def test_equals():
     geoCopy.hessian = geoCopy.hessian[1:]
     assert geoCopy != refGeo
     geoCopy.hessian = refGeo.hessian
-    geoCopy.atoms[3] = Atom('C', (1., 1., 1.))
+    geoCopy.atoms.numbers[3] = 6
+    geoCopy.atoms.positions[3] = (1., 1., 1.)
     assert geoCopy != refGeo
     geoCopy.atoms = refGeo.atoms
     assert geoCopy == refGeo
@@ -164,17 +165,16 @@ def test_buildRIC_badDims():
 
 # region Cartesian
 
-
-def test_buildCartesian():
+def test_build_atoms():
     geo = Geometry('methanol-test', 'blah', 6)
-    geo.buildCartesian(cartesianLines)
+    geo.buildAtoms(cartesianCoords, atomicList)
     assert geo.nAtoms == 6 == len(geo.atoms)
-    assert all([geo.atoms[i] == refAtoms[i] for i in range(len(refAtoms))])
+    assert all(geo.atoms[i] == refAtoms[i] for i in range(6))
 
 
-def test_buildCartesian_integrated():
+def test_build_atoms_integrated():
     assert refGeo.nAtoms == 6 == len(refGeo.atoms)
-    assert all([refGeo.atoms[i] == refAtoms[i] for i in range(len(refAtoms))])
+    assert all(refGeo.atoms[i] == refAtoms[i] for i in range(6))
 
 
 # endregion
@@ -233,7 +233,7 @@ def test_extractedGeometry():
     egeo = Geometry('frankenTest-methanol', 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
-    egeo.buildCartesian(cartesianLines)
+    egeo.buildAtoms(cartesianCoords, atomicList)
     egeo.hessian = eHessFull
     assert geo == egeo
 
@@ -245,7 +245,7 @@ def test_buildHessian():
     egeo = Geometry(testPath.stem, 'blah', 6)
     egeo.energy = energy
     egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
-    egeo.buildCartesian(cartesianLines)
+    egeo.buildAtoms(cartesianCoords, atomicList)
     hess = extractor.hessian
 
     assert (eHessFull == hess).all()

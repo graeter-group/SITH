@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import numpy as np
-import openbabel as ob
+from ase import Atoms, io
 
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import Geometry, UnitConverter
@@ -49,27 +49,28 @@ class SithWriter:
                 s.write("\nEnergy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
 
-                if includeXYZ:
-                    obConversion = ob.OBConversion()
-                    obConversion.SetInAndOutFormats("fchk", "xyz")
+#TODO
+                # if includeXYZ:
+                #     obConversion = ob.OBConversion()
+                #     obConversion.SetInAndOutFormats("fchk", "xyz")
 
-                    mol = ob.OBMol()
-                    assert sith.reference._path.exists(), "Path to fchk file does not exist"
-                    assert obConversion.ReadFile(mol, sith.reference._path.as_posix(
-                    )), "Reading fchk file ("+sith.reference._path.as_posix(
-                    )+") with openbabel failed."
-                    xyzString = obConversion.WriteString(mol)
-                    s.write("\nXYZ FILES APPENDED\nReference .XYZ\n")
-                    s.writelines(xyzString)
+                #     mol = ob.OBMol()
+                #     assert sith.reference._path.exists(), "Path to fchk file does not exist"
+                #     assert obConversion.ReadFile(mol, sith.reference._path.as_posix(
+                #     )), "Reading fchk file ("+sith.reference._path.as_posix(
+                #     )+") with openbabel failed."
+                #     xyzString = obConversion.WriteString(mol)
+                #     s.write("\nXYZ FILES APPENDED\nReference .XYZ\n")
+                #     s.writelines(xyzString)
 
-                    for geometry in sith.deformed:
-                        assert geometry._path.exists(), "Path to fchk file does not exist"
-                        assert obConversion.ReadFile(mol, geometry._path.as_posix(
-                        )), "Reading fchk file ("+geometry._path.as_posix(
-                        )+") with openbabel failed."
-                        xyzString = obConversion.WriteString(mol)
-                        s.write(geometry.name+" .XYZ\n")
-                        s.writelines(xyzString)
+                #     for geometry in sith.deformed:
+                #         assert geometry._path.exists(), "Path to fchk file does not exist"
+                #         assert obConversion.ReadFile(mol, geometry._path.as_posix(
+                #         )), "Reading fchk file ("+geometry._path.as_posix(
+                #         )+") with openbabel failed."
+                #         xyzString = obConversion.WriteString(mol)
+                #         s.write(geometry.name+" .XYZ\n")
+                #         s.writelines(xyzString)
 
                 s.write('\n')
                 return True
@@ -172,7 +173,8 @@ class SithWriter:
         """
         Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
         """
-        obConversion = ob.OBConversion()
+        #TODO
+        """ obConversion = ob.OBConversion()
         obConversion.SetInAndOutFormats("fchk", "xyz")
 
         mol = ob.OBMol()
@@ -180,7 +182,7 @@ class SithWriter:
         assert obConversion.ReadFile(mol, geometry._path.as_posix(
         )), "Reading fchk file with openbabel failed."
         assert obConversion.WriteFile(mol, str(
-            geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz")), "Could not write XYZ file."
+            geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz")), "Could not write XYZ file." """
 
 # endregion
 

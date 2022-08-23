@@ -4,7 +4,6 @@ import pathlib
 from ase import Atoms, Atom
 from ase.units import Bohr
 import numpy as np
-#from openbabel import openbabel as ob
 
 
 class LTMatrix(list):
@@ -142,8 +141,8 @@ class Geometry:
         """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
         self.energy = None
         """Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input"""
-        self.atoms = list()
-        """List of <SITH_Utilities.Atom> objects associated with geometry."""
+        self.atoms = None
+        """<ase.Atoms> object associated with geometry."""
         self.nAtoms = nAtoms
         """Number of atoms"""
         self.dims = array('i')
@@ -163,28 +162,12 @@ class Geometry:
     def buildAtoms(self, rawCoords:list, atomNumbers:list):
         assert len(rawCoords) == len(atomNumbers) * 3, str(len(rawCoords))+" cartesian coordinates given, incorrect for "+str(len(atomNumbers))+" atoms."
         j = 0
-        self.atoms.clear()
+        atomsList = list()
         while j < len(atomNumbers):
-            self.atoms.append(Atom(symbol=int(atomNumbers[j]), position=(float(rawCoords[j*3]), float(rawCoords[j*3 + 1]), float(rawCoords[j*3+2]))))
+            atomsList.append(Atom(symbol=int(atomNumbers[j]), position= (Bohr * float(rawCoords[j*3]), Bohr * float(rawCoords[j*3 + 1]), Bohr * float(rawCoords[j*3+2]))))
+            j += 1
+        self.atoms = Atoms(atomsList)
 
-
-    def buildCartesian(self, lines: list):
-        """Takes in a list of str containing the lines of a .xyz file, populates self.atoms
-         -----
-        Data is assumed to be Cartesian and in Angstroms as is standard for .xyz files"""
-        first = lines[0]
-        if len(first.split()) == 1:
-            nAtoms = int(first)
-            if nAtoms != self.nAtoms:
-                raise Exception("Mismatch in number of atoms.")
-        for line in lines:
-            sLine = line.split()
-            if len(sLine) == 4:
-                coords = [float(x) for x in sLine[1:4]]
-                a = Atom(sLine[0], coords)
-                self.atoms.append(a)
-            else:
-                pass
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
         """
@@ -294,7 +277,7 @@ class Geometry:
         b = b and self.name == __o.name
         b = b and np.array_equal(self.ric, __o.ric)
         b = b and self.energy == __o.energy
-        b = b and all([self.atoms[i] == __o.atoms[i] for i in range(len(self.atoms))])
+        b = b and self.atoms == __o.atoms
         b = b and self.nAtoms == __o.nAtoms
         b = b and np.array_equal(self.dims, __o.dims)
         b = b and np.array_equal(self.dimIndices, __o.dimIndices)
@@ -481,145 +464,145 @@ class Extractor:
             raise Exception("There is no geometry.")
 
 
-# class void:
-#     pass
+class void:
+    pass
 
 
-# class ReadSummary:
-#     def __init__(self, file):
-#         """
-#         Extract the data in a summary file 
-#         """
-#         with open(file) as data:
-#             self.info = data.readlines()
+class ReadSummary:
+    def __init__(self, file):
+        """
+        Extract the data in a summary file 
+        """
+        with open(file) as data:
+            self.info = data.readlines()
             
-#         self._reference = void()
-#         self._deformed = list()
+        self._reference = void()
+        self._deformed = list()
             
-#         self.read_all()
+        self.read_all()
         
     
 
-#     def read_section(self, header, tail, iplus=0, jminus=0):
-#         """
-#         Take any block of a set of lines separated by header 
-#         and tail as references
+    def read_section(self, header, tail, iplus=0, jminus=0):
+        """
+        Take any block of a set of lines separated by header 
+        and tail as references
         
-#         lines: list
-#             set of lines to extract the blocks
-#         header:
-#             line that marks the start of the block. It is included
-#             in the block.
-#         tail:
-#             line that marks the end of the block. It is not included
-#             in the block.
-#         iplus: int
-#             number of lines to ignore after header
-#         jminus:
-#             number of lines to ignore before the tail
-#         """
-#         i = self.info.index(header)
-#         j = self.info.index(tail)
-#         data = self.info[i+iplus:j-jminus]
-#         return data
+        lines: list
+            set of lines to extract the blocks
+        header:
+            line that marks the start of the block. It is included
+            in the block.
+        tail:
+            line that marks the end of the block. It is not included
+            in the block.
+        iplus: int
+            number of lines to ignore after header
+        jminus:
+            number of lines to ignore before the tail
+        """
+        i = self.info.index(header)
+        j = self.info.index(tail)
+        data = self.info[i+iplus:j-jminus]
+        return data
 
-#     def read_dofs(self):
-#         """
-#         read the degrees of freedom in the summary file
+    def read_dofs(self):
+        """
+        read the degrees of freedom in the summary file
         
-#         return the dofs in a list.
-#         """
+        return the dofs in a list.
+        """
 
-#         lines = self.read_section('Redundant Internal Coordinate Definitions\n',
-#                                   'Changes in internal coordinates (Delta q)\n',
-#                                   iplus=2)
-#         return [np.fromstring(line.replace('(',
-#                                            '').replace(',',
-#                                                        '').replace(')',
-#                                                                    ''), sep=' ',
-#                               dtype=int)[1:].tolist() for line in lines]
+        lines = self.read_section('Redundant Internal Coordinate Definitions\n',
+                                  'Changes in internal coordinates (Delta q)\n',
+                                  iplus=2)
+        return [np.fromstring(line.replace('(',
+                                           '').replace(',',
+                                                       '').replace(')',
+                                                                   ''), sep=' ',
+                              dtype=int)[1:].tolist() for line in lines]
 
-#     def read_changes(self):
-#         """
-#         read the changes in the degrees of freedom in the summary file
+    def read_changes(self):
+        """
+        read the changes in the degrees of freedom in the summary file
         
-#         return a list of lists where the i-th list is the changes in the
-#         i-th deformed config.
-#         """
-#         lines = self.read_section('Changes in internal coordinates (Delta q)\n',
-#                                   '**  Energy Analysis  **\n',
-#                                   iplus=3, jminus=2)
-#         return np.array([np.fromstring(line, sep=' ')[1:] for line in lines]).T
+        return a list of lists where the i-th list is the changes in the
+        i-th deformed config.
+        """
+        lines = self.read_section('Changes in internal coordinates (Delta q)\n',
+                                  '**  Energy Analysis  **\n',
+                                  iplus=3, jminus=2)
+        return np.array([np.fromstring(line, sep=' ')[1:] for line in lines]).T
 
-#     def read_accuracy(self):
-#         """
-#         read the accuracy in the total difference of energy.
+    def read_accuracy(self):
+        """
+        read the accuracy in the total difference of energy.
         
-#         return a list lists where each element corresponds with the
-#         energy-analysis of each deformed config saved as
-#         [energy diff predicted with harmonic approx, percentaje_error, Error]
-#         """
-#         lines = self.read_section('Overall Structural Energies\n',
-#                                   'Energy per DOF (RIC)\n',
-#                                   iplus=2)
+        return a list lists where each element corresponds with the
+        energy-analysis of each deformed config saved as
+        [energy diff predicted with harmonic approx, percentaje_error, Error]
+        """
+        lines = self.read_section('Overall Structural Energies\n',
+                                  'Energy per DOF (RIC)\n',
+                                  iplus=2)
 
-#         return np.array([np.array(line.split()[1:],
-#                                   dtype=float)
-#                          for line in lines]).T
+        return np.array([np.array(line.split()[1:],
+                                  dtype=float)
+                         for line in lines]).T
     
-#     def read_energies(self, ndofs):
-#         """
-#         read the energies in each degree of freedom
+    def read_energies(self, ndofs):
+        """
+        read the energies in each degree of freedom
         
-#         return a list lists where each element corresponds to the
-#         distribution of energies of each deformed config
-#         """
-#         lines = self.read_section('Energy per DOF (RIC)\n',
-#                                   'Energy per DOF (RIC)\n',
-#                                   iplus=2, jminus=-ndofs-2)
+        return a list lists where each element corresponds to the
+        distribution of energies of each deformed config
+        """
+        lines = self.read_section('Energy per DOF (RIC)\n',
+                                  'Energy per DOF (RIC)\n',
+                                  iplus=2, jminus=-ndofs-2)
 
-#         return np.array([np.array(line.split(),
-#                                   dtype=float)
-#                          for line in lines])
+        return np.array([np.array(line.split(),
+                                  dtype=float)
+                         for line in lines])
 
-#     def read_structures(self):
-#         """
-#         Creates the ase.Atoms objects of each structure.
-#         """
-#         init = self.info.index("XYZ FILES APPENDED\n") +1
-#         n_configs = len(self.deltaQ) + 1 # deformed plus reference
-#         length = int(len(self.info[init:])/n_configs)
-#         n_atoms = int(self.info[init+1])
+    def read_structures(self):
+        """
+        Creates the ase.Atoms objects of each structure.
+        """
+        init = self.info.index("XYZ FILES APPENDED\n") +1
+        n_configs = len(self.deltaQ) + 1 # deformed plus reference
+        length = int(len(self.info[init:])/n_configs)
+        n_atoms = int(self.info[init+1])
 
-#         configs = [self.info[init+i*(length):init+(i+1)*length] for i in range(n_configs)]
-#         configs = [[atom.split() for atom in config] for config in configs]
-#         molecule = ''.join([atom[0] for atom in configs[0][-n_atoms:]])
-#         positions = np.array([[np.array(atom[1:], dtype=float) for atom in config[-n_atoms:]] for config in configs])
+        configs = [self.info[init+i*(length):init+(i+1)*length] for i in range(n_configs)]
+        configs = [[atom.split() for atom in config] for config in configs]
+        molecule = ''.join([atom[0] for atom in configs[0][-n_atoms:]])
+        positions = np.array([[np.array(atom[1:], dtype=float) for atom in config[-n_atoms:]] for config in configs])
         
-#         atoms = [Atoms(molecule, config) for config in positions]
+        atoms = [Atoms(molecule, config) for config in positions]
         
-#         return atoms[0], atoms[1:]
+        return atoms[0], atoms[1:]
         
 
-#     def read_all(self):
-#         """
-#         Read all summary file and save the info in instances
-#         """
-#         self.dimIndices = self.read_dofs()
-#         dims = [len(self.dimIndices), 0, 0, 0]
-#         for dof in test.dimIndices:
-#             dims[len(dof)-1] += 1
-#         self._reference.dims = dims
-#         self.deltaQ = self.read_changes()
-#         self.accuracy = self.read_accuracy()
-#         assert len(self.dimIndices) == len(self.deltaQ[0]), f'{len(self.dimIndices)} DOF' +\
-#             f'but {len(self.deltaQ[0])} changes are reported'
+    def read_all(self):
+        """
+        Read all summary file and save the info in instances
+        """
+        self.dimIndices = self.read_dofs()
+        dims = [len(self.dimIndices), 0, 0, 0]
+        for dof in self.dimIndices:
+            dims[len(dof)-1] += 1
+        self._reference.dims = dims
+        self.deltaQ = self.read_changes()
+        self.accuracy = self.read_accuracy()
+        assert len(self.dimIndices) == len(self.deltaQ[0]), f'{len(self.dimIndices)} DOF' +\
+            f'but {len(self.deltaQ[0])} changes are reported'
 
-#         self.energies = self.read_energies(len(self.deltaQ[0]))
-#         self._reference.atoms, deformed = self.read_structures()
-#         [self._deformed.append(void()) for _ in range(len(deformed))]
+        self.energies = self.read_energies(len(self.deltaQ[0]))
+        self._reference.atoms, deformed = self.read_structures()
+        [self._deformed.append(void()) for _ in range(len(deformed))]
 
-#         for i in range(len(deformed)):
-#             self._deformed[i].atoms = deformed[i]
+        for i in range(len(deformed)):
+            self._deformed[i].atoms = deformed[i]
 
-#         self._reference.dimIndices = self.dimIndices
+        self._reference.dimIndices = self.dimIndices
