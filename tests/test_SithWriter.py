@@ -46,6 +46,13 @@ def test_writeAll():
     assert jp.writeAll(sith)
     blah = 2
 
+def test_writeXYZ():
+    sith = SITH(x0string, deformedString)
+    sith.extractData()
+    sith.energyAnalysis()
+    jp = SithWriter()
+    jp.writeXYZ(sith.reference)
+
 
 def test_writeSummaryXYZ():
     sith = SITH(x0string, deformedString)

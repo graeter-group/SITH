@@ -1,7 +1,8 @@
 from typing import Tuple
 
 import numpy as np
-from ase import Atoms, io
+from ase import Atoms
+from ase.io import write
 
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import Geometry, UnitConverter
@@ -48,32 +49,13 @@ class SithWriter:
 
                 s.write("\nEnergy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
+                s.write("\n")
 
-#TODO
-                # if includeXYZ:
-                #     obConversion = ob.OBConversion()
-                #     obConversion.SetInAndOutFormats("fchk", "xyz")
-
-                #     mol = ob.OBMol()
-                #     assert sith.reference._path.exists(), "Path to fchk file does not exist"
-                #     assert obConversion.ReadFile(mol, sith.reference._path.as_posix(
-                #     )), "Reading fchk file ("+sith.reference._path.as_posix(
-                #     )+") with openbabel failed."
-                #     xyzString = obConversion.WriteString(mol)
-                #     s.write("\nXYZ FILES APPENDED\nReference .XYZ\n")
-                #     s.writelines(xyzString)
-
-                #     for geometry in sith.deformed:
-                #         assert geometry._path.exists(), "Path to fchk file does not exist"
-                #         assert obConversion.ReadFile(mol, geometry._path.as_posix(
-                #         )), "Reading fchk file ("+geometry._path.as_posix(
-                #         )+") with openbabel failed."
-                #         xyzString = obConversion.WriteString(mol)
-                #         s.write(geometry.name+" .XYZ\n")
-                #         s.writelines(xyzString)
-
-                s.write('\n')
-                return True
+            if includeXYZ:
+                write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", sith.reference.atoms, format='xyz', append=True, comment=sith.reference.name)
+                for geometry in sith.deformed:
+                    write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", geometry.atoms, format='xyz', append=True, comment=geometry.name)
+            return True
         except IOError as e:
             print(e)
             return False
@@ -171,18 +153,18 @@ class SithWriter:
     @staticmethod
     def writeXYZ(geometry: Geometry):
         """
-        Writes a .xyz file of the geometry using OpenBabel and the initial SITH input .fchk file
+        Writes a .xyz file of the geometry
         """
-        #TODO
-        """ obConversion = ob.OBConversion()
-        obConversion.SetInAndOutFormats("fchk", "xyz")
+        write(str(geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz"), geometry.atoms, format='xyz', append=False)
 
-        mol = ob.OBMol()
-        assert geometry._path.exists(), "Path to fchk file does not exist"
-        assert obConversion.ReadFile(mol, geometry._path.as_posix(
-        )), "Reading fchk file with openbabel failed."
-        assert obConversion.WriteFile(mol, str(
-            geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz")), "Could not write XYZ file." """
+    @staticmethod
+    def writeXYZs(sith: SITH):
+        """
+        Writes .xyz files of all geometries
+        """
+        SithWriter.writeXYZ(sith.reference)
+        for deformation in sith.deformed:
+            SithWriter.writeXYZ(deformation)
 
 # endregion
 
