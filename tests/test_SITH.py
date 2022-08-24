@@ -320,6 +320,8 @@ def test_energyAnalysis():
     assert compare_arrays(sith.energies, expectedEnergies)
     assert all(x == 100 for x in [sum(sith.pEnergies[:, i])
                for i in range(len(sith.deformed))])
+    summation = np.array([sum(sith.energies[:,i]) for i in range(len(sith.deformed))])
+    assert compare_arrays(sith.deformationEnergy, summation)
 
 
 def test_energyAnalysis_Same():
@@ -332,6 +334,8 @@ def test_energyAnalysis_Same():
     assert compare_arrays(sith.energies, np.zeros((sith.reference.dims[0], 1)))
     assert sith.deformationEnergy[0, 0] == 0
     assert all([np.isnan(pE[0]) for pE in sith.pEnergies])
+    summation = np.array([sum(sith.energies[:,i]) for i in range(len(sith.deformed))])
+    assert compare_arrays(sith.deformationEnergy, summation)
 
 
 # region Integration Tests and Examples
@@ -358,6 +362,9 @@ def test_multiDeformedGood():  # full no mismatched to remove, deformed director
     blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
+    summation = np.array([sum(sith.energies[:,i]) for i in range(len(sith.deformed))])
+    assert compare_arrays(sith.deformationEnergy, summation)
+    writeSummary(sith, 'moh-')
 
 
 def test_Glycine():  # full with mismatched to remove, deformed directory
@@ -370,6 +377,7 @@ def test_Glycine():  # full with mismatched to remove, deformed directory
     blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 10)
+    writeSummary(sith, 'gly-')
 
 
 def test_Alanine():  # full with valid kill invalid results
@@ -392,6 +400,7 @@ def test_movedx0():
     blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
+    writeSummary(sith, 'moh-x0-moved-')
 
 def test_glyGoof():  # full with mismatched to remove, deformed directory
     local_sith = SITH('tests/local-ref-test/Gly-opt08.fchk',

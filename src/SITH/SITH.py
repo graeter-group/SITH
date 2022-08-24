@@ -421,14 +421,16 @@ class SITH:
         self.deltaQ = np.subtract(self.qF, self.q0)
 
         """This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
-        coordinate system in Gaussian for example is from pi to -pi, it shows up as -(pi-k) - (pi - l) = -2pi + k + l
-        instead of what it should be: k + l"""
-        # # TODO: make this more definitive than an arbitrary threshold, experiment with -> 0 or -> - 2*pi etc.
-        angleThreshold = 0.05  # Current radian threshold
+        coordinate system in Gaussian for example is from pi to -pi, where k and l are small, it shows up as 
+        -   -(pi-k) - (pi - l) = -2pi + (k+l) should be: -(k + l) 
+                --> -(result + 2pi)
+        +   (pi - k) - -(pi - l) = 2pi - (k+l) should be (k+l)
+                --> -(result - 2pi) = 2pi - result
+        """
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
             for dq in dqit:
                 #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
                 #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
                 if dq > np.pi:
                     blah = 3
-                dq[...] = dq - np.pi if dq > np.pi else (dq + np.pi if dq < -np.pi else dq)
+                dq[...] = 2*np.pi - dq if dq > np.pi else (-(dq + 2*np.pi) if dq < -np.pi else dq)
