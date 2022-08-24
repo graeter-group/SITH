@@ -1,12 +1,15 @@
+from curses.ascii import SI
 from numpy import float32
 import pytest
 from pytest import approx
 from ase import Atom
 
-from src.SITH.Utilities import Extractor, Geometry, UnitConverter
+from src.SITH.Utilities import Extractor, Geometry, UnitConverter, SummaryReader
 from src.SITH.SITH import SITH
 from tests.test_variables import *
 from ase import Atom
+from ase import units
+from src.SITH.SithWriter import SithWriter
 
 """ LTMatrix has already been tested by its creator on github,
  but should add in their testing just in case """
@@ -268,3 +271,49 @@ def test_units():
     assert UnitConverter.angstromToBohr(1.3) == float32(2.456644)
     assert UnitConverter.bohrToAngstrom(1.3) == float32(0.68793035)
     assert UnitConverter.radianToDegree(1.3) == float32(74.48451)
+
+#  Region Summary Reader
+
+def test_summary_reader():
+    sith = SITH(x0string, deformedString)
+    sith.extractData()
+    sith.energyAnalysis()
+    SithWriter.writeSummary(sith, includeXYZ=True)
+    sith.extractData()
+    sith.energyAnalysis()
+    SithWriter.writeSummary(sith, includeXYZ=True)
+    path = sith._referencePath.parent.as_posix()+sith._referencePath.root
+
+    print(path)
+
+    sith_result = SummaryReader(path + 'summary.txt')
+
+
+    assert sith_result._reference.dimIndices == \
+           sith._reference.dimIndices, \
+           "Error reading degrees of freedom from summary.txt"
+    assert (sith_result._reference.dims == sith._reference.dims).all(), \
+           "Error reading dimensions from summary.txt"
+    dims = sith_result._reference.dims
+    assert sith_result.deltaQ[:dims[1]] == approx(sith.deltaQ[:dims[1]]* units.Bohr)
+    assert sith_result.deltaQ[dims[1]:] == approx(sith.deltaQ[dims[1]:]* 180/np.pi)
+    e0 = sith._reference.energy
+    expected = list()
+    for conf in sith._deformed:
+        expected.append(conf.energy - e0)
+    expected = np.array(expected)
+
+    assert sith_result.accuracy[0] == approx(sith.deformationEnergy[0])
+    assert sith_result.accuracy[1] == approx(expected)
+    assert sith_result.energies == approx(sith.energies)
+    assert sith_result._deformed[0].atoms.positions == \
+           approx(sith._deformed[0].atoms.positions)
+
+    # Atoms
+    assert sith_result._reference.atoms.positions == approx(sith._reference.atoms.positions)
+    assert (sith_result._reference.atoms.get_atomic_numbers() == 
+            sith._reference.atoms.get_atomic_numbers()).all()
+    for i in range(len(sith_result._deformed)):
+        assert sith_result._deformed[i].atoms.positions == approx(sith._deformed[i].atoms.positions)
+        assert (sith_result._deformed[i].atoms.get_atomic_numbers() == 
+                sith._deformed[i].atoms.get_atomic_numbers()).all()
