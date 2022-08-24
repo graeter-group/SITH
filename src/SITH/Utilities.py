@@ -248,10 +248,9 @@ class Geometry:
         assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
             dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
 
-        # Angles are moved from (-pi, pi) --> (0, 2pi) because abs(angles) are often around pi (phi, psi angles especially)
-        # so when calculating deltaQ this is more convenient
+        # Angles are moved (-pi, pi)
         for i in range(self.dims[1], self.dims[0]):
-            self.ric[i] = self.ric[i] + np.pi
+            self.ric[i] = self.ric[i]
 
     def _killDOFs(self, dofis: list[int]):
         """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dimIndices, and hessian, updates dims"""

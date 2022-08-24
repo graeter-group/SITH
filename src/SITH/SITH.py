@@ -429,7 +429,6 @@ class SITH:
             for dq in dqit:
                 #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
                 #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
-                if dq > (2*np.pi - angleThreshold):
+                if dq > np.pi:
                     blah = 3
-                dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
-                                                        angleThreshold) else (dq + 2*np.pi if dq < -(2*np.pi - angleThreshold) else dq)
+                dq[...] = dq - np.pi if dq > np.pi else (dq + np.pi if dq < -np.pi else dq)

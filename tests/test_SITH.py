@@ -5,6 +5,7 @@ from pathlib import Path
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import *
 from tests.test_resources import *
+from src.SITH.SithWriter import *
 
 
 def test_initDefault():
@@ -391,5 +392,21 @@ def test_movedx0():
     blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
+
+def test_glyGoof():  # full with mismatched to remove, deformed directory
+    local_sith = SITH('tests/local-ref-test/Gly-opt08.fchk',
+                '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/3-OptStreched')
+    local_sith.extractData()
+    local_sith.energyAnalysis()
+    writeAll(local_sith, filePrefix='local-ref-gly-')
+
+    global_sith = SITH('tests/global-ref-test/Gly-streched00.fchk',
+                '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/2-OptStreched02/Glycine/')
+    global_sith.extractData()
+    global_sith.energyAnalysis()
+    writeAll(global_sith, filePrefix='global-ref-gly-')
+
+    blah = 2
+
 
 # endregion
