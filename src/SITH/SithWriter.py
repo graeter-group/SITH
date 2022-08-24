@@ -34,7 +34,7 @@ class SithWriter:
         energies = SithWriter.buildEnergyMatrix(sith)
 
         try:
-            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+sith._referencePath.stem+filePrefix+"summary.txt", "w") as s:
+            with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", "w") as s:
                 s.write("Summary of SITH analysis\n")
                 s.write(
                     "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
@@ -49,7 +49,7 @@ class SithWriter:
 
                 s.write("\nEnergy per DOF (RIC)\n")
                 s.writelines("\n".join(energies))
-                s.write("\n")
+                s.write("\nXYZ FILES APPENDED\n")
 
             if includeXYZ:
                 write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", sith.reference.atoms, format='xyz', append=True, comment=sith.reference.name)
