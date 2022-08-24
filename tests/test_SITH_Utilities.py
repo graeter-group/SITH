@@ -6,10 +6,10 @@ from ase import Atom
 
 from src.SITH.Utilities import Extractor, Geometry, UnitConverter, SummaryReader
 from src.SITH.SITH import SITH
-from tests.test_variables import *
+from tests.test_resources import *
 from ase import Atom
 from ase import units
-from src.SITH.SithWriter import SithWriter
+from src.SITH.SithWriter import writeSummary
 
 """ LTMatrix has already been tested by its creator on github,
  but should add in their testing just in case """
@@ -39,7 +39,7 @@ def test_buildRICGood():
     geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
     assert geo.dimIndices == dimIndices
-    assert all([geo.ric[i] == coords[i] for i in range(len(coords))])
+    assert compare_arrays(geo.ric, coords)
 
 
 def test_equals():
@@ -183,29 +183,21 @@ def test_build_atoms_integrated():
 def test_killDOF():
     sith = SITH(x0string, deformedString)
     sith.extractData()
-    a = sith._reference.hessian == eHessFull
-    assert (sith._reference.hessian == eHessFull).all()
+    assert compare_arrays(sith.reference.hessian, eHessFull)
     sith._reference._killDOFs([0])
-    b = sith._reference.dimIndices == dimIndices[1:]
     assert all(sith._reference.dimIndices == dimIndices[1:])
-    c = sith._reference.dims == array('i', [14, 4, 7, 3])
     assert sith._reference.dims == array('i', [14, 4, 7, 3])
-    d = sith._reference.hessian == eHessKill0
-    assert (sith._reference.hessian == eHessKill0).all()
+    assert compare_arrays(sith.reference.hessian, eHessKill0)
 
 
 def test_killDOFs():
     sith = SITH(x0string, deformedString)
     sith.extractData()
-    a = sith._reference.hessian == eHessFull
-    assert (sith._reference.hessian == eHessFull).all()
+    assert compare_arrays(sith._reference.hessian, eHessFull)
     sith._reference._killDOFs([0, 14])
-    b = sith._reference.dimIndices == dimIndices[1:14]
     assert all(sith._reference.dimIndices == dimIndices[1:14])
-    c = sith._reference.dims == array('i', [13, 4, 7, 2])
     assert sith._reference.dims == array('i', [13, 4, 7, 2])
-    d = sith._reference.hessian == eHessKill0_14
-    assert (sith._reference.hessian == eHessKill0_14).all()
+    assert compare_arrays(sith.reference.hessian, eHessKill0_14)
 
 # endregion
 
@@ -222,7 +214,7 @@ def test_creationEmptyList():
 def test_extract():
     extractor = Extractor(testPath, frankenNoLines)
     extractor._extract()
-    assert extractor.hRaw == ehRaw
+    assert compare_arrays(np.array(extractor.hRaw), ehRaw)
 
 
 def test_extractedGeometry():
@@ -251,7 +243,7 @@ def test_buildHessian():
     extractor = Extractor(testPath, frankenNoLines)
     extractor._extract()
     hess = extractor.hessian
-    assert (eHessFull == hess).all()
+    assert compare_arrays(eHessFull, hess)
 
 
 def test_getGeometry():
@@ -268,9 +260,17 @@ def test_getGeometry():
 # endregion
 
 def test_units():
-    assert UnitConverter.angstromToBohr(1.3) == float32(2.456644)
-    assert UnitConverter.bohrToAngstrom(1.3) == float32(0.68793035)
-    assert UnitConverter.radianToDegree(1.3) == float32(74.48451)
+    assert UnitConverter.angstromToBohr(1.3) == approx(2.456644)
+    assert UnitConverter.bohrToAngstrom(1.3) == approx(0.68793035)
+    assert UnitConverter.radianToDegree(1.3) == approx(74.48451)
+
+def test_compares():
+    foo = np.full((3,3), 4.678)
+    bar = np.full((3,3), 4.67799999)
+    assert compare_arrays(foo, bar)
+    bar = np.full((3,3), 4.5)
+    assert not compare_arrays(foo, bar)
+
 
 #  Region Summary Reader
 
@@ -278,10 +278,7 @@ def test_summary_reader():
     sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
-    SithWriter.writeSummary(sith, includeXYZ=True)
-    sith.extractData()
-    sith.energyAnalysis()
-    SithWriter.writeSummary(sith, includeXYZ=True)
+    writeSummary(sith, includeXYZ=True)
     path = sith._referencePath.parent.as_posix()+sith._referencePath.root
 
     print(path)

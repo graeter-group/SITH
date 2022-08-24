@@ -4,7 +4,7 @@ from pathlib import Path
 
 from src.SITH.SITH import SITH
 from src.SITH.Utilities import *
-from tests.test_variables import *
+from tests.test_resources import *
 
 
 def test_initDefault():
@@ -75,7 +75,7 @@ def test_deformedProp():
 def test_hessianProp():
     sith = SITH(frankensteinPath, frankensteinPath)
     sith.extractData()
-    assert np.array_equal(sith.hessian, refGeo.hessian)
+    assert compare_arrays(sith.hessian, refGeo.hessian)
 
 
 def test_validateFiles():
@@ -289,9 +289,9 @@ def test_populateQ():
     sith._deformed = [refGeo]
     sith._populateQ()
     coords2D = np.array(coords)[np.newaxis]
-    assert np.array_equal(sith.q0, np.transpose(coords2D))
-    assert np.array_equal(sith.qF, np.transpose(coords2D))
-    assert np.array_equal(sith.deltaQ, np.zeros((len(coords), 1)))
+    assert compare_arrays(sith.q0, np.transpose(coords2D))
+    assert compare_arrays(sith.qF, np.transpose(coords2D))
+    assert compare_arrays(sith.deltaQ, np.zeros((len(coords), 1)))
 
     sith = SITH(frankensteinPath, frankensteinPath)
     sith._reference = refGeo
@@ -300,9 +300,9 @@ def test_populateQ():
     sith._deformed = [ditto]
     sith._populateQ()
     coords2D = np.array(coords)[np.newaxis]
-    assert np.array_equal(sith.q0, np.transpose(coords2D))
-    assert np.array_equal(sith.qF, np.transpose(coords2D)*0.5)
-    assert np.array_equal(sith.deltaQ, -np.transpose(coords2D)*0.5)
+    assert compare_arrays(sith.q0, np.transpose(coords2D))
+    assert compare_arrays(sith.qF, np.transpose(coords2D)*0.5)
+    assert compare_arrays(sith.deltaQ, -np.transpose(coords2D)*0.5)
 
 
 def test_energyAnalysis():
@@ -313,11 +313,10 @@ def test_energyAnalysis():
     sith._reference.dims = np.array([3, 1, 1, 1])
     sith.energyAnalysis()
     expectedDefE = np.transpose(dqSmall).dot(hessSmall).dot(dqSmall) / 2.
-    assert sith.deformationEnergy == expectedDefE
-    expectedEnergies = [(dqSmall[i] * 0.5 * hessSmall.dot(dqSmall))[i]
-                        for i in range(3)]
-    assert np.array_equal(sith.energies, expectedEnergies)
-    blah = [sum(sith.pEnergies[:, i]) for i in range(len(sith.deformed))]
+    assert compare_arrays(sith.deformationEnergy, expectedDefE)
+    expectedEnergies = np.array([(dqSmall[i] * 0.5 * hessSmall.dot(dqSmall))[i]
+                        for i in range(3)])
+    assert compare_arrays(sith.energies, expectedEnergies)
     assert all(x == 100 for x in [sum(sith.pEnergies[:, i])
                for i in range(len(sith.deformed))])
 
@@ -329,7 +328,7 @@ def test_energyAnalysis_Same():
     assert str(e.value) == "Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData()."
     sith.extractData()
     sith.energyAnalysis()
-    assert np.array_equal(sith.energies, np.zeros((sith.reference.dims[0], 1)))
+    assert compare_arrays(sith.energies, np.zeros((sith.reference.dims[0], 1)))
     assert sith.deformationEnergy[0, 0] == 0
     assert all([np.isnan(pE[0]) for pE in sith.pEnergies])
 
@@ -343,8 +342,8 @@ def test_full_killed():  # full with no mismatched, kill valid, deformed directo
     sith.energyAnalysis()
     assert sith.energies.shape == (13, 5)
     assert sith.pEnergies.shape == (13, 5)
-    blah = [sum(sith.pEnergies[:, i]) <=
-            100.000001 for i in range(len(sith.deformed))]
+    blah = [sum(sith.pEnergies[:, i]) ==
+            approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
 
@@ -355,8 +354,7 @@ def test_multiDeformedGood():  # full no mismatched to remove, deformed director
     sith.energyAnalysis()
     assert sith.energies.shape == (15, 5)
     assert sith.pEnergies.shape == (15, 5)
-    blah = [sum(sith.pEnergies[:, i]) <=
-            100.000001 for i in range(len(sith.deformed))]
+    blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
 
@@ -368,8 +366,7 @@ def test_Glycine():  # full with mismatched to remove, deformed directory
     sith.energyAnalysis()
     assert sith.energies.shape == (80, 10)
     assert sith.pEnergies.shape == (80, 10)
-    blah = [sum(sith.pEnergies[:, i]) <=
-            100.000001 for i in range(len(sith.deformed))]
+    blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 10)
 
@@ -391,8 +388,7 @@ def test_movedx0():
     sith.energyAnalysis()
     assert sith.energies.shape == (15, 5)
     assert sith.pEnergies.shape == (15, 5)
-    blah = [sum(sith.pEnergies[:, i]) <=
-            100.000001 for i in range(len(sith.deformed))]
+    blah = [sum(sith.pEnergies[:, i]) == approx(100) for i in range(len(sith.deformed))]
     assert all(blah)
     assert sith.deformationEnergy.shape == (1, 5)
 
