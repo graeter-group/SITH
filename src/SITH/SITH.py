@@ -4,7 +4,7 @@ from typing import Tuple
 import pathlib
 from pathlib import Path
 import numpy as np
-from src.SITH.Utilities import Extractor
+from SITH.Utilities import Extractor
 
 
 class SITH:

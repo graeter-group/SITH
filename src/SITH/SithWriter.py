@@ -4,8 +4,8 @@ from typing import Tuple
 import numpy as np
 from ase.io import write
 
-from src.SITH.SITH import SITH
-from src.SITH.Utilities import Geometry, UnitConverter
+from SITH.SITH import SITH
+from SITH.Utilities import Geometry, UnitConverter
 
 
 
