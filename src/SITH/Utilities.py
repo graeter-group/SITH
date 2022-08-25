@@ -493,11 +493,11 @@ class SummaryReader:
                                   'Changes in internal coordinates' +
                                   ' (Delta q)\n',
                                   iplus=2)
-        return [np.fromstring(line.replace('(',
-                                           '').replace(',',
-                                                       '').replace(')',
-                                                                   ''),
-                sep=' ', dtype=int)[1:].tolist()
+        return [tuple(np.fromstring(line.replace('(',
+                                                 '').replace(',',
+                                                             '').replace(')',
+                                                                         ''),
+                sep=' ', dtype=int)[1:])
                 for line in lines]
 
     def read_changes(self):
@@ -511,7 +511,7 @@ class SummaryReader:
                                   ' (Delta q)\n',
                                   '**  Energy Analysis  **\n',
                                   iplus=3, jminus=2)
-        return np.array([np.fromstring(line, sep=' ')[1:] for line in lines]).T
+        return np.array([np.fromstring(line, sep=' ')[1:] for line in lines])
 
     def read_accuracy(self):
         """
@@ -541,7 +541,7 @@ class SummaryReader:
                                   iplus=2, jminus=-ndofs-2)
 
         return np.array([np.array(line.split(),
-                                  dtype=float)
+                                  dtype=float)[1:]
                          for line in lines])
 
     def read_structures(self):
@@ -549,9 +549,9 @@ class SummaryReader:
         Creates the ase.Atoms objects of each structure.
         """
         init = self.info.index("XYZ FILES APPENDED\n") + 1
-        n_configs = len(self.deltaQ) + 1  # deformed plus reference
+        n_configs = len(self.deltaQ[0]) + 1  # deformed plus reference
         length = int(len(self.info[init:])/n_configs)
-        n_atoms = int(self.info[init+1])
+        n_atoms = int(self.info[init])
 
         configs = [self.info[init+i*(length):init+(i+1)*length]
                    for i in range(n_configs)]
@@ -573,14 +573,14 @@ class SummaryReader:
         dims = [len(self.dimIndices), 0, 0, 0]
         for dof in self.dimIndices:
             dims[len(dof)-1] += 1
-        self._reference.dims = dims
+        self._reference.dims = np.array(dims, dtype=int)
         self.deltaQ = self.read_changes()
         self.accuracy = self.read_accuracy()
-        assert len(self.dimIndices) == len(self.deltaQ[0]), \
+        assert len(self.dimIndices) == len(self.deltaQ), \
             f'{len(self.dimIndices)} DOF' +\
             f'but {len(self.deltaQ[0])} changes are reported'
 
-        self.energies = self.read_energies(len(self.deltaQ[0]))
+        self.energies = self.read_energies(len(self.deltaQ))
         self._reference.atoms, deformed = self.read_structures()
         [self._deformed.append(void()) for _ in range(len(deformed))]
 
