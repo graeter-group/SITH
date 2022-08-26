@@ -32,7 +32,7 @@ def test_compareEnergies():
     assert writeDeltaQ(sith)
     assert writeError(sith)
     assert writeEnergyMatrix(sith)
-    assert writeSummary(sith)
+    assert write_summary(sith)
 
 
 def test_writeAll():
@@ -40,7 +40,7 @@ def test_writeAll():
     sith.extractData()
     sith.energyAnalysis()
 
-    assert writeAll(sith)
+    assert write_all(sith)
 
 
 def test_writeXYZ():
@@ -56,4 +56,4 @@ def test_writeSummaryXYZ():
     sith.extractData()
     sith.energyAnalysis()
 
-    assert writeSummary(sith, "xyz", includeXYZ=True)
+    assert write_summary(sith, "xyz", includeXYZ=True)
