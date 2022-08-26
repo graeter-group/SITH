@@ -8,16 +8,34 @@ from SITH.SITH import SITH
 from SITH.Utilities import Geometry, UnitConverter
 
 
-
 #region: Write
-def writeAll(sith: SITH, filePrefix="") -> bool:
-    return writeSummary(sith, filePrefix) and writeDeltaQ(sith, filePrefix) and writeEnergyMatrix(sith, filePrefix) and writeError(sith, filePrefix)
-def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
-    """
-    Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
-    -----
-    File is written to sith input's parent directory.
-    """
+def write_all(sith: SITH, filePrefix="") -> bool:
+    """Write all SITH output files: summary, energies, error, and \u0394q.
+
+    This function simply calls all SithWriter.write methods which take a SITH object as input.
+
+    Args:
+        sith (SITH): analyzed SITH object
+        filePrefix (str, optional): prefix for file output. Defaults to "".
+
+    Returns:
+        bool: If all files were successfully written.
+    """    '''
+    '''
+    return write_summary(sith, filePrefix) and writeDeltaQ(sith, filePrefix) and writeEnergyMatrix(sith, filePrefix) and writeError(sith, filePrefix)
+
+
+def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
+    """Write summary.txt file of sith analysis
+
+    Args:
+        sith (SITH): analyzed SITH object whose information to write out
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
+        includeXYZ (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        bool: True if successful
+    """    
     totE = buildTotEnergiesString(sith)
     dq = buildDeltaQString(sith)
     ric = buildInternalCoordsString(sith)
@@ -31,7 +49,7 @@ def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
                 "Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n")
             s.writelines('\n'.join(ric))
             s.write(
-                "\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n")
+                "\nChanges in internal coordinates (\u0394q)\n**Distances given in Angstroms, angles given in degrees**\n")
             s.writelines('\n'.join(dq))
             s.write(
                 "\n\n***********************\n**  Energy Analysis  **\n***********************\n")
@@ -41,9 +59,11 @@ def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
             s.writelines("\n".join(energies))
             s.write("\nXYZ FILES APPENDED\n")
         if includeXYZ:
-            write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", sith.reference.atoms, format='xyz', append=True, comment=sith.reference.name)
+            write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix +
+                  "summary.txt", sith.reference.atoms, format='xyz', append=True, comment=sith.reference.name)
             for geometry in sith.deformed:
-                write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", geometry.atoms, format='xyz', append=True, comment=geometry.name)
+                write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix +
+                      "summary.txt", geometry.atoms, format='xyz', append=True, comment=geometry.name)
         return True
     except IOError as e:
         print(e)
@@ -52,6 +72,8 @@ def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
         print("Non-IO Exception encountered:")
         print(e)
         return False
+
+
 def writeTotEnergiesString(sith: SITH, filePrefix="") -> True:
     """
     Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
@@ -71,6 +93,8 @@ def writeTotEnergiesString(sith: SITH, filePrefix="") -> True:
         print("Non-IO Exception encountered:")
         print(e)
         return False
+
+
 def writeDeltaQ(sith: SITH, filePrefix="") -> bool:
     """
     Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
@@ -90,6 +114,8 @@ def writeDeltaQ(sith: SITH, filePrefix="") -> bool:
         print("Non-IO Exception encountered:")
         print(e)
         return False
+
+
 def writeError(sith: SITH, filePrefix="") -> bool:
     """Takes in SITH object sith, Writes error data, Returns True if successful
     -----
@@ -107,6 +133,8 @@ def writeError(sith: SITH, filePrefix="") -> bool:
         print("Non-IO Exception encountered:")
         print(e)
         return False
+
+
 def writeEnergyMatrix(sith: SITH, filePrefix='') -> bool:
     """
     Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
@@ -126,11 +154,16 @@ def writeEnergyMatrix(sith: SITH, filePrefix='') -> bool:
         print("Non-IO Exception encountered:")
         print(e)
         return False
+
+
 def writeXYZ(geometry: Geometry):
     """
     Writes a .xyz file of the geometry
     """
-    write(str(geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+".xyz"), geometry.atoms, format='xyz', append=False)
+    write(str(geometry._path.parent.as_posix()+geometry._path.root +
+          geometry._path.stem+".xyz"), geometry.atoms, format='xyz', append=False)
+
+
 def writeXYZs(sith: SITH):
     """
     Writes .xyz files of all geometries
@@ -138,8 +171,10 @@ def writeXYZs(sith: SITH):
     writeXYZ(sith.reference)
     for deformation in sith.deformed:
         writeXYZ(deformation)
-#endregion
+# endregion
 #region: Build
+
+
 def buildTotEnergiesString(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
@@ -154,6 +189,8 @@ def buildTotEnergiesString(sith: SITH) -> list:
     lines.append("Stress Energy   " +
                  ''.join(["{: >16.6E}".format(e) for e in sith.deformationEnergy[0]]))
     return lines
+
+
 def buildDeltaQString(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom 
@@ -195,12 +232,16 @@ def buildDeltaQString(sith: SITH) -> list:
                 dof+1+sith._reference.dims[1], dqDeg[dof][0])
             dqAngstroms.append(line)
     return dqAngstroms
+
+
 def buildInternalCoordsString(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
     """
     assert sith._reference.dimIndices is not None, "SITH.extractData() has not been performed yet, no summary information available."
     return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
+
+
 def buildEnergyMatrix(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
@@ -224,6 +265,8 @@ def buildEnergyMatrix(sith: SITH) -> list:
             dof+1) + ''.join(["{: >16.6E}".format(e) for e in sith.energies[dof, :]])
         eMat.append(line)
     return eMat
+
+
 def buildErrorStrings(sith: SITH):
     """
     Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
@@ -238,7 +281,9 @@ def buildErrorStrings(sith: SITH):
         lines.append("{: <12s}{: >16.6E}{: >16.6E}{: >12.2f}{: >16.6E}".format(
             sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
     return lines
-#endregion
+# endregion
+
+
 def compareEnergies(sith: SITH) -> Tuple:
     """
     Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error

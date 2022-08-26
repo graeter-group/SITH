@@ -1,0 +1,2050 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>SITH.Utilities API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>SITH.Utilities</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from array import array
+from pathlib import Path
+import pathlib
+from ase import Atoms, Atom
+from ase.data import chemical_symbols
+from ase.units import Bohr
+import numpy as np
+
+
+class LTMatrix(list):
+    &#34;&#34;&#34;LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py&#34;&#34;&#34;
+
+    def __init__(self, L):
+        &#34;&#34;&#34;
+        Accept a list of elements in a lower triangular matrix.
+        &#34;&#34;&#34;
+        list.__init__(self, L)
+        self.list = L
+        i, j = LTMatrix.getRowColumn(len(L) - 1)
+        assert i == j, &#34;Not a LTMatrix&#34;
+        self.dimension = i + 1
+
+    def __getitem__(self, key):
+        &#34;&#34;&#34;
+        Accept one or two integers.
+        ONE: get item at the given position (count from zero)
+        TWO: get item at the given (row, column) (both counted from zero)
+        &#34;&#34;&#34;
+        if type(key) is tuple:
+            return self.list[LTMatrix.getPosition(*key)]
+        else:
+            return self.list[key]
+
+    @staticmethod
+    def getRowColumn(N):
+        &#34;&#34;&#34;
+        Return the row and column number of the Nth entry  of a lower triangular matrix.
+        N, ROW, COLUMN are counted from ZERO!
+        Example:
+           C0 C1 C2 C3 C4 C5
+        R0 0
+        R1 1  2
+        R2 3  4  5
+        R3 6  7  8  9
+        R4 10 11 12 13 14
+        R5 15 16 17 18 19 20
+        &gt;&gt;&gt; LTMatrix.getRowColumn(18)
+        (5, 3)
+        18th element is at row 5 and column 3. (count from zero)
+        &#34;&#34;&#34;
+        N += 1
+        y = int((np.sqrt(1 + 8 * N) - 1) / 2)
+        b = int(N - (y**2 + y) / 2)
+        if b == 0:
+            return (y - 1, y - 1)
+        else:
+            return (y, b - 1)
+
+    @staticmethod
+    def getPosition(i, j):
+        &#34;&#34;&#34;
+        Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+        All numbers are counted from ZERO.
+        &gt;&gt;&gt; LTMatrix.getPosition(3, 4)
+        13
+        &#34;&#34;&#34;
+        i += 1
+        j += 1
+        if i &lt; j:
+            i, j = j, i
+        num = (i * (i - 1) / 2) + j
+        num = int(num)
+        return num - 1
+
+    def buildFullMat(self):
+        &#34;&#34;&#34;
+        build full matrix (np.ndarray).
+        &#34;&#34;&#34;
+        L = []
+        for i in range(self.dimension):
+            L.append([])
+            for j in range(self.dimension):
+                L[-1].append(self[i, j])
+        self._fullmat = np.array(L)
+        return self._fullmat
+
+    @property
+    def fullmat(self):
+        &#34;&#34;&#34;
+        Return the full matrix (np.ndarray)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_fullmat&#39;, self.buildFullMat())
+
+    def inverse(self):
+        return np.linalg.inv(self.fullmat)
+
+    def uppermat(self):
+        up = []
+        for i, row in enumerate(self.fullmat):
+            up.extend(row[i:])
+        return up
+
+    @staticmethod
+    def newFromUpperMat(uppermat):
+        &#34;&#34;&#34;
+        Example:
+           C0 C1 C2 C3 C4 C5
+        R0  0  1  2  3  4  5
+        R1     6  7  8  9 10
+        R2       11 12 13 14
+        R3          15 16 17
+        R4             18 19
+        R5                20
+        &#34;&#34;&#34;
+        dimension = LTMatrix.getRowColumn(len(uppermat)-1)[0] + 1
+
+        def getUpperPosition(i, j, dimension):
+            firstnum = dimension
+            if i == 0:
+                return j
+            lastnum = firstnum - i + 1
+            countnum = i
+            abovenums = (firstnum + lastnum)*countnum / 2
+            position = abovenums + j - i
+            return int(position)
+        L = []
+        for i in range(dimension):
+            for j in range(i+1):
+                L.append(uppermat[getUpperPosition(j, i, dimension)])
+        return LTMatrix(L)
+
+
+class Geometry:
+    &#34;&#34;&#34;Houses data associated with a molecular structure, all public variables are intended for access not modification.&#34;&#34;&#34;
+
+    def __init__(self, name: str, path: pathlib.Path, nAtoms: int) -&gt; None:
+        self.name = name
+        &#34;&#34;&#34;Name of geometry, based off of stem of .fchk file path unless otherwise modified.&#34;&#34;&#34;
+        self._path = path
+        &#34;&#34;&#34;Path of geometry .fchk file.&#34;&#34;&#34;
+        self.ric = array(&#39;f&#39;)
+        &#34;&#34;&#34;Redundant Internal Coordinates of geometry in atomic units (Bohr radius)&#34;&#34;&#34;
+        self.energy = None
+        &#34;&#34;&#34;Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input&#34;&#34;&#34;
+        self.atoms = list()
+        &#34;&#34;&#34;&lt;ase.Atoms&gt; object associated with geometry.&#34;&#34;&#34;
+        self.nAtoms = nAtoms
+        &#34;&#34;&#34;Number of atoms&#34;&#34;&#34;
+        self.dims = array(&#39;i&#39;)
+        &#34;&#34;&#34;Array of number of dimensions of DOF type
+        [0]: total dimensions/DOFs
+        [1]: bond lengths
+        [2]: bond angles
+        [3]: dihedral angles
+        &#34;&#34;&#34;
+        self.dimIndices = list()
+        &#34;&#34;&#34;List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric&#34;&#34;&#34;
+
+        self.hessian = None
+        &#34;&#34;&#34;Hessian matrix associated with the geometry. If &#39;None&#39;, then the associated fchk file did not contain any Hessian,
+        in the case of Gaussian the Hessian is generated when a freq analysis is performed.&#34;&#34;&#34;
+
+    def buildAtoms(self, raw_coords:list, atomic_num:list):
+        assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+&#34; cartesian coordinates given, incorrect for &#34;+str(len(atomic_num))+&#34; atoms.&#34;
+        atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
+        atomic_coord = np.reshape(atomic_coord, (self.nAtoms, 3))
+        molecule = &#39;&#39;.join([chemical_symbols[int(i)] for i in atomic_num])
+        self.atoms = Atoms(molecule, atomic_coord)
+
+    def buildRIC(self, dims: list, dimILines: list, coordLines: list):
+        &#34;&#34;&#34;
+        Takes in lists of RIC-related data, Populates 
+
+            dims: quantities of each RIC dimension type
+            dimILines: list of strings of each line of RIC Indices 
+            coordLines: list of strings of each line of RICs
+        &#34;&#34;&#34;
+        try:
+            self.dims = array(&#39;i&#39;, [int(d) for d in dims])
+        except ValueError:
+            raise Exception(
+                &#34;Invalid input given for Redundant internal dimensions.&#34;)
+        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
+            dims) == 4, &#34;Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk.&#34;
+
+        # region Indices
+        # Parses through the &#39;dimILines&#39; input which indicates which atoms (by index)
+        # are involved in each RIC degree of freedom
+
+        rawIndices = list()
+        for iLine in dimILines:
+            iSplit = iLine.split()
+            try:
+                rawIndices.extend([int(i) for i in iSplit])
+            except ValueError as ve:
+                print(ve)
+                raise Exception(&#34;Invalid atom index given as input.&#34;)
+
+        # Check that # indices is divisible by 4
+        assert len(rawIndices) % 4 == 0 and len(
+            rawIndices) == self.dims[0] * 4, &#34;One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation&#34;
+
+        # Parse into sets of 4, then into tuples of the relevant number of values
+        lengthsCount = 0
+        anglesCount = 0
+        dihedsCount = 0
+        for i in range(0, len(rawIndices), 4):
+            a1 = rawIndices[i]
+            a2 = rawIndices[i+1]
+            a3 = rawIndices[i+2]
+            a4 = rawIndices[i+3]
+            # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+            # These should line up with self.dims correctly
+            assert all([(x &lt;= self.nAtoms and x &gt;= 0)
+                       for x in rawIndices[i:i+4]]), &#34;Invalid atom index given as input.&#34;
+            assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
+                a3 != a4 or a3 == 0), &#34;Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom.&#34;
+            assert a1 != 0 and a2 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+            # bond lengths check
+            if i &lt; self.dims[1]*4:
+                assert a3 == 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2))
+                lengthsCount += 1
+            # bond angles check
+            elif i &lt; (self.dims[1] + self.dims[2])*4:
+                assert a3 != 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2, a3))
+                anglesCount += 1
+            # dihedral angles check
+            elif i &lt; (self.dims[1] + self.dims[2] + self.dims[3])*4:
+                assert a3 != 0 and a4 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2, a3, a4))
+                dihedsCount += 1
+
+        assert lengthsCount == self.dims[1] and anglesCount == self.dims[2] and dihedsCount == self.dims[
+            3], &#34;Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given.&#34;
+
+        # endregion
+
+        try:
+            for line in coordLines:
+                self.ric.extend([float(ric) for ric in line.split()])
+        except ValueError:
+            raise(Exception(
+                &#34;Redundant internal coordinates contains invalid values, such as strings.&#34;))
+
+        self.ric = np.asarray(self.ric, dtype=np.float32)
+        assert len(self.ric) == self.dims[0], &#34;Mismatch between the number of degrees of freedom expected (&#34;+str(
+            dims[0])+&#34;) and number of coordinates given (&#34;+str(len(self.ric))+&#34;).&#34;
+
+        # Angles are moved (-pi, pi)
+        for i in range(self.dims[1], self.dims[0]):
+            self.ric[i] = self.ric[i]
+
+    def _killDOFs(self, dofis: list[int]):
+        &#34;&#34;&#34;Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dimIndices, and hessian, updates dims&#34;&#34;&#34;
+        self.ric = np.delete(self.ric, dofis)
+        self.dimIndices = np.delete(self.dimIndices, dofis)
+        lengthsDeleted = sum(x &lt; self.dims[1] and x &gt;= 0 for x in dofis)
+        anglesDeleted = sum(
+            x &lt; self.dims[2] + self.dims[1] and x &gt;= self.dims[1] for x in dofis)
+        dihedralsDeleted = sum(
+            x &lt; self.dims[0] and x &gt;= self.dims[2] + self.dims[1] for x in dofis)
+        self.dims[0] -= len(dofis)
+        self.dims[1] -= lengthsDeleted
+        self.dims[2] -= anglesDeleted
+        self.dims[3] -= dihedralsDeleted
+        if(self.hessian is not None):
+            self.hessian = np.delete(self.hessian, dofis, axis=0)
+            self.hessian = np.delete(self.hessian, dofis, axis=1)
+
+    def __eq__(self, __o: object) -&gt; bool:
+        b = True
+        b = b and self.name == __o.name
+        b = b and np.array_equal(self.ric, __o.ric)
+        b = b and self.energy == __o.energy
+        b = b and self.atoms == __o.atoms
+        b = b and self.nAtoms == __o.nAtoms
+        b = b and np.array_equal(self.dims, __o.dims)
+        b = b and np.array_equal(self.dimIndices, __o.dimIndices)
+        b = b and ((self.hessian is None and __o.hessian is None)
+                   or np.array_equal(self.hessian, __o.hessian))
+        return b
+
+
+class UnitConverter:
+    &#34;&#34;&#34;
+    Class to convert units utilizing Atomic Simulation Environment (ase) constants
+    xyz standard input is in Angstrom
+    RIC are in atomic units
+    internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
+    Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units
+    &#34;&#34;&#34;
+
+    def __init__(self) -&gt; None:
+        pass
+
+    @staticmethod
+    def angstromToBohr(a: float) -&gt; np.float32:
+        return np.float32(a / Bohr)
+
+    @staticmethod
+    def bohrToAngstrom(b: float) -&gt; np.float32:
+        return np.float32(b * Bohr)
+
+    @staticmethod
+    def radianToDegree(r: float) -&gt; np.float32:
+        return np.float32(r / np.pi * 180)
+
+
+class Extractor:
+    &#34;&#34;&#34;Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
+
+    -----
+    The user really shouldn&#39;t be using this class 0.0 unless they perhaps want a custom one for
+    non-fchk files, in which case they should make a new class inheriting from this one.&#34;&#34;&#34;
+
+    def __init__(self, path: Path, linesList: list) -&gt; None:
+        self.__energyHeader = &#34;Total Energy&#34;
+        self.__hessianHeader = &#34;Internal Force Constants&#34;
+        self.hEnder = &#34;Mulliken Charges&#34;
+        self.__cartesianCoordsHeader = &#34;Current cartesian coordinates&#34;
+        self.xcEnder = &#34;Force Field&#34;
+        self.__ricHeader = &#34;Redundant internal coordinates&#34;
+        self.xrEnder = &#34;ZRed-IntVec&#34;
+        self.__ricDimHeader = &#34;Redundant internal dimensions&#34;
+        self.__ricIndicesHeader = &#34;Redundant internal coordinate indices&#34;
+        self.__numAtomsHeader = &#34;Number of atoms&#34;
+        self.__atomicNumsHeader = &#34;Atomic numbers&#34;
+
+        self._path = path
+        self._name = path.stem
+
+        self.geometry = None
+
+        self.__lines = linesList
+
+    def _extract(self) -&gt; bool:
+        &#34;&#34;&#34;Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful&#34;&#34;&#34;
+
+        try:
+            i = 0
+            atomicNums = list()
+            while i &lt; len(self.__lines):
+                line = self.__lines[i]
+
+                # This all must be in order because of the way things show up in the fchk file, it makes no sense to build
+                # these out separately to reduce dependencies because it will just increase the number of times to traverse the data.
+                if self.__numAtomsHeader in line:
+                    splitLine = line.split()
+                    numAtoms = int(splitLine[len(splitLine)-1])
+                    self.geometry = Geometry(self._name, self._path, numAtoms)
+
+                if self.__atomicNumsHeader in line:
+                    i += 1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        atomicNums.extend(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
+                        i += 1
+
+                elif self.__energyHeader in line:
+                    splitLine = line.split()
+                    self.geometry.energy = float(splitLine[len(splitLine)-1])
+
+                elif self.__ricDimHeader in line:
+                    i = i+1
+                    lin = self.__lines[i]
+                    rDims = lin.split()
+
+                elif self.__ricIndicesHeader in line:
+                    rdiStart = i+1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    xrDims = self.__lines[rdiStart:i+1]
+                    assert len(
+                        xrDims) &gt; 0, &#34;Missing Redundant internal coordinate indices.&#34;
+
+                if self.__ricHeader in line:
+                    i = i+1
+                    xrStart = i
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    xrRaw = self.__lines[xrStart:i]
+                    self.geometry.buildRIC(rDims, xrDims, xrRaw)
+
+                if self.__cartesianCoordsHeader in line:
+                    i = i+1
+                    cStart = i
+                    stop = int(line.split()[-1])
+                    count = 0
+                    cRaw = list()
+                    while count &lt; stop:
+                        cRaw.extend(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    assert len(atomicNums) == numAtoms, &#34;Mismatch between length of atomic numbers and number of atoms specified.&#34;
+                    self.geometry.buildAtoms(cRaw, atomicNums)
+
+                elif self.__hessianHeader in line:
+                    i = i+1
+                    stop = int(line.split()[-1])
+                    self.hRaw = list()
+                    while len(self.hRaw) &lt; stop:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        self.hRaw.extend([float(i) for i in rowsplit])
+                        i = i+1
+
+                
+                    
+                i = i + 1
+            print(&#34;Building full Hessian matrix.&#34;)
+            self.buildHessian()
+
+
+            print(&#34;Cartesian data extracted successfully.&#34;)
+            return True
+        except Exception as e:
+            print(e)
+            print(&#34;Data extraction failed.&#34;)
+            return False
+
+    def buildHessian(self):
+        &#34;&#34;&#34;Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data&#34;&#34;&#34;
+        ltMat = LTMatrix(self.hRaw)
+        self.hessian = ltMat.fullmat
+        self.geometry.hessian = self.hessian
+
+    def getGeometry(self) -&gt; Geometry:
+        &#34;&#34;&#34;Returns the geometry populated by the Extractor based on the input lines from a .fchk file&#34;&#34;&#34;
+        if self.geometry is not None:
+            return self.geometry
+        else:
+            raise Exception(&#34;There is no geometry.&#34;)
+
+
+class void:
+    pass
+
+
+class SummaryReader:
+    def __init__(self, file):
+        &#34;&#34;&#34;
+        Extract the data in a summary file
+        &#34;&#34;&#34;
+        with open(file) as data:
+            self.info = data.readlines()
+
+        self._reference = void()
+        self._deformed = list()
+        self.read_all()
+
+    def read_section(self, header, tail, iplus=0, jminus=0):
+        &#34;&#34;&#34;
+        Take any block of a set of lines separated by header
+        and tail as references
+
+        lines: list
+            set of lines to extract the blocks
+        header:
+            line that marks the start of the block. It is included
+            in the block.
+        tail:
+            line that marks the end of the block. It is not included
+            in the block.
+        iplus: int
+            number of lines to ignore after header
+        jminus:
+            number of lines to ignore before the tail
+        &#34;&#34;&#34;
+        i = self.info.index(header)
+        j = self.info.index(tail)
+        data = self.info[i+iplus:j-jminus]
+        return data
+
+    def read_dofs(self):
+        &#34;&#34;&#34;
+        read the degrees of freedom in the summary file
+
+        return the dofs in a list.
+        &#34;&#34;&#34;
+
+        lines = self.read_section(&#39;Redundant Internal Coordinate&#39; +
+                                  &#39; Definitions\n&#39;,
+                                  &#39;Changes in internal coordinates&#39; +
+                                  &#39; (Delta q)\n&#39;,
+                                  iplus=2)
+        return [tuple(np.fromstring(line.replace(&#39;(&#39;,
+                                                 &#39;&#39;).replace(&#39;,&#39;,
+                                                             &#39;&#39;).replace(&#39;)&#39;,
+                                                                         &#39;&#39;),
+                sep=&#39; &#39;, dtype=int)[1:])
+                for line in lines]
+
+    def read_changes(self):
+        &#34;&#34;&#34;
+        read the changes in the degrees of freedom in the summary file
+
+        return a list of lists where the i-th list is the changes in the
+        i-th deformed config.
+        &#34;&#34;&#34;
+        lines = self.read_section(&#39;Changes in internal coordinates&#39; +
+                                  &#39; (Delta q)\n&#39;,
+                                  &#39;**  Energy Analysis  **\n&#39;,
+                                  iplus=3, jminus=2)
+        return np.array([np.fromstring(line, sep=&#39; &#39;)[1:] for line in lines])
+
+    def read_accuracy(self):
+        &#34;&#34;&#34;
+        read the accuracy in the total difference of energy.
+
+        return a list lists where each element corresponds with the
+        energy-analysis of each deformed config saved as
+        [energy diff predicted with harmonic approx, percentaje_error, Error]
+         &#34;&#34;&#34;
+        lines = self.read_section(&#39;Overall Structural Energies\n&#39;,
+                                  &#39;Energy per DOF (RIC)\n&#39;,
+                                  iplus=2)
+
+        return np.array([np.array(line.split()[1:],
+                                  dtype=float)
+                         for line in lines]).T
+
+    def read_energies(self, ndofs):
+        &#34;&#34;&#34;
+        read the energies in each degree of freedom
+
+        return a list lists where each element corresponds to the
+        distribution of energies of each deformed config
+        &#34;&#34;&#34;
+        lines = self.read_section(&#39;Energy per DOF (RIC)\n&#39;,
+                                  &#39;Energy per DOF (RIC)\n&#39;,
+                                  iplus=2, jminus=-ndofs-2)
+
+        return np.array([np.array(line.split(),
+                                  dtype=float)[1:]
+                         for line in lines])
+
+    def read_structures(self):
+        &#34;&#34;&#34;
+        Creates the ase.Atoms objects of each structure.
+        &#34;&#34;&#34;
+        init = self.info.index(&#34;XYZ FILES APPENDED\n&#34;) + 1
+        n_configs = len(self.deltaQ[0]) + 1  # deformed plus reference
+        length = int(len(self.info[init:])/n_configs)
+        n_atoms = int(self.info[init])
+
+        configs = [self.info[init+i*(length):init+(i+1)*length]
+                   for i in range(n_configs)]
+        configs = [[atom.split() for atom in config] for config in configs]
+        molecule = &#39;&#39;.join([atom[0] for atom in configs[0][-n_atoms:]])
+        positions = np.array([[np.array(atom[1:], dtype=float)
+                              for atom in config[-n_atoms:]]
+                              for config in configs])
+
+        atoms = [Atoms(molecule, config) for config in positions]
+
+        return atoms[0], atoms[1:]
+
+    def read_all(self):
+        &#34;&#34;&#34;
+        Read all summary file and save the info in instances
+        &#34;&#34;&#34;
+        self.dimIndices = self.read_dofs()
+        dims = [len(self.dimIndices), 0, 0, 0]
+        for dof in self.dimIndices:
+            dims[len(dof)-1] += 1
+        self._reference.dims = np.array(dims, dtype=int)
+        self.deltaQ = self.read_changes()
+        self.accuracy = self.read_accuracy()
+        assert len(self.dimIndices) == len(self.deltaQ), \
+            f&#39;{len(self.dimIndices)} DOF&#39; +\
+            f&#39;but {len(self.deltaQ[0])} changes are reported&#39;
+
+        self.energies = self.read_energies(len(self.deltaQ))
+        self._reference.atoms, deformed = self.read_structures()
+        [self._deformed.append(void()) for _ in range(len(deformed))]
+
+        for i in range(len(deformed)):
+            self._deformed[i].atoms = deformed[i]
+
+        self._reference.dimIndices = self.dimIndices</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="SITH.Utilities.Extractor"><code class="flex name class">
+<span>class <span class="ident">Extractor</span></span>
+<span>(</span><span>path: pathlib.Path, linesList: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used on a per .fchk file basis to organize lines from the fchk file into a Geometry</p>
+<hr>
+<p>The user really shouldn't be using this class 0.0 unless they perhaps want a custom one for
+non-fchk files, in which case they should make a new class inheriting from this one.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Extractor:
+    &#34;&#34;&#34;Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
+
+    -----
+    The user really shouldn&#39;t be using this class 0.0 unless they perhaps want a custom one for
+    non-fchk files, in which case they should make a new class inheriting from this one.&#34;&#34;&#34;
+
+    def __init__(self, path: Path, linesList: list) -&gt; None:
+        self.__energyHeader = &#34;Total Energy&#34;
+        self.__hessianHeader = &#34;Internal Force Constants&#34;
+        self.hEnder = &#34;Mulliken Charges&#34;
+        self.__cartesianCoordsHeader = &#34;Current cartesian coordinates&#34;
+        self.xcEnder = &#34;Force Field&#34;
+        self.__ricHeader = &#34;Redundant internal coordinates&#34;
+        self.xrEnder = &#34;ZRed-IntVec&#34;
+        self.__ricDimHeader = &#34;Redundant internal dimensions&#34;
+        self.__ricIndicesHeader = &#34;Redundant internal coordinate indices&#34;
+        self.__numAtomsHeader = &#34;Number of atoms&#34;
+        self.__atomicNumsHeader = &#34;Atomic numbers&#34;
+
+        self._path = path
+        self._name = path.stem
+
+        self.geometry = None
+
+        self.__lines = linesList
+
+    def _extract(self) -&gt; bool:
+        &#34;&#34;&#34;Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful&#34;&#34;&#34;
+
+        try:
+            i = 0
+            atomicNums = list()
+            while i &lt; len(self.__lines):
+                line = self.__lines[i]
+
+                # This all must be in order because of the way things show up in the fchk file, it makes no sense to build
+                # these out separately to reduce dependencies because it will just increase the number of times to traverse the data.
+                if self.__numAtomsHeader in line:
+                    splitLine = line.split()
+                    numAtoms = int(splitLine[len(splitLine)-1])
+                    self.geometry = Geometry(self._name, self._path, numAtoms)
+
+                if self.__atomicNumsHeader in line:
+                    i += 1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        atomicNums.extend(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
+                        i += 1
+
+                elif self.__energyHeader in line:
+                    splitLine = line.split()
+                    self.geometry.energy = float(splitLine[len(splitLine)-1])
+
+                elif self.__ricDimHeader in line:
+                    i = i+1
+                    lin = self.__lines[i]
+                    rDims = lin.split()
+
+                elif self.__ricIndicesHeader in line:
+                    rdiStart = i+1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    xrDims = self.__lines[rdiStart:i+1]
+                    assert len(
+                        xrDims) &gt; 0, &#34;Missing Redundant internal coordinate indices.&#34;
+
+                if self.__ricHeader in line:
+                    i = i+1
+                    xrStart = i
+                    stop = int(line.split()[-1])
+                    count = 0
+                    while count &lt; stop:
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    xrRaw = self.__lines[xrStart:i]
+                    self.geometry.buildRIC(rDims, xrDims, xrRaw)
+
+                if self.__cartesianCoordsHeader in line:
+                    i = i+1
+                    cStart = i
+                    stop = int(line.split()[-1])
+                    count = 0
+                    cRaw = list()
+                    while count &lt; stop:
+                        cRaw.extend(self.__lines[i].split())
+                        count += len(self.__lines[i].split())
+                        i += 1
+                    assert len(atomicNums) == numAtoms, &#34;Mismatch between length of atomic numbers and number of atoms specified.&#34;
+                    self.geometry.buildAtoms(cRaw, atomicNums)
+
+                elif self.__hessianHeader in line:
+                    i = i+1
+                    stop = int(line.split()[-1])
+                    self.hRaw = list()
+                    while len(self.hRaw) &lt; stop:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        self.hRaw.extend([float(i) for i in rowsplit])
+                        i = i+1
+
+                
+                    
+                i = i + 1
+            print(&#34;Building full Hessian matrix.&#34;)
+            self.buildHessian()
+
+
+            print(&#34;Cartesian data extracted successfully.&#34;)
+            return True
+        except Exception as e:
+            print(e)
+            print(&#34;Data extraction failed.&#34;)
+            return False
+
+    def buildHessian(self):
+        &#34;&#34;&#34;Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data&#34;&#34;&#34;
+        ltMat = LTMatrix(self.hRaw)
+        self.hessian = ltMat.fullmat
+        self.geometry.hessian = self.hessian
+
+    def getGeometry(self) -&gt; Geometry:
+        &#34;&#34;&#34;Returns the geometry populated by the Extractor based on the input lines from a .fchk file&#34;&#34;&#34;
+        if self.geometry is not None:
+            return self.geometry
+        else:
+            raise Exception(&#34;There is no geometry.&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Utilities.Extractor.buildHessian"><code class="name flex">
+<span>def <span class="ident">buildHessian</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildHessian(self):
+    &#34;&#34;&#34;Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data&#34;&#34;&#34;
+    ltMat = LTMatrix(self.hRaw)
+    self.hessian = ltMat.fullmat
+    self.geometry.hessian = self.hessian</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.Extractor.getGeometry"><code class="name flex">
+<span>def <span class="ident">getGeometry</span></span>(<span>self) ‑> <a title="SITH.Utilities.Geometry" href="#SITH.Utilities.Geometry">Geometry</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the geometry populated by the Extractor based on the input lines from a .fchk file</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getGeometry(self) -&gt; Geometry:
+    &#34;&#34;&#34;Returns the geometry populated by the Extractor based on the input lines from a .fchk file&#34;&#34;&#34;
+    if self.geometry is not None:
+        return self.geometry
+    else:
+        raise Exception(&#34;There is no geometry.&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Utilities.Geometry"><code class="flex name class">
+<span>class <span class="ident">Geometry</span></span>
+<span>(</span><span>name: str, path: pathlib.Path, nAtoms: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Houses data associated with a molecular structure, all public variables are intended for access not modification.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Geometry:
+    &#34;&#34;&#34;Houses data associated with a molecular structure, all public variables are intended for access not modification.&#34;&#34;&#34;
+
+    def __init__(self, name: str, path: pathlib.Path, nAtoms: int) -&gt; None:
+        self.name = name
+        &#34;&#34;&#34;Name of geometry, based off of stem of .fchk file path unless otherwise modified.&#34;&#34;&#34;
+        self._path = path
+        &#34;&#34;&#34;Path of geometry .fchk file.&#34;&#34;&#34;
+        self.ric = array(&#39;f&#39;)
+        &#34;&#34;&#34;Redundant Internal Coordinates of geometry in atomic units (Bohr radius)&#34;&#34;&#34;
+        self.energy = None
+        &#34;&#34;&#34;Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input&#34;&#34;&#34;
+        self.atoms = list()
+        &#34;&#34;&#34;&lt;ase.Atoms&gt; object associated with geometry.&#34;&#34;&#34;
+        self.nAtoms = nAtoms
+        &#34;&#34;&#34;Number of atoms&#34;&#34;&#34;
+        self.dims = array(&#39;i&#39;)
+        &#34;&#34;&#34;Array of number of dimensions of DOF type
+        [0]: total dimensions/DOFs
+        [1]: bond lengths
+        [2]: bond angles
+        [3]: dihedral angles
+        &#34;&#34;&#34;
+        self.dimIndices = list()
+        &#34;&#34;&#34;List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric&#34;&#34;&#34;
+
+        self.hessian = None
+        &#34;&#34;&#34;Hessian matrix associated with the geometry. If &#39;None&#39;, then the associated fchk file did not contain any Hessian,
+        in the case of Gaussian the Hessian is generated when a freq analysis is performed.&#34;&#34;&#34;
+
+    def buildAtoms(self, raw_coords:list, atomic_num:list):
+        assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+&#34; cartesian coordinates given, incorrect for &#34;+str(len(atomic_num))+&#34; atoms.&#34;
+        atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
+        atomic_coord = np.reshape(atomic_coord, (self.nAtoms, 3))
+        molecule = &#39;&#39;.join([chemical_symbols[int(i)] for i in atomic_num])
+        self.atoms = Atoms(molecule, atomic_coord)
+
+    def buildRIC(self, dims: list, dimILines: list, coordLines: list):
+        &#34;&#34;&#34;
+        Takes in lists of RIC-related data, Populates 
+
+            dims: quantities of each RIC dimension type
+            dimILines: list of strings of each line of RIC Indices 
+            coordLines: list of strings of each line of RICs
+        &#34;&#34;&#34;
+        try:
+            self.dims = array(&#39;i&#39;, [int(d) for d in dims])
+        except ValueError:
+            raise Exception(
+                &#34;Invalid input given for Redundant internal dimensions.&#34;)
+        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
+            dims) == 4, &#34;Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk.&#34;
+
+        # region Indices
+        # Parses through the &#39;dimILines&#39; input which indicates which atoms (by index)
+        # are involved in each RIC degree of freedom
+
+        rawIndices = list()
+        for iLine in dimILines:
+            iSplit = iLine.split()
+            try:
+                rawIndices.extend([int(i) for i in iSplit])
+            except ValueError as ve:
+                print(ve)
+                raise Exception(&#34;Invalid atom index given as input.&#34;)
+
+        # Check that # indices is divisible by 4
+        assert len(rawIndices) % 4 == 0 and len(
+            rawIndices) == self.dims[0] * 4, &#34;One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation&#34;
+
+        # Parse into sets of 4, then into tuples of the relevant number of values
+        lengthsCount = 0
+        anglesCount = 0
+        dihedsCount = 0
+        for i in range(0, len(rawIndices), 4):
+            a1 = rawIndices[i]
+            a2 = rawIndices[i+1]
+            a3 = rawIndices[i+2]
+            a4 = rawIndices[i+3]
+            # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+            # These should line up with self.dims correctly
+            assert all([(x &lt;= self.nAtoms and x &gt;= 0)
+                       for x in rawIndices[i:i+4]]), &#34;Invalid atom index given as input.&#34;
+            assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
+                a3 != a4 or a3 == 0), &#34;Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom.&#34;
+            assert a1 != 0 and a2 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+            # bond lengths check
+            if i &lt; self.dims[1]*4:
+                assert a3 == 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2))
+                lengthsCount += 1
+            # bond angles check
+            elif i &lt; (self.dims[1] + self.dims[2])*4:
+                assert a3 != 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2, a3))
+                anglesCount += 1
+            # dihedral angles check
+            elif i &lt; (self.dims[1] + self.dims[2] + self.dims[3])*4:
+                assert a3 != 0 and a4 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+                self.dimIndices.append((a1, a2, a3, a4))
+                dihedsCount += 1
+
+        assert lengthsCount == self.dims[1] and anglesCount == self.dims[2] and dihedsCount == self.dims[
+            3], &#34;Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given.&#34;
+
+        # endregion
+
+        try:
+            for line in coordLines:
+                self.ric.extend([float(ric) for ric in line.split()])
+        except ValueError:
+            raise(Exception(
+                &#34;Redundant internal coordinates contains invalid values, such as strings.&#34;))
+
+        self.ric = np.asarray(self.ric, dtype=np.float32)
+        assert len(self.ric) == self.dims[0], &#34;Mismatch between the number of degrees of freedom expected (&#34;+str(
+            dims[0])+&#34;) and number of coordinates given (&#34;+str(len(self.ric))+&#34;).&#34;
+
+        # Angles are moved (-pi, pi)
+        for i in range(self.dims[1], self.dims[0]):
+            self.ric[i] = self.ric[i]
+
+    def _killDOFs(self, dofis: list[int]):
+        &#34;&#34;&#34;Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dimIndices, and hessian, updates dims&#34;&#34;&#34;
+        self.ric = np.delete(self.ric, dofis)
+        self.dimIndices = np.delete(self.dimIndices, dofis)
+        lengthsDeleted = sum(x &lt; self.dims[1] and x &gt;= 0 for x in dofis)
+        anglesDeleted = sum(
+            x &lt; self.dims[2] + self.dims[1] and x &gt;= self.dims[1] for x in dofis)
+        dihedralsDeleted = sum(
+            x &lt; self.dims[0] and x &gt;= self.dims[2] + self.dims[1] for x in dofis)
+        self.dims[0] -= len(dofis)
+        self.dims[1] -= lengthsDeleted
+        self.dims[2] -= anglesDeleted
+        self.dims[3] -= dihedralsDeleted
+        if(self.hessian is not None):
+            self.hessian = np.delete(self.hessian, dofis, axis=0)
+            self.hessian = np.delete(self.hessian, dofis, axis=1)
+
+    def __eq__(self, __o: object) -&gt; bool:
+        b = True
+        b = b and self.name == __o.name
+        b = b and np.array_equal(self.ric, __o.ric)
+        b = b and self.energy == __o.energy
+        b = b and self.atoms == __o.atoms
+        b = b and self.nAtoms == __o.nAtoms
+        b = b and np.array_equal(self.dims, __o.dims)
+        b = b and np.array_equal(self.dimIndices, __o.dimIndices)
+        b = b and ((self.hessian is None and __o.hessian is None)
+                   or np.array_equal(self.hessian, __o.hessian))
+        return b</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="SITH.Utilities.Geometry.atoms"><code class="name">var <span class="ident">atoms</span></code></dt>
+<dd>
+<div class="desc"><p><ase.Atoms> object associated with geometry.</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.dimIndices"><code class="name">var <span class="ident">dimIndices</span></code></dt>
+<dd>
+<div class="desc"><p>List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.dims"><code class="name">var <span class="ident">dims</span></code></dt>
+<dd>
+<div class="desc"><p>Array of number of dimensions of DOF type
+[0]: total dimensions/DOFs
+[1]: bond lengths
+[2]: bond angles
+[3]: dihedral angles</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.energy"><code class="name">var <span class="ident">energy</span></code></dt>
+<dd>
+<div class="desc"><p>Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.hessian"><code class="name">var <span class="ident">hessian</span></code></dt>
+<dd>
+<div class="desc"><p>Hessian matrix associated with the geometry. If 'None', then the associated fchk file did not contain any Hessian,
+in the case of Gaussian the Hessian is generated when a freq analysis is performed.</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.nAtoms"><code class="name">var <span class="ident">nAtoms</span></code></dt>
+<dd>
+<div class="desc"><p>Number of atoms</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>Name of geometry, based off of stem of .fchk file path unless otherwise modified.</p></div>
+</dd>
+<dt id="SITH.Utilities.Geometry.ric"><code class="name">var <span class="ident">ric</span></code></dt>
+<dd>
+<div class="desc"><p>Redundant Internal Coordinates of geometry in atomic units (Bohr radius)</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Utilities.Geometry.buildAtoms"><code class="name flex">
+<span>def <span class="ident">buildAtoms</span></span>(<span>self, raw_coords: list, atomic_num: list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildAtoms(self, raw_coords:list, atomic_num:list):
+    assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+&#34; cartesian coordinates given, incorrect for &#34;+str(len(atomic_num))+&#34; atoms.&#34;
+    atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
+    atomic_coord = np.reshape(atomic_coord, (self.nAtoms, 3))
+    molecule = &#39;&#39;.join([chemical_symbols[int(i)] for i in atomic_num])
+    self.atoms = Atoms(molecule, atomic_coord)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.Geometry.buildRIC"><code class="name flex">
+<span>def <span class="ident">buildRIC</span></span>(<span>self, dims: list, dimILines: list, coordLines: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in lists of RIC-related data, Populates </p>
+<pre><code>dims: quantities of each RIC dimension type
+dimILines: list of strings of each line of RIC Indices 
+coordLines: list of strings of each line of RICs
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildRIC(self, dims: list, dimILines: list, coordLines: list):
+    &#34;&#34;&#34;
+    Takes in lists of RIC-related data, Populates 
+
+        dims: quantities of each RIC dimension type
+        dimILines: list of strings of each line of RIC Indices 
+        coordLines: list of strings of each line of RICs
+    &#34;&#34;&#34;
+    try:
+        self.dims = array(&#39;i&#39;, [int(d) for d in dims])
+    except ValueError:
+        raise Exception(
+            &#34;Invalid input given for Redundant internal dimensions.&#34;)
+    assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
+        dims) == 4, &#34;Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk.&#34;
+
+    # region Indices
+    # Parses through the &#39;dimILines&#39; input which indicates which atoms (by index)
+    # are involved in each RIC degree of freedom
+
+    rawIndices = list()
+    for iLine in dimILines:
+        iSplit = iLine.split()
+        try:
+            rawIndices.extend([int(i) for i in iSplit])
+        except ValueError as ve:
+            print(ve)
+            raise Exception(&#34;Invalid atom index given as input.&#34;)
+
+    # Check that # indices is divisible by 4
+    assert len(rawIndices) % 4 == 0 and len(
+        rawIndices) == self.dims[0] * 4, &#34;One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation&#34;
+
+    # Parse into sets of 4, then into tuples of the relevant number of values
+    lengthsCount = 0
+    anglesCount = 0
+    dihedsCount = 0
+    for i in range(0, len(rawIndices), 4):
+        a1 = rawIndices[i]
+        a2 = rawIndices[i+1]
+        a3 = rawIndices[i+2]
+        a4 = rawIndices[i+3]
+        # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+        # These should line up with self.dims correctly
+        assert all([(x &lt;= self.nAtoms and x &gt;= 0)
+                   for x in rawIndices[i:i+4]]), &#34;Invalid atom index given as input.&#34;
+        assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
+            a3 != a4 or a3 == 0), &#34;Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom.&#34;
+        assert a1 != 0 and a2 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+        # bond lengths check
+        if i &lt; self.dims[1]*4:
+            assert a3 == 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+            self.dimIndices.append((a1, a2))
+            lengthsCount += 1
+        # bond angles check
+        elif i &lt; (self.dims[1] + self.dims[2])*4:
+            assert a3 != 0 and a4 == 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+            self.dimIndices.append((a1, a2, a3))
+            anglesCount += 1
+        # dihedral angles check
+        elif i &lt; (self.dims[1] + self.dims[2] + self.dims[3])*4:
+            assert a3 != 0 and a4 != 0, &#34;Mismatch between given &#39;RIC dimensions&#39; and given RIC indices.&#34;
+            self.dimIndices.append((a1, a2, a3, a4))
+            dihedsCount += 1
+
+    assert lengthsCount == self.dims[1] and anglesCount == self.dims[2] and dihedsCount == self.dims[
+        3], &#34;Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given.&#34;
+
+    # endregion
+
+    try:
+        for line in coordLines:
+            self.ric.extend([float(ric) for ric in line.split()])
+    except ValueError:
+        raise(Exception(
+            &#34;Redundant internal coordinates contains invalid values, such as strings.&#34;))
+
+    self.ric = np.asarray(self.ric, dtype=np.float32)
+    assert len(self.ric) == self.dims[0], &#34;Mismatch between the number of degrees of freedom expected (&#34;+str(
+        dims[0])+&#34;) and number of coordinates given (&#34;+str(len(self.ric))+&#34;).&#34;
+
+    # Angles are moved (-pi, pi)
+    for i in range(self.dims[1], self.dims[0]):
+        self.ric[i] = self.ric[i]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Utilities.LTMatrix"><code class="flex name class">
+<span>class <span class="ident">LTMatrix</span></span>
+<span>(</span><span>L)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LTMatrix class and code comes from <a href="https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py">https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py</a></p>
+<p>Accept a list of elements in a lower triangular matrix.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LTMatrix(list):
+    &#34;&#34;&#34;LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py&#34;&#34;&#34;
+
+    def __init__(self, L):
+        &#34;&#34;&#34;
+        Accept a list of elements in a lower triangular matrix.
+        &#34;&#34;&#34;
+        list.__init__(self, L)
+        self.list = L
+        i, j = LTMatrix.getRowColumn(len(L) - 1)
+        assert i == j, &#34;Not a LTMatrix&#34;
+        self.dimension = i + 1
+
+    def __getitem__(self, key):
+        &#34;&#34;&#34;
+        Accept one or two integers.
+        ONE: get item at the given position (count from zero)
+        TWO: get item at the given (row, column) (both counted from zero)
+        &#34;&#34;&#34;
+        if type(key) is tuple:
+            return self.list[LTMatrix.getPosition(*key)]
+        else:
+            return self.list[key]
+
+    @staticmethod
+    def getRowColumn(N):
+        &#34;&#34;&#34;
+        Return the row and column number of the Nth entry  of a lower triangular matrix.
+        N, ROW, COLUMN are counted from ZERO!
+        Example:
+           C0 C1 C2 C3 C4 C5
+        R0 0
+        R1 1  2
+        R2 3  4  5
+        R3 6  7  8  9
+        R4 10 11 12 13 14
+        R5 15 16 17 18 19 20
+        &gt;&gt;&gt; LTMatrix.getRowColumn(18)
+        (5, 3)
+        18th element is at row 5 and column 3. (count from zero)
+        &#34;&#34;&#34;
+        N += 1
+        y = int((np.sqrt(1 + 8 * N) - 1) / 2)
+        b = int(N - (y**2 + y) / 2)
+        if b == 0:
+            return (y - 1, y - 1)
+        else:
+            return (y, b - 1)
+
+    @staticmethod
+    def getPosition(i, j):
+        &#34;&#34;&#34;
+        Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+        All numbers are counted from ZERO.
+        &gt;&gt;&gt; LTMatrix.getPosition(3, 4)
+        13
+        &#34;&#34;&#34;
+        i += 1
+        j += 1
+        if i &lt; j:
+            i, j = j, i
+        num = (i * (i - 1) / 2) + j
+        num = int(num)
+        return num - 1
+
+    def buildFullMat(self):
+        &#34;&#34;&#34;
+        build full matrix (np.ndarray).
+        &#34;&#34;&#34;
+        L = []
+        for i in range(self.dimension):
+            L.append([])
+            for j in range(self.dimension):
+                L[-1].append(self[i, j])
+        self._fullmat = np.array(L)
+        return self._fullmat
+
+    @property
+    def fullmat(self):
+        &#34;&#34;&#34;
+        Return the full matrix (np.ndarray)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_fullmat&#39;, self.buildFullMat())
+
+    def inverse(self):
+        return np.linalg.inv(self.fullmat)
+
+    def uppermat(self):
+        up = []
+        for i, row in enumerate(self.fullmat):
+            up.extend(row[i:])
+        return up
+
+    @staticmethod
+    def newFromUpperMat(uppermat):
+        &#34;&#34;&#34;
+        Example:
+           C0 C1 C2 C3 C4 C5
+        R0  0  1  2  3  4  5
+        R1     6  7  8  9 10
+        R2       11 12 13 14
+        R3          15 16 17
+        R4             18 19
+        R5                20
+        &#34;&#34;&#34;
+        dimension = LTMatrix.getRowColumn(len(uppermat)-1)[0] + 1
+
+        def getUpperPosition(i, j, dimension):
+            firstnum = dimension
+            if i == 0:
+                return j
+            lastnum = firstnum - i + 1
+            countnum = i
+            abovenums = (firstnum + lastnum)*countnum / 2
+            position = abovenums + j - i
+            return int(position)
+        L = []
+        for i in range(dimension):
+            for j in range(i+1):
+                L.append(uppermat[getUpperPosition(j, i, dimension)])
+        return LTMatrix(L)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.list</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="SITH.Utilities.LTMatrix.getPosition"><code class="name flex">
+<span>def <span class="ident">getPosition</span></span>(<span>i, j)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+All numbers are counted from ZERO.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; LTMatrix.getPosition(3, 4)
+13
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def getPosition(i, j):
+    &#34;&#34;&#34;
+    Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+    All numbers are counted from ZERO.
+    &gt;&gt;&gt; LTMatrix.getPosition(3, 4)
+    13
+    &#34;&#34;&#34;
+    i += 1
+    j += 1
+    if i &lt; j:
+        i, j = j, i
+    num = (i * (i - 1) / 2) + j
+    num = int(num)
+    return num - 1</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.LTMatrix.getRowColumn"><code class="name flex">
+<span>def <span class="ident">getRowColumn</span></span>(<span>N)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the row and column number of the Nth entry
+of a lower triangular matrix.
+N, ROW, COLUMN are counted from ZERO!</p>
+<h2 id="example">Example</h2>
+<p>C0 C1 C2 C3 C4 C5
+R0 0
+R1 1
+2
+R2 3
+4
+5
+R3 6
+7
+8
+9
+R4 10 11 12 13 14
+R5 15 16 17 18 19 20</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; LTMatrix.getRowColumn(18)
+(5, 3)
+18th element is at row 5 and column 3. (count from zero)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def getRowColumn(N):
+    &#34;&#34;&#34;
+    Return the row and column number of the Nth entry  of a lower triangular matrix.
+    N, ROW, COLUMN are counted from ZERO!
+    Example:
+       C0 C1 C2 C3 C4 C5
+    R0 0
+    R1 1  2
+    R2 3  4  5
+    R3 6  7  8  9
+    R4 10 11 12 13 14
+    R5 15 16 17 18 19 20
+    &gt;&gt;&gt; LTMatrix.getRowColumn(18)
+    (5, 3)
+    18th element is at row 5 and column 3. (count from zero)
+    &#34;&#34;&#34;
+    N += 1
+    y = int((np.sqrt(1 + 8 * N) - 1) / 2)
+    b = int(N - (y**2 + y) / 2)
+    if b == 0:
+        return (y - 1, y - 1)
+    else:
+        return (y, b - 1)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.LTMatrix.newFromUpperMat"><code class="name flex">
+<span>def <span class="ident">newFromUpperMat</span></span>(<span>uppermat)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="example">Example</h2>
+<p>C0 C1 C2 C3 C4 C5
+R0
+0
+1
+2
+3
+4
+5
+R1
+6
+7
+8
+9 10
+R2
+11 12 13 14
+R3
+15 16 17
+R4
+18 19
+R5
+20</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def newFromUpperMat(uppermat):
+    &#34;&#34;&#34;
+    Example:
+       C0 C1 C2 C3 C4 C5
+    R0  0  1  2  3  4  5
+    R1     6  7  8  9 10
+    R2       11 12 13 14
+    R3          15 16 17
+    R4             18 19
+    R5                20
+    &#34;&#34;&#34;
+    dimension = LTMatrix.getRowColumn(len(uppermat)-1)[0] + 1
+
+    def getUpperPosition(i, j, dimension):
+        firstnum = dimension
+        if i == 0:
+            return j
+        lastnum = firstnum - i + 1
+        countnum = i
+        abovenums = (firstnum + lastnum)*countnum / 2
+        position = abovenums + j - i
+        return int(position)
+    L = []
+    for i in range(dimension):
+        for j in range(i+1):
+            L.append(uppermat[getUpperPosition(j, i, dimension)])
+    return LTMatrix(L)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="SITH.Utilities.LTMatrix.fullmat"><code class="name">var <span class="ident">fullmat</span></code></dt>
+<dd>
+<div class="desc"><p>Return the full matrix (np.ndarray)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def fullmat(self):
+    &#34;&#34;&#34;
+    Return the full matrix (np.ndarray)
+    &#34;&#34;&#34;
+    return getattr(self, &#39;_fullmat&#39;, self.buildFullMat())</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Utilities.LTMatrix.buildFullMat"><code class="name flex">
+<span>def <span class="ident">buildFullMat</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>build full matrix (np.ndarray).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildFullMat(self):
+    &#34;&#34;&#34;
+    build full matrix (np.ndarray).
+    &#34;&#34;&#34;
+    L = []
+    for i in range(self.dimension):
+        L.append([])
+        for j in range(self.dimension):
+            L[-1].append(self[i, j])
+    self._fullmat = np.array(L)
+    return self._fullmat</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.LTMatrix.inverse"><code class="name flex">
+<span>def <span class="ident">inverse</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inverse(self):
+    return np.linalg.inv(self.fullmat)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.LTMatrix.uppermat"><code class="name flex">
+<span>def <span class="ident">uppermat</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uppermat(self):
+    up = []
+    for i, row in enumerate(self.fullmat):
+        up.extend(row[i:])
+    return up</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Utilities.SummaryReader"><code class="flex name class">
+<span>class <span class="ident">SummaryReader</span></span>
+<span>(</span><span>file)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extract the data in a summary file</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SummaryReader:
+    def __init__(self, file):
+        &#34;&#34;&#34;
+        Extract the data in a summary file
+        &#34;&#34;&#34;
+        with open(file) as data:
+            self.info = data.readlines()
+
+        self._reference = void()
+        self._deformed = list()
+        self.read_all()
+
+    def read_section(self, header, tail, iplus=0, jminus=0):
+        &#34;&#34;&#34;
+        Take any block of a set of lines separated by header
+        and tail as references
+
+        lines: list
+            set of lines to extract the blocks
+        header:
+            line that marks the start of the block. It is included
+            in the block.
+        tail:
+            line that marks the end of the block. It is not included
+            in the block.
+        iplus: int
+            number of lines to ignore after header
+        jminus:
+            number of lines to ignore before the tail
+        &#34;&#34;&#34;
+        i = self.info.index(header)
+        j = self.info.index(tail)
+        data = self.info[i+iplus:j-jminus]
+        return data
+
+    def read_dofs(self):
+        &#34;&#34;&#34;
+        read the degrees of freedom in the summary file
+
+        return the dofs in a list.
+        &#34;&#34;&#34;
+
+        lines = self.read_section(&#39;Redundant Internal Coordinate&#39; +
+                                  &#39; Definitions\n&#39;,
+                                  &#39;Changes in internal coordinates&#39; +
+                                  &#39; (Delta q)\n&#39;,
+                                  iplus=2)
+        return [tuple(np.fromstring(line.replace(&#39;(&#39;,
+                                                 &#39;&#39;).replace(&#39;,&#39;,
+                                                             &#39;&#39;).replace(&#39;)&#39;,
+                                                                         &#39;&#39;),
+                sep=&#39; &#39;, dtype=int)[1:])
+                for line in lines]
+
+    def read_changes(self):
+        &#34;&#34;&#34;
+        read the changes in the degrees of freedom in the summary file
+
+        return a list of lists where the i-th list is the changes in the
+        i-th deformed config.
+        &#34;&#34;&#34;
+        lines = self.read_section(&#39;Changes in internal coordinates&#39; +
+                                  &#39; (Delta q)\n&#39;,
+                                  &#39;**  Energy Analysis  **\n&#39;,
+                                  iplus=3, jminus=2)
+        return np.array([np.fromstring(line, sep=&#39; &#39;)[1:] for line in lines])
+
+    def read_accuracy(self):
+        &#34;&#34;&#34;
+        read the accuracy in the total difference of energy.
+
+        return a list lists where each element corresponds with the
+        energy-analysis of each deformed config saved as
+        [energy diff predicted with harmonic approx, percentaje_error, Error]
+         &#34;&#34;&#34;
+        lines = self.read_section(&#39;Overall Structural Energies\n&#39;,
+                                  &#39;Energy per DOF (RIC)\n&#39;,
+                                  iplus=2)
+
+        return np.array([np.array(line.split()[1:],
+                                  dtype=float)
+                         for line in lines]).T
+
+    def read_energies(self, ndofs):
+        &#34;&#34;&#34;
+        read the energies in each degree of freedom
+
+        return a list lists where each element corresponds to the
+        distribution of energies of each deformed config
+        &#34;&#34;&#34;
+        lines = self.read_section(&#39;Energy per DOF (RIC)\n&#39;,
+                                  &#39;Energy per DOF (RIC)\n&#39;,
+                                  iplus=2, jminus=-ndofs-2)
+
+        return np.array([np.array(line.split(),
+                                  dtype=float)[1:]
+                         for line in lines])
+
+    def read_structures(self):
+        &#34;&#34;&#34;
+        Creates the ase.Atoms objects of each structure.
+        &#34;&#34;&#34;
+        init = self.info.index(&#34;XYZ FILES APPENDED\n&#34;) + 1
+        n_configs = len(self.deltaQ[0]) + 1  # deformed plus reference
+        length = int(len(self.info[init:])/n_configs)
+        n_atoms = int(self.info[init])
+
+        configs = [self.info[init+i*(length):init+(i+1)*length]
+                   for i in range(n_configs)]
+        configs = [[atom.split() for atom in config] for config in configs]
+        molecule = &#39;&#39;.join([atom[0] for atom in configs[0][-n_atoms:]])
+        positions = np.array([[np.array(atom[1:], dtype=float)
+                              for atom in config[-n_atoms:]]
+                              for config in configs])
+
+        atoms = [Atoms(molecule, config) for config in positions]
+
+        return atoms[0], atoms[1:]
+
+    def read_all(self):
+        &#34;&#34;&#34;
+        Read all summary file and save the info in instances
+        &#34;&#34;&#34;
+        self.dimIndices = self.read_dofs()
+        dims = [len(self.dimIndices), 0, 0, 0]
+        for dof in self.dimIndices:
+            dims[len(dof)-1] += 1
+        self._reference.dims = np.array(dims, dtype=int)
+        self.deltaQ = self.read_changes()
+        self.accuracy = self.read_accuracy()
+        assert len(self.dimIndices) == len(self.deltaQ), \
+            f&#39;{len(self.dimIndices)} DOF&#39; +\
+            f&#39;but {len(self.deltaQ[0])} changes are reported&#39;
+
+        self.energies = self.read_energies(len(self.deltaQ))
+        self._reference.atoms, deformed = self.read_structures()
+        [self._deformed.append(void()) for _ in range(len(deformed))]
+
+        for i in range(len(deformed)):
+            self._deformed[i].atoms = deformed[i]
+
+        self._reference.dimIndices = self.dimIndices</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Utilities.SummaryReader.read_accuracy"><code class="name flex">
+<span>def <span class="ident">read_accuracy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>read the accuracy in the total difference of energy.</p>
+<p>return a list lists where each element corresponds with the
+energy-analysis of each deformed config saved as
+[energy diff predicted with harmonic approx, percentaje_error, Error]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_accuracy(self):
+    &#34;&#34;&#34;
+    read the accuracy in the total difference of energy.
+
+    return a list lists where each element corresponds with the
+    energy-analysis of each deformed config saved as
+    [energy diff predicted with harmonic approx, percentaje_error, Error]
+     &#34;&#34;&#34;
+    lines = self.read_section(&#39;Overall Structural Energies\n&#39;,
+                              &#39;Energy per DOF (RIC)\n&#39;,
+                              iplus=2)
+
+    return np.array([np.array(line.split()[1:],
+                              dtype=float)
+                     for line in lines]).T</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_all"><code class="name flex">
+<span>def <span class="ident">read_all</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read all summary file and save the info in instances</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_all(self):
+    &#34;&#34;&#34;
+    Read all summary file and save the info in instances
+    &#34;&#34;&#34;
+    self.dimIndices = self.read_dofs()
+    dims = [len(self.dimIndices), 0, 0, 0]
+    for dof in self.dimIndices:
+        dims[len(dof)-1] += 1
+    self._reference.dims = np.array(dims, dtype=int)
+    self.deltaQ = self.read_changes()
+    self.accuracy = self.read_accuracy()
+    assert len(self.dimIndices) == len(self.deltaQ), \
+        f&#39;{len(self.dimIndices)} DOF&#39; +\
+        f&#39;but {len(self.deltaQ[0])} changes are reported&#39;
+
+    self.energies = self.read_energies(len(self.deltaQ))
+    self._reference.atoms, deformed = self.read_structures()
+    [self._deformed.append(void()) for _ in range(len(deformed))]
+
+    for i in range(len(deformed)):
+        self._deformed[i].atoms = deformed[i]
+
+    self._reference.dimIndices = self.dimIndices</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_changes"><code class="name flex">
+<span>def <span class="ident">read_changes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>read the changes in the degrees of freedom in the summary file</p>
+<p>return a list of lists where the i-th list is the changes in the
+i-th deformed config.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_changes(self):
+    &#34;&#34;&#34;
+    read the changes in the degrees of freedom in the summary file
+
+    return a list of lists where the i-th list is the changes in the
+    i-th deformed config.
+    &#34;&#34;&#34;
+    lines = self.read_section(&#39;Changes in internal coordinates&#39; +
+                              &#39; (Delta q)\n&#39;,
+                              &#39;**  Energy Analysis  **\n&#39;,
+                              iplus=3, jminus=2)
+    return np.array([np.fromstring(line, sep=&#39; &#39;)[1:] for line in lines])</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_dofs"><code class="name flex">
+<span>def <span class="ident">read_dofs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>read the degrees of freedom in the summary file</p>
+<p>return the dofs in a list.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_dofs(self):
+    &#34;&#34;&#34;
+    read the degrees of freedom in the summary file
+
+    return the dofs in a list.
+    &#34;&#34;&#34;
+
+    lines = self.read_section(&#39;Redundant Internal Coordinate&#39; +
+                              &#39; Definitions\n&#39;,
+                              &#39;Changes in internal coordinates&#39; +
+                              &#39; (Delta q)\n&#39;,
+                              iplus=2)
+    return [tuple(np.fromstring(line.replace(&#39;(&#39;,
+                                             &#39;&#39;).replace(&#39;,&#39;,
+                                                         &#39;&#39;).replace(&#39;)&#39;,
+                                                                     &#39;&#39;),
+            sep=&#39; &#39;, dtype=int)[1:])
+            for line in lines]</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_energies"><code class="name flex">
+<span>def <span class="ident">read_energies</span></span>(<span>self, ndofs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>read the energies in each degree of freedom</p>
+<p>return a list lists where each element corresponds to the
+distribution of energies of each deformed config</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_energies(self, ndofs):
+    &#34;&#34;&#34;
+    read the energies in each degree of freedom
+
+    return a list lists where each element corresponds to the
+    distribution of energies of each deformed config
+    &#34;&#34;&#34;
+    lines = self.read_section(&#39;Energy per DOF (RIC)\n&#39;,
+                              &#39;Energy per DOF (RIC)\n&#39;,
+                              iplus=2, jminus=-ndofs-2)
+
+    return np.array([np.array(line.split(),
+                              dtype=float)[1:]
+                     for line in lines])</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_section"><code class="name flex">
+<span>def <span class="ident">read_section</span></span>(<span>self, header, tail, iplus=0, jminus=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Take any block of a set of lines separated by header
+and tail as references</p>
+<p>lines: list
+set of lines to extract the blocks
+header:
+line that marks the start of the block. It is included
+in the block.
+tail:
+line that marks the end of the block. It is not included
+in the block.
+iplus: int
+number of lines to ignore after header
+jminus:
+number of lines to ignore before the tail</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_section(self, header, tail, iplus=0, jminus=0):
+    &#34;&#34;&#34;
+    Take any block of a set of lines separated by header
+    and tail as references
+
+    lines: list
+        set of lines to extract the blocks
+    header:
+        line that marks the start of the block. It is included
+        in the block.
+    tail:
+        line that marks the end of the block. It is not included
+        in the block.
+    iplus: int
+        number of lines to ignore after header
+    jminus:
+        number of lines to ignore before the tail
+    &#34;&#34;&#34;
+    i = self.info.index(header)
+    j = self.info.index(tail)
+    data = self.info[i+iplus:j-jminus]
+    return data</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.SummaryReader.read_structures"><code class="name flex">
+<span>def <span class="ident">read_structures</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates the ase.Atoms objects of each structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_structures(self):
+    &#34;&#34;&#34;
+    Creates the ase.Atoms objects of each structure.
+    &#34;&#34;&#34;
+    init = self.info.index(&#34;XYZ FILES APPENDED\n&#34;) + 1
+    n_configs = len(self.deltaQ[0]) + 1  # deformed plus reference
+    length = int(len(self.info[init:])/n_configs)
+    n_atoms = int(self.info[init])
+
+    configs = [self.info[init+i*(length):init+(i+1)*length]
+               for i in range(n_configs)]
+    configs = [[atom.split() for atom in config] for config in configs]
+    molecule = &#39;&#39;.join([atom[0] for atom in configs[0][-n_atoms:]])
+    positions = np.array([[np.array(atom[1:], dtype=float)
+                          for atom in config[-n_atoms:]]
+                          for config in configs])
+
+    atoms = [Atoms(molecule, config) for config in positions]
+
+    return atoms[0], atoms[1:]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Utilities.UnitConverter"><code class="flex name class">
+<span>class <span class="ident">UnitConverter</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class to convert units utilizing Atomic Simulation Environment (ase) constants
+xyz standard input is in Angstrom
+RIC are in atomic units
+internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
+Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UnitConverter:
+    &#34;&#34;&#34;
+    Class to convert units utilizing Atomic Simulation Environment (ase) constants
+    xyz standard input is in Angstrom
+    RIC are in atomic units
+    internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
+    Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units
+    &#34;&#34;&#34;
+
+    def __init__(self) -&gt; None:
+        pass
+
+    @staticmethod
+    def angstromToBohr(a: float) -&gt; np.float32:
+        return np.float32(a / Bohr)
+
+    @staticmethod
+    def bohrToAngstrom(b: float) -&gt; np.float32:
+        return np.float32(b * Bohr)
+
+    @staticmethod
+    def radianToDegree(r: float) -&gt; np.float32:
+        return np.float32(r / np.pi * 180)</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="SITH.Utilities.UnitConverter.angstromToBohr"><code class="name flex">
+<span>def <span class="ident">angstromToBohr</span></span>(<span>a: float) ‑> numpy.float32</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def angstromToBohr(a: float) -&gt; np.float32:
+    return np.float32(a / Bohr)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.UnitConverter.bohrToAngstrom"><code class="name flex">
+<span>def <span class="ident">bohrToAngstrom</span></span>(<span>b: float) ‑> numpy.float32</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def bohrToAngstrom(b: float) -&gt; np.float32:
+    return np.float32(b * Bohr)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Utilities.UnitConverter.radianToDegree"><code class="name flex">
+<span>def <span class="ident">radianToDegree</span></span>(<span>r: float) ‑> numpy.float32</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def radianToDegree(r: float) -&gt; np.float32:
+    return np.float32(r / np.pi * 180)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Utilities.void"><code class="flex name class">
+<span>class <span class="ident">void</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class void:
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="SITH" href="index.html">SITH</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="SITH.Utilities.Extractor" href="#SITH.Utilities.Extractor">Extractor</a></code></h4>
+<ul class="">
+<li><code><a title="SITH.Utilities.Extractor.buildHessian" href="#SITH.Utilities.Extractor.buildHessian">buildHessian</a></code></li>
+<li><code><a title="SITH.Utilities.Extractor.getGeometry" href="#SITH.Utilities.Extractor.getGeometry">getGeometry</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Utilities.Geometry" href="#SITH.Utilities.Geometry">Geometry</a></code></h4>
+<ul class="two-column">
+<li><code><a title="SITH.Utilities.Geometry.atoms" href="#SITH.Utilities.Geometry.atoms">atoms</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.buildAtoms" href="#SITH.Utilities.Geometry.buildAtoms">buildAtoms</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.buildRIC" href="#SITH.Utilities.Geometry.buildRIC">buildRIC</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.dimIndices" href="#SITH.Utilities.Geometry.dimIndices">dimIndices</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.dims" href="#SITH.Utilities.Geometry.dims">dims</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.energy" href="#SITH.Utilities.Geometry.energy">energy</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.hessian" href="#SITH.Utilities.Geometry.hessian">hessian</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.nAtoms" href="#SITH.Utilities.Geometry.nAtoms">nAtoms</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.name" href="#SITH.Utilities.Geometry.name">name</a></code></li>
+<li><code><a title="SITH.Utilities.Geometry.ric" href="#SITH.Utilities.Geometry.ric">ric</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Utilities.LTMatrix" href="#SITH.Utilities.LTMatrix">LTMatrix</a></code></h4>
+<ul class="two-column">
+<li><code><a title="SITH.Utilities.LTMatrix.buildFullMat" href="#SITH.Utilities.LTMatrix.buildFullMat">buildFullMat</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.fullmat" href="#SITH.Utilities.LTMatrix.fullmat">fullmat</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.getPosition" href="#SITH.Utilities.LTMatrix.getPosition">getPosition</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.getRowColumn" href="#SITH.Utilities.LTMatrix.getRowColumn">getRowColumn</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.inverse" href="#SITH.Utilities.LTMatrix.inverse">inverse</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.newFromUpperMat" href="#SITH.Utilities.LTMatrix.newFromUpperMat">newFromUpperMat</a></code></li>
+<li><code><a title="SITH.Utilities.LTMatrix.uppermat" href="#SITH.Utilities.LTMatrix.uppermat">uppermat</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Utilities.SummaryReader" href="#SITH.Utilities.SummaryReader">SummaryReader</a></code></h4>
+<ul class="two-column">
+<li><code><a title="SITH.Utilities.SummaryReader.read_accuracy" href="#SITH.Utilities.SummaryReader.read_accuracy">read_accuracy</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_all" href="#SITH.Utilities.SummaryReader.read_all">read_all</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_changes" href="#SITH.Utilities.SummaryReader.read_changes">read_changes</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_dofs" href="#SITH.Utilities.SummaryReader.read_dofs">read_dofs</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_energies" href="#SITH.Utilities.SummaryReader.read_energies">read_energies</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_section" href="#SITH.Utilities.SummaryReader.read_section">read_section</a></code></li>
+<li><code><a title="SITH.Utilities.SummaryReader.read_structures" href="#SITH.Utilities.SummaryReader.read_structures">read_structures</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Utilities.UnitConverter" href="#SITH.Utilities.UnitConverter">UnitConverter</a></code></h4>
+<ul class="">
+<li><code><a title="SITH.Utilities.UnitConverter.angstromToBohr" href="#SITH.Utilities.UnitConverter.angstromToBohr">angstromToBohr</a></code></li>
+<li><code><a title="SITH.Utilities.UnitConverter.bohrToAngstrom" href="#SITH.Utilities.UnitConverter.bohrToAngstrom">bohrToAngstrom</a></code></li>
+<li><code><a title="SITH.Utilities.UnitConverter.radianToDegree" href="#SITH.Utilities.UnitConverter.radianToDegree">radianToDegree</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Utilities.void" href="#SITH.Utilities.void">void</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -9,7 +9,7 @@ from src.SITH.SITH import SITH
 from tests.test_resources import *
 from ase import Atom
 from ase import units
-from src.SITH.SithWriter import writeSummary
+from src.SITH.SithWriter import write_summary
 
 """ LTMatrix has already been tested by its creator on github,
  but should add in their testing just in case """
@@ -278,7 +278,7 @@ def test_summary_reader():
     sith = SITH(x0string, deformedString)
     sith.extractData()
     sith.energyAnalysis()
-    writeSummary(sith, includeXYZ=True)
+    write_summary(sith, includeXYZ=True)
     path = sith._referencePath.parent.as_posix()+sith._referencePath.root
 
     print(path)

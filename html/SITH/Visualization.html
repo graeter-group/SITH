@@ -1,0 +1,2946 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>SITH.Visualization API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>SITH.Visualization</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import matplotlib.pyplot as plt
+import matplotlib as mpl
+from ipywidgets import HBox, Output
+import numpy as np
+from ase.visualize import view
+
+
+class MoleculeViewer:
+    def __init__(self, atoms, alignment=None, axis=False):
+        &#34;&#34;&#34; Set of graphic tools to see the distribution
+        of energies in the different degrees of freedom
+        (lengths, angles, dihedrals)
+
+        alignment: list[int]
+            list of three indexes corresponding to the
+            indexes of the atoms in the xy plane. the first
+            two atoms are set to the x axis.
+        &#34;&#34;&#34;
+        self.atoms = atoms.copy()
+
+        if alignment is not None:
+            index1, index2, index3 = alignment
+            self.xy_alignment(index1, index2, index3)
+
+        self.viewer = view(self.atoms, viewer=&#39;ngl&#39;)
+        self.bonds = {}
+        self.angles = {}
+        self.dihedrals = {}
+        self.shape = self.viewer.view.shape
+        self.box = self.viewer
+        if axis:
+            self.add_axis()
+
+    def add_bond(self, atom1index, atom2index,
+                 color=[0.5, 0.5, 0.5], radius=0.1):
+        &#34;&#34;&#34; Add a bond between two atoms:
+        atom1 and atom2
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms to be connected according with g09
+            convention.
+
+        color: list. Default gray([0.5, 0.5, 0.5])
+            RGB triplet.
+
+        radius: float. Default 0.1
+            Radius of the bond.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+
+        indexes = [atom1index, atom2index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        self.remove_bond(atom1index, atom2index)
+        b = self.shape.add_cylinder(self.atoms[atom1index-1].position,
+                                    self.atoms[atom2index-1].position,
+                                    color,
+                                    radius)
+
+        self.bonds[name] = b
+
+        return self.bonds[name]
+
+    def add_bonds(self, atoms1indexes, atoms2indexes, colors=None, radii=None):
+        &#34;&#34;&#34; Add a bond between each pair of atoms corresponding to
+        two lists of atoms:
+        atoms1 and atoms.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms to be connected according with g09
+            convention.
+        color: list of color lists. Default all gray([0.5, 0.5, 0.5])
+            RGB triplets for each of the bonds. It can be one a triplet
+            in case of just one color in all bonds.
+        radii: float or list of floats. Default 0.1
+            radius of each bond.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+
+        if colors is None:
+            colors = [0.5, 0.5, 0.5]
+
+        if type(colors[0]) is not list:
+            colors = [colors for i in range(len(atoms1indexes))]
+
+        if radii is None:
+            radii = 0.07
+
+        if type(radii) is not list:
+            radii = [radii for i in range(len(atoms1indexes))]
+
+        assert len(atoms1indexes) == len(atoms2indexes), \
+            &#34;The number of atoms in both lists must be the same&#34;
+        assert len(atoms1indexes) == len(colors), \
+            &#34;The number of colors in must be the same as the number of atoms&#34;
+        assert len(atoms1indexes) == len(radii), \
+            &#34;The number of radii must be the same as the number of atoms&#34;
+
+        for i in range(len(atoms1indexes)):
+            self.add_bond(atoms1indexes[i],
+                          atoms2indexes[i],
+                          colors[i],
+                          radii[i])
+        return self.bonds
+
+    def remove_bond(self, atom1index, atom2index):
+        &#34;&#34;&#34; Remove a bond between two atoms:
+        atoms1 and atoms2.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms that are connected. This bond
+            will be removed.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.bonds.keys():
+            self.viewer.view.remove_component(self.bonds[name])
+            del self.bonds[name]
+        return self.bonds
+
+    def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
+        &#34;&#34;&#34; remove several bonds in the plot between two list of atoms:
+        atoms1 and atoms2.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): list[int]
+            Indexes of the atoms that are connected.
+
+        Note: if atoms2 is None, all bonds with atoms1 will me removed.
+        If atoms1 and atoms2 are None, all bonds in the structure are
+        removed.
+        &#34;&#34;&#34;
+
+        if (atoms1indexes is None) and (atoms2indexes is None):
+            for name in self.bonds.keys():
+                self.viewer.view.remove_component(self.bonds[name])
+            self.bonds.clear()
+            return self.bonds
+
+        elif (atoms1indexes is not None) and (atoms2indexes is None):
+            to_remove = []
+            for name in self.bonds.keys():
+                for index in atoms1indexes:
+                    if str(index) in name:
+                        self.viewer.view.remove_component(self.bonds[name])
+                        to_remove.append(name)
+            for name in to_remove:
+                del self.bonds[name]
+            return self.bonds
+
+        else:
+            assert len(atoms1indexes) == len(atoms2indexes), \
+                &#34;The number of atoms in both lists must be the same&#34;
+            [self.remove_bond(index1, index2)
+             for index1, index2 in
+             zip(atoms1indexes, atoms2indexes)]
+            return self.bonds
+
+    def remove_all_bonds(self):
+        &#34;&#34;&#34; remove all bonds&#34;&#34;&#34;
+        return self.remove_bonds()
+
+    def plot_arc(self, vertex, arcdots, color):
+        &#34;&#34;&#34; Add an arc using triangles.
+
+        Parameters
+        ==========
+
+        vertex: array
+            center of the arc
+        arcdots: list of arrays
+            vectors that define the points of the arc. These
+            vectors must be defined respect the vertex.
+
+        Output
+        ======
+
+        Return the triangles in the angle.
+        &#34;&#34;&#34;
+
+        triangles = []
+        for i in range(len(arcdots)-1):
+            vertexes = np.hstack((vertex,
+                                  vertex + arcdots[i],
+                                  vertex + arcdots[i+1]))
+            t = self.shape.add_mesh(vertexes, color)
+            triangles.append(t)
+
+        return triangles
+
+    def add_angle(self, atom1index, atom2index, atom3index,
+                  color=[0.5, 0.5, 0.5], n=0):
+        &#34;&#34;&#34; Add an angle to between three atoms:
+        atom1, atom2 and atom3
+        - with the vertex in the atom2
+
+        Parameters
+        ==========
+
+        atom1index, atom2index and atom3index: int
+            Indexes of the three atoms that defines the angle.
+        color: color list. Default all gray([0.5, 0.5, 0.5])
+            RGB triplet.
+        n: int. Default 10
+            number of intermedia points to add in the arc of
+            the angle.
+
+        Output
+        ======
+        Return the angles in the system
+        &#34;&#34;&#34;
+
+        indexes = [atom1index, atom2index, atom3index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+        self.remove_angle(atom1index, atom2index, atom3index)
+        self.angles[name] = []
+
+        vertex = self.atoms[atom2index-1].position
+        side1 = self.atoms[atom1index-1].position - vertex
+        side2 = self.atoms[atom3index-1].position - vertex
+        lenside1 = np.linalg.norm(side1)
+        lenside2 = np.linalg.norm(side2)
+        lensides = min(lenside1, lenside2)
+        side1 = 0.7 * lensides * side1/lenside1
+        side2 = 0.7 * lensides * side2/lenside2
+
+        arcdots = [side1, side2]
+        color = color * 3
+
+        new = self.intermedia_vectors(side1,
+                                      side2,
+                                      n)
+
+        if n != 0:
+            [arcdots.insert(1, vert) for vert in new[::-1]]
+
+        self.angles[name] = self.plot_arc(vertex, arcdots, color)
+
+        return self.angles[name]
+
+    def intermedia_vectors(self, a, b, n):
+        &#34;&#34;&#34; Define the intermedia arc dots between two vectors
+
+        Parameters
+        ==========
+
+        a, b: arrays
+             side vectors of the angles.
+        n: int
+             number of intermedia dots.
+
+        Output
+        ======
+        Return the intermedia vectors between two side vectors.
+        &#34;&#34;&#34;
+
+        if n == 0:
+            return []
+        n += 1
+        c = b - a
+        lena = np.linalg.norm(a)
+        lenb = np.linalg.norm(b)
+        lenc = np.linalg.norm(c)
+        lend = min(lena, lenb)
+
+        theta_total = np.arccos(np.dot(a, b)/(lena * lenb))
+        beta = np.arccos(np.dot(a, c)/(lena * lenc))
+        intermedia = []
+
+        for i in range(1, n):
+            theta = i * theta_total/n
+            gamma = beta - theta
+            factor = (lena * np.sin(theta))/(lenc * np.sin(gamma))
+            dird = a + factor * c
+            d = lend * dird/np.linalg.norm(dird)
+            intermedia.append(d)
+        return intermedia
+
+    def remove_angle(self, atom1index, atom2index, atom3index):
+        &#34;&#34;&#34;
+        Remove an angle if it exists
+
+        Parameters
+        ==========
+
+        atom1index (and atom2/3index): int
+            Indexes of the three atoms that defines the angle
+            to remove.
+
+        Output
+        ======
+        Return the angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.angles.keys():
+            for triangle in self.angles[name]:
+                self.viewer.view.remove_component(triangle)
+            del self.angles[name]
+
+        return self.angles
+
+    def remove_all_angles(self):
+        &#34;&#34;&#34; remove all angles&#34;&#34;&#34;
+        names = self.angles.keys()
+
+        for name in names:
+            for triangle in self.angles[name]:
+                self.viewer.view.remove_component(triangle)
+        self.angles.clear()
+
+    def add_dihedral(self, atom1index, atom2index, atom3index,
+                     atom4index, color=[0.5, 0.5, 0.5], n=0):
+        &#34;&#34;&#34; Add an dihedral angle between four atoms:
+        atom1, atom2, atom3 and atom4
+        - with the vertex in the midle of the atom 2 and 3
+
+        Parameters
+        ==========
+
+        atom1index, atom2index, atom3index and atom4index: int
+            Indexes of the three atoms that defines the angle.
+        color: color list. Default all gray([0.5, 0.5, 0.5])
+            RGB triplet.
+        n: int. Default 10
+            number of intermedia points to add in the arc of
+            the angle.
+
+        Output
+        ======
+        Return the dihedral angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index, atom4index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        axis = (self.atoms[atom3index-1].position -
+                self.atoms[atom2index-1].position)
+        vertex = 0.5 * (self.atoms[atom3index-1].position +
+                        self.atoms[atom2index-1].position)
+        axis1 = (self.atoms[atom1index-1].position -
+                 self.atoms[atom2index-1].position)
+        axis2 = (self.atoms[atom4index-1].position -
+                 self.atoms[atom3index-1].position)
+
+        side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
+        side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
+
+        lenside1 = np.linalg.norm(side1)
+        lenside2 = np.linalg.norm(side2)
+        lensides = min(lenside1, lenside2)
+        side1 = 0.7 * lensides * side1/lenside1
+        side2 = 0.7 * lensides * side2/lenside2
+
+        arcdots = [side1, side2]
+        color = color * 3
+
+        new = self.intermedia_vectors(side1,
+                                      side2,
+                                      n)
+
+        if n != 0:
+            [arcdots.insert(1, vert) for vert in new[::-1]]
+
+        self.dihedrals[name] = self.plot_arc(vertex, arcdots, color)
+
+        return self.dihedrals[name]
+
+    def remove_dihedral(self, atom1index, atom2index, atom3index, atom4index):
+        &#34;&#34;&#34; Remove the dihedral angle between 4 atoms:
+
+        atom1, atom2, atom3 and atom4
+
+        Parameters
+        ==========
+
+        atom1index, atom2index, atom3index and atom4index: int
+            Indexes of the three atoms that defines the angle.
+
+        Output
+        ======
+
+        Return the dihedral angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index, atom4index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.dihedrals.keys():
+            for triangle in self.dihedrals[name]:
+                self.viewer.view.remove_component(triangle)
+            del self.dihedrals[name]
+        return self.dihedrals
+
+    def remove_all_dihedrals(self):
+        &#34;&#34;&#34; remove all dihedral angles&#34;&#34;&#34;
+        names = self.dihedrals.keys()
+
+        for name in names:
+            for triangle in self.dihedrals[name]:
+                self.viewer.view.remove_component(triangle)
+        self.dihedrals.clear()
+
+    def add_axis(self, length=1, radius=0.1):
+        &#34;&#34;&#34;
+        Add xyz axis.
+
+        Parameters
+        ==========
+
+        length: float
+            indicates the length of the axis in the visualization. Default=1
+        radius: float
+            thickness of the xyz axis
+        &#34;&#34;&#34;
+        self.axis = {}
+
+        unit_vectors = np.array([[length, 0, 0],
+                                 [0, length, 0],
+                                 [0, 0, length]])
+        for i in range(3):
+            a = self.shape.add_cylinder([0, 0, 0],
+                                        unit_vectors[i],
+                                        unit_vectors[i]/length,
+                                        radius)
+            self.axis[str(i)] = a
+
+    def remove_axis(self):
+        &#34;&#34;&#34;
+        remove xyz axis
+        &#34;&#34;&#34;
+        for name in self.axis.keys():
+            self.viewer.view.remove_component(self.axis[name])
+        self.axis.clear()
+
+    def download_image(self):
+        self.viewer.view.download_image()
+
+    def picked(self):
+        return self.viewer.view.picked
+
+
+class VisualizeEnergies(MoleculeViewer):
+    def __init__(self, sith_info, idef=0, alignment=None, axis=False,
+                 background=&#39;#ffc&#39;, **kwargs):
+        &#34;&#34;&#34;
+        Set of tools to show a molecule and the
+        distribution of energies in the different DOF.
+
+        Params
+        ======
+
+        sith_info :
+            sith object or sith.utilities.ReadSummary object
+        idef: int
+            number of the deformation to be analized. Default=0
+        alignment: list
+            3 indexes to fix the correspondig atoms in the xy plane.
+        axis: bool
+            add xyz axis
+        background: color
+            background color. Default: &#39;#ffc&#39;
+        &#34;&#34;&#34;
+        self.idef = idef
+        self.sith = sith_info
+        if self.sith.energies is None:
+            self._analize_energies(**kwargs)
+
+        atoms = self.sith._deformed[self.idef].atoms
+
+        MoleculeViewer.__init__(self, atoms, alignment, axis)
+
+        self.viewer.view.background = background
+
+        dims = self.sith._reference.dims
+        self.nbonds = dims[1]
+        self.nangles = dims[2]
+        self.ndihedral = dims[3]
+
+    def _analize_energies(self):
+        &#34;&#34;&#34;
+        Execute JEDI method to obtain the energies of each
+        DOFs
+
+        see: https://doi.org/10.1063/1.4870334
+        &#34;&#34;&#34;
+        self.sith.extractData()
+        self.sith.energyAnalysis()
+
+    def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
+        &#34;&#34;&#34;
+        Add the degree of freedom to the molecule image
+
+        Parameters
+        ==========
+
+        dof: tuple
+            label of the degree of freedom according with g09 convention.
+
+        Example
+        =======
+            i=(1, 2) means a bond between atoms 1 and 2
+            i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2 and 3
+        &#34;&#34;&#34;
+
+        types = [&#34;bond&#34;, &#34;angle&#34;, &#34;dihedral&#34;]
+        type_dof = types[len(dof)-2]
+
+        if type_dof == &#34;bond&#34;:
+            index1, index2 = dof
+            return self.add_bond(index1, index2, color, radius=radius)
+
+        elif type_dof == &#34;angle&#34;:
+            index1, index2, index3 = dof
+            return self.add_angle(index1, index2, index3, color, n=n)
+
+        elif type_dof == &#34;dihedral&#34;:
+            index1, index2, index3, index4 = dof
+            return self.add_dihedral(index1, index2, index3,
+                                     index4, color, n=n)
+        else:
+            raise TypeError(f&#34;{dof} is not an accepted degree of freedom.&#34;)
+
+    def energies_bonds(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the bonds with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_angles(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the angles with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
+                                               self.nangles]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_dihedrals(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the dihedral angles with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_all_dof(self, **kwargs):
+        &#34;&#34;&#34;
+        Add all DOF with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap(&#34;Blues&#34;),
+                          label=&#34;Energy [a.u]&#34;, labelsize=20,
+                          orientation=&#34;vertical&#34;, div=5, deci=2,
+                          width=&#34;700px&#34;, height=&#34;500px&#34;, **kwargs):
+        &#34;&#34;&#34;
+        Add the bonds with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        dofs: list of tuples.
+            list of degrees of freedom defined according with g09 convention.
+
+        cmap: cmap. Default: mpl.cm.get_cmap(&#34;Blues&#34;)
+            cmap used in the color bar.
+
+        label: str. Default: &#34;Energy [a.u]&#34;
+            label of the color bar.
+
+        labelsize: float.
+            size of the label in the
+
+        orientation: &#34;vertical&#34; or &#34;horizontal&#34;. Default: &#34;vertical&#34;
+            orientation of the color bar.
+
+        div: int. Default: 5
+            number of colors in the colorbar.
+        &#34;&#34;&#34;
+        energies = []
+        for dof in dofs:
+            for index, sithdof in enumerate(self.sith._reference.dimIndices):
+                if dof == sithdof:
+                    energies.append(self.sith.energies[index][self.idef])
+
+        assert len(dofs) == len(energies), &#34;The number of DOFs &#34; + \
+            f&#34;({len(dofs)}) does not correspond with the number of &#34; + \
+            f&#34;energies ({len(energies)})&#34;
+
+        minval = min(energies)
+        maxval = max(energies)
+
+        if orientation == &#39;v&#39; or orientation == &#39;vertical&#39;:
+            rotation = 0
+        else:
+            rotation = 90
+
+        boundaries = np.linspace(minval, maxval, div+1)
+        normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
+
+        self.fig, self.ax = plt.subplots(figsize=(0.5, 8))
+
+        # Costumize cbar
+        cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
+                                                       cmap=cmap),
+                                 cax=self.ax, orientation=&#39;vertical&#39;,
+                                 format=&#39;%1.{}f&#39;.format(deci), )
+        cbar.set_label(label=label, fontsize=labelsize)
+        cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
+
+        # Insert colorbar in view
+        self.viewer.view._remote_call(&#34;setSize&#34;, targe=&#34;Widget&#34;,
+                                      args=[width, height])
+        for i, dof in enumerate(dofs):
+            color = cmap(normalize(energies[i]))[:3]
+            self.add_dof(dof, color=color, **kwargs)
+
+        self.viewer.view._remote_call(&#34;setSize&#34;,
+                                      targe=&#34;Widget&#34;,
+                                      args=[width, height])
+        out = Output()
+        with out:
+            plt.show()
+        self.box = HBox(children=[self.viewer.view, out])
+
+    def show_dof(self, dofs, **kwargs):
+        &#34;&#34;&#34;
+        Show specific degrees of freedom.
+
+        Params
+        ======
+
+        dofs: list of tuples.
+            list of degrees of freedom defined according with g09 convention.
+
+        Notes
+        -----
+        The color is not related with the JEDI method. It
+        could be changed with the kwarg color=rgb list.
+        &#34;&#34;&#34;
+        for dof in dofs:
+            self.add_dof(dof, **kwargs)
+
+    def show_bonds(self, **kwargs):
+        &#34;&#34;&#34;
+        Show the bonds in the molecule of freedom.
+
+        Notes
+        -----
+        The color is not related with the JEDI method. It
+        could be changed with the kwarg color=rgb list.
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        self.show_dof(dofs, **kwargs)
+
+    def show(self):
+        &#34;&#34;&#34;
+        Show the molecule.
+        &#34;&#34;&#34;
+        return self.box
+
+    # Alignment
+
+    def rot_x(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[1, 0, 0],
+                      [0, c, -s],
+                      [0, s, c]])
+        return R
+
+    def rot_y(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, 0, s],
+                      [0, 1, 0],
+                      [-s, 0, c]])
+        return R
+
+    def rot_z(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, -s, 0],
+                      [s, c, 0],
+                      [0, 0, 1]])
+        return R
+
+    def align_axis(self, vector):
+        &#34;&#34;&#34;
+        Apply the necessary rotations to set a
+        vector aligned with positive x axis
+        &#34;&#34;&#34;
+        xyproj = vector.copy()
+        xyproj[2] = 0
+        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
+        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        if vector[1] &lt; 0:
+            theta *= -1
+        trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
+        return trans
+
+    def align_plane(self, vector):
+        &#34;&#34;&#34;
+        Rotation around x axis to set a vector in the xy plane
+        &#34;&#34;&#34;
+        reference = vector.copy()
+        reference[0] = 0
+        angle = np.arccos(reference[1]/np.linalg.norm(reference))
+        if reference[2] &lt; 0:
+            angle *= -1
+        return self.rot_x(-angle)
+
+    def apply_trans(self, trans):
+        &#34;&#34;&#34;
+        Apply a transformation to all vector positions of the
+        atoms object
+        &#34;&#34;&#34;
+        new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
+        self.atoms.set_positions(new_positions)
+        return new_positions
+
+    def xy_alignment(self, index1, index2, index3):
+        &#34;&#34;&#34;
+        transforme the positions of the atoms such that
+        the atoms of indexes 1 and 2 are aligned in the
+        x axis
+
+        the atom 3 is in the xy plane&#34;&#34;&#34;
+        # center
+        center = (self.atoms[index1].position+self.atoms[index2].position)/2
+        self.atoms.set_positions(self.atoms.positions - center)
+        axis = self.atoms[index2].position
+        self.apply_trans(self.align_axis(axis))
+        third = self.atoms[index3].position
+        self.apply_trans(self.align_plane(third))
+        return self.atoms.positions</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="SITH.Visualization.MoleculeViewer"><code class="flex name class">
+<span>class <span class="ident">MoleculeViewer</span></span>
+<span>(</span><span>atoms, alignment=None, axis=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set of graphic tools to see the distribution
+of energies in the different degrees of freedom
+(lengths, angles, dihedrals)</p>
+<p>alignment: list[int]
+list of three indexes corresponding to the
+indexes of the atoms in the xy plane. the first
+two atoms are set to the x axis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MoleculeViewer:
+    def __init__(self, atoms, alignment=None, axis=False):
+        &#34;&#34;&#34; Set of graphic tools to see the distribution
+        of energies in the different degrees of freedom
+        (lengths, angles, dihedrals)
+
+        alignment: list[int]
+            list of three indexes corresponding to the
+            indexes of the atoms in the xy plane. the first
+            two atoms are set to the x axis.
+        &#34;&#34;&#34;
+        self.atoms = atoms.copy()
+
+        if alignment is not None:
+            index1, index2, index3 = alignment
+            self.xy_alignment(index1, index2, index3)
+
+        self.viewer = view(self.atoms, viewer=&#39;ngl&#39;)
+        self.bonds = {}
+        self.angles = {}
+        self.dihedrals = {}
+        self.shape = self.viewer.view.shape
+        self.box = self.viewer
+        if axis:
+            self.add_axis()
+
+    def add_bond(self, atom1index, atom2index,
+                 color=[0.5, 0.5, 0.5], radius=0.1):
+        &#34;&#34;&#34; Add a bond between two atoms:
+        atom1 and atom2
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms to be connected according with g09
+            convention.
+
+        color: list. Default gray([0.5, 0.5, 0.5])
+            RGB triplet.
+
+        radius: float. Default 0.1
+            Radius of the bond.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+
+        indexes = [atom1index, atom2index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        self.remove_bond(atom1index, atom2index)
+        b = self.shape.add_cylinder(self.atoms[atom1index-1].position,
+                                    self.atoms[atom2index-1].position,
+                                    color,
+                                    radius)
+
+        self.bonds[name] = b
+
+        return self.bonds[name]
+
+    def add_bonds(self, atoms1indexes, atoms2indexes, colors=None, radii=None):
+        &#34;&#34;&#34; Add a bond between each pair of atoms corresponding to
+        two lists of atoms:
+        atoms1 and atoms.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms to be connected according with g09
+            convention.
+        color: list of color lists. Default all gray([0.5, 0.5, 0.5])
+            RGB triplets for each of the bonds. It can be one a triplet
+            in case of just one color in all bonds.
+        radii: float or list of floats. Default 0.1
+            radius of each bond.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+
+        if colors is None:
+            colors = [0.5, 0.5, 0.5]
+
+        if type(colors[0]) is not list:
+            colors = [colors for i in range(len(atoms1indexes))]
+
+        if radii is None:
+            radii = 0.07
+
+        if type(radii) is not list:
+            radii = [radii for i in range(len(atoms1indexes))]
+
+        assert len(atoms1indexes) == len(atoms2indexes), \
+            &#34;The number of atoms in both lists must be the same&#34;
+        assert len(atoms1indexes) == len(colors), \
+            &#34;The number of colors in must be the same as the number of atoms&#34;
+        assert len(atoms1indexes) == len(radii), \
+            &#34;The number of radii must be the same as the number of atoms&#34;
+
+        for i in range(len(atoms1indexes)):
+            self.add_bond(atoms1indexes[i],
+                          atoms2indexes[i],
+                          colors[i],
+                          radii[i])
+        return self.bonds
+
+    def remove_bond(self, atom1index, atom2index):
+        &#34;&#34;&#34; Remove a bond between two atoms:
+        atoms1 and atoms2.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): int
+            Indexes of the atoms that are connected. This bond
+            will be removed.
+
+        Output
+        ======
+
+        Return the bonds in the system
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.bonds.keys():
+            self.viewer.view.remove_component(self.bonds[name])
+            del self.bonds[name]
+        return self.bonds
+
+    def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
+        &#34;&#34;&#34; remove several bonds in the plot between two list of atoms:
+        atoms1 and atoms2.
+
+        Parameters
+        ==========
+
+        atom1index (and atom2index): list[int]
+            Indexes of the atoms that are connected.
+
+        Note: if atoms2 is None, all bonds with atoms1 will me removed.
+        If atoms1 and atoms2 are None, all bonds in the structure are
+        removed.
+        &#34;&#34;&#34;
+
+        if (atoms1indexes is None) and (atoms2indexes is None):
+            for name in self.bonds.keys():
+                self.viewer.view.remove_component(self.bonds[name])
+            self.bonds.clear()
+            return self.bonds
+
+        elif (atoms1indexes is not None) and (atoms2indexes is None):
+            to_remove = []
+            for name in self.bonds.keys():
+                for index in atoms1indexes:
+                    if str(index) in name:
+                        self.viewer.view.remove_component(self.bonds[name])
+                        to_remove.append(name)
+            for name in to_remove:
+                del self.bonds[name]
+            return self.bonds
+
+        else:
+            assert len(atoms1indexes) == len(atoms2indexes), \
+                &#34;The number of atoms in both lists must be the same&#34;
+            [self.remove_bond(index1, index2)
+             for index1, index2 in
+             zip(atoms1indexes, atoms2indexes)]
+            return self.bonds
+
+    def remove_all_bonds(self):
+        &#34;&#34;&#34; remove all bonds&#34;&#34;&#34;
+        return self.remove_bonds()
+
+    def plot_arc(self, vertex, arcdots, color):
+        &#34;&#34;&#34; Add an arc using triangles.
+
+        Parameters
+        ==========
+
+        vertex: array
+            center of the arc
+        arcdots: list of arrays
+            vectors that define the points of the arc. These
+            vectors must be defined respect the vertex.
+
+        Output
+        ======
+
+        Return the triangles in the angle.
+        &#34;&#34;&#34;
+
+        triangles = []
+        for i in range(len(arcdots)-1):
+            vertexes = np.hstack((vertex,
+                                  vertex + arcdots[i],
+                                  vertex + arcdots[i+1]))
+            t = self.shape.add_mesh(vertexes, color)
+            triangles.append(t)
+
+        return triangles
+
+    def add_angle(self, atom1index, atom2index, atom3index,
+                  color=[0.5, 0.5, 0.5], n=0):
+        &#34;&#34;&#34; Add an angle to between three atoms:
+        atom1, atom2 and atom3
+        - with the vertex in the atom2
+
+        Parameters
+        ==========
+
+        atom1index, atom2index and atom3index: int
+            Indexes of the three atoms that defines the angle.
+        color: color list. Default all gray([0.5, 0.5, 0.5])
+            RGB triplet.
+        n: int. Default 10
+            number of intermedia points to add in the arc of
+            the angle.
+
+        Output
+        ======
+        Return the angles in the system
+        &#34;&#34;&#34;
+
+        indexes = [atom1index, atom2index, atom3index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+        self.remove_angle(atom1index, atom2index, atom3index)
+        self.angles[name] = []
+
+        vertex = self.atoms[atom2index-1].position
+        side1 = self.atoms[atom1index-1].position - vertex
+        side2 = self.atoms[atom3index-1].position - vertex
+        lenside1 = np.linalg.norm(side1)
+        lenside2 = np.linalg.norm(side2)
+        lensides = min(lenside1, lenside2)
+        side1 = 0.7 * lensides * side1/lenside1
+        side2 = 0.7 * lensides * side2/lenside2
+
+        arcdots = [side1, side2]
+        color = color * 3
+
+        new = self.intermedia_vectors(side1,
+                                      side2,
+                                      n)
+
+        if n != 0:
+            [arcdots.insert(1, vert) for vert in new[::-1]]
+
+        self.angles[name] = self.plot_arc(vertex, arcdots, color)
+
+        return self.angles[name]
+
+    def intermedia_vectors(self, a, b, n):
+        &#34;&#34;&#34; Define the intermedia arc dots between two vectors
+
+        Parameters
+        ==========
+
+        a, b: arrays
+             side vectors of the angles.
+        n: int
+             number of intermedia dots.
+
+        Output
+        ======
+        Return the intermedia vectors between two side vectors.
+        &#34;&#34;&#34;
+
+        if n == 0:
+            return []
+        n += 1
+        c = b - a
+        lena = np.linalg.norm(a)
+        lenb = np.linalg.norm(b)
+        lenc = np.linalg.norm(c)
+        lend = min(lena, lenb)
+
+        theta_total = np.arccos(np.dot(a, b)/(lena * lenb))
+        beta = np.arccos(np.dot(a, c)/(lena * lenc))
+        intermedia = []
+
+        for i in range(1, n):
+            theta = i * theta_total/n
+            gamma = beta - theta
+            factor = (lena * np.sin(theta))/(lenc * np.sin(gamma))
+            dird = a + factor * c
+            d = lend * dird/np.linalg.norm(dird)
+            intermedia.append(d)
+        return intermedia
+
+    def remove_angle(self, atom1index, atom2index, atom3index):
+        &#34;&#34;&#34;
+        Remove an angle if it exists
+
+        Parameters
+        ==========
+
+        atom1index (and atom2/3index): int
+            Indexes of the three atoms that defines the angle
+            to remove.
+
+        Output
+        ======
+        Return the angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.angles.keys():
+            for triangle in self.angles[name]:
+                self.viewer.view.remove_component(triangle)
+            del self.angles[name]
+
+        return self.angles
+
+    def remove_all_angles(self):
+        &#34;&#34;&#34; remove all angles&#34;&#34;&#34;
+        names = self.angles.keys()
+
+        for name in names:
+            for triangle in self.angles[name]:
+                self.viewer.view.remove_component(triangle)
+        self.angles.clear()
+
+    def add_dihedral(self, atom1index, atom2index, atom3index,
+                     atom4index, color=[0.5, 0.5, 0.5], n=0):
+        &#34;&#34;&#34; Add an dihedral angle between four atoms:
+        atom1, atom2, atom3 and atom4
+        - with the vertex in the midle of the atom 2 and 3
+
+        Parameters
+        ==========
+
+        atom1index, atom2index, atom3index and atom4index: int
+            Indexes of the three atoms that defines the angle.
+        color: color list. Default all gray([0.5, 0.5, 0.5])
+            RGB triplet.
+        n: int. Default 10
+            number of intermedia points to add in the arc of
+            the angle.
+
+        Output
+        ======
+        Return the dihedral angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index, atom4index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        axis = (self.atoms[atom3index-1].position -
+                self.atoms[atom2index-1].position)
+        vertex = 0.5 * (self.atoms[atom3index-1].position +
+                        self.atoms[atom2index-1].position)
+        axis1 = (self.atoms[atom1index-1].position -
+                 self.atoms[atom2index-1].position)
+        axis2 = (self.atoms[atom4index-1].position -
+                 self.atoms[atom3index-1].position)
+
+        side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
+        side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
+
+        lenside1 = np.linalg.norm(side1)
+        lenside2 = np.linalg.norm(side2)
+        lensides = min(lenside1, lenside2)
+        side1 = 0.7 * lensides * side1/lenside1
+        side2 = 0.7 * lensides * side2/lenside2
+
+        arcdots = [side1, side2]
+        color = color * 3
+
+        new = self.intermedia_vectors(side1,
+                                      side2,
+                                      n)
+
+        if n != 0:
+            [arcdots.insert(1, vert) for vert in new[::-1]]
+
+        self.dihedrals[name] = self.plot_arc(vertex, arcdots, color)
+
+        return self.dihedrals[name]
+
+    def remove_dihedral(self, atom1index, atom2index, atom3index, atom4index):
+        &#34;&#34;&#34; Remove the dihedral angle between 4 atoms:
+
+        atom1, atom2, atom3 and atom4
+
+        Parameters
+        ==========
+
+        atom1index, atom2index, atom3index and atom4index: int
+            Indexes of the three atoms that defines the angle.
+
+        Output
+        ======
+
+        Return the dihedral angles
+        &#34;&#34;&#34;
+        indexes = [atom1index, atom2index, atom3index, atom4index]
+        indexes.sort()
+        name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+        if name in self.dihedrals.keys():
+            for triangle in self.dihedrals[name]:
+                self.viewer.view.remove_component(triangle)
+            del self.dihedrals[name]
+        return self.dihedrals
+
+    def remove_all_dihedrals(self):
+        &#34;&#34;&#34; remove all dihedral angles&#34;&#34;&#34;
+        names = self.dihedrals.keys()
+
+        for name in names:
+            for triangle in self.dihedrals[name]:
+                self.viewer.view.remove_component(triangle)
+        self.dihedrals.clear()
+
+    def add_axis(self, length=1, radius=0.1):
+        &#34;&#34;&#34;
+        Add xyz axis.
+
+        Parameters
+        ==========
+
+        length: float
+            indicates the length of the axis in the visualization. Default=1
+        radius: float
+            thickness of the xyz axis
+        &#34;&#34;&#34;
+        self.axis = {}
+
+        unit_vectors = np.array([[length, 0, 0],
+                                 [0, length, 0],
+                                 [0, 0, length]])
+        for i in range(3):
+            a = self.shape.add_cylinder([0, 0, 0],
+                                        unit_vectors[i],
+                                        unit_vectors[i]/length,
+                                        radius)
+            self.axis[str(i)] = a
+
+    def remove_axis(self):
+        &#34;&#34;&#34;
+        remove xyz axis
+        &#34;&#34;&#34;
+        for name in self.axis.keys():
+            self.viewer.view.remove_component(self.axis[name])
+        self.axis.clear()
+
+    def download_image(self):
+        self.viewer.view.download_image()
+
+    def picked(self):
+        return self.viewer.view.picked</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="SITH.Visualization.VisualizeEnergies" href="#SITH.Visualization.VisualizeEnergies">VisualizeEnergies</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Visualization.MoleculeViewer.add_angle"><code class="name flex">
+<span>def <span class="ident">add_angle</span></span>(<span>self, atom1index, atom2index, atom3index, color=[0.5, 0.5, 0.5], n=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add an angle to between three atoms:
+atom1, atom2 and atom3
+- with the vertex in the atom2</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index, atom2index and atom3index: int
+Indexes of the three atoms that defines the angle.
+color: color list. Default all gray([0.5, 0.5, 0.5])
+RGB triplet.
+n: int. Default 10
+number of intermedia points to add in the arc of
+the angle.</p>
+<h1 id="output">Output</h1>
+<p>Return the angles in the system</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_angle(self, atom1index, atom2index, atom3index,
+              color=[0.5, 0.5, 0.5], n=0):
+    &#34;&#34;&#34; Add an angle to between three atoms:
+    atom1, atom2 and atom3
+    - with the vertex in the atom2
+
+    Parameters
+    ==========
+
+    atom1index, atom2index and atom3index: int
+        Indexes of the three atoms that defines the angle.
+    color: color list. Default all gray([0.5, 0.5, 0.5])
+        RGB triplet.
+    n: int. Default 10
+        number of intermedia points to add in the arc of
+        the angle.
+
+    Output
+    ======
+    Return the angles in the system
+    &#34;&#34;&#34;
+
+    indexes = [atom1index, atom2index, atom3index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+    self.remove_angle(atom1index, atom2index, atom3index)
+    self.angles[name] = []
+
+    vertex = self.atoms[atom2index-1].position
+    side1 = self.atoms[atom1index-1].position - vertex
+    side2 = self.atoms[atom3index-1].position - vertex
+    lenside1 = np.linalg.norm(side1)
+    lenside2 = np.linalg.norm(side2)
+    lensides = min(lenside1, lenside2)
+    side1 = 0.7 * lensides * side1/lenside1
+    side2 = 0.7 * lensides * side2/lenside2
+
+    arcdots = [side1, side2]
+    color = color * 3
+
+    new = self.intermedia_vectors(side1,
+                                  side2,
+                                  n)
+
+    if n != 0:
+        [arcdots.insert(1, vert) for vert in new[::-1]]
+
+    self.angles[name] = self.plot_arc(vertex, arcdots, color)
+
+    return self.angles[name]</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.add_axis"><code class="name flex">
+<span>def <span class="ident">add_axis</span></span>(<span>self, length=1, radius=0.1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add xyz axis.</p>
+<h1 id="parameters">Parameters</h1>
+<p>length: float
+indicates the length of the axis in the visualization. Default=1
+radius: float
+thickness of the xyz axis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_axis(self, length=1, radius=0.1):
+    &#34;&#34;&#34;
+    Add xyz axis.
+
+    Parameters
+    ==========
+
+    length: float
+        indicates the length of the axis in the visualization. Default=1
+    radius: float
+        thickness of the xyz axis
+    &#34;&#34;&#34;
+    self.axis = {}
+
+    unit_vectors = np.array([[length, 0, 0],
+                             [0, length, 0],
+                             [0, 0, length]])
+    for i in range(3):
+        a = self.shape.add_cylinder([0, 0, 0],
+                                    unit_vectors[i],
+                                    unit_vectors[i]/length,
+                                    radius)
+        self.axis[str(i)] = a</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.add_bond"><code class="name flex">
+<span>def <span class="ident">add_bond</span></span>(<span>self, atom1index, atom2index, color=[0.5, 0.5, 0.5], radius=0.1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a bond between two atoms:
+atom1 and atom2</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index (and atom2index): int
+Indexes of the atoms to be connected according with g09
+convention.</p>
+<p>color: list. Default gray([0.5, 0.5, 0.5])
+RGB triplet.</p>
+<p>radius: float. Default 0.1
+Radius of the bond.</p>
+<h1 id="output">Output</h1>
+<p>Return the bonds in the system</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_bond(self, atom1index, atom2index,
+             color=[0.5, 0.5, 0.5], radius=0.1):
+    &#34;&#34;&#34; Add a bond between two atoms:
+    atom1 and atom2
+
+    Parameters
+    ==========
+
+    atom1index (and atom2index): int
+        Indexes of the atoms to be connected according with g09
+        convention.
+
+    color: list. Default gray([0.5, 0.5, 0.5])
+        RGB triplet.
+
+    radius: float. Default 0.1
+        Radius of the bond.
+
+    Output
+    ======
+
+    Return the bonds in the system
+    &#34;&#34;&#34;
+
+    indexes = [atom1index, atom2index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+    self.remove_bond(atom1index, atom2index)
+    b = self.shape.add_cylinder(self.atoms[atom1index-1].position,
+                                self.atoms[atom2index-1].position,
+                                color,
+                                radius)
+
+    self.bonds[name] = b
+
+    return self.bonds[name]</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.add_bonds"><code class="name flex">
+<span>def <span class="ident">add_bonds</span></span>(<span>self, atoms1indexes, atoms2indexes, colors=None, radii=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a bond between each pair of atoms corresponding to
+two lists of atoms:
+atoms1 and atoms.</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index (and atom2index): int
+Indexes of the atoms to be connected according with g09
+convention.
+color: list of color lists. Default all gray([0.5, 0.5, 0.5])
+RGB triplets for each of the bonds. It can be one a triplet
+in case of just one color in all bonds.
+radii: float or list of floats. Default 0.1
+radius of each bond.</p>
+<h1 id="output">Output</h1>
+<p>Return the bonds in the system</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_bonds(self, atoms1indexes, atoms2indexes, colors=None, radii=None):
+    &#34;&#34;&#34; Add a bond between each pair of atoms corresponding to
+    two lists of atoms:
+    atoms1 and atoms.
+
+    Parameters
+    ==========
+
+    atom1index (and atom2index): int
+        Indexes of the atoms to be connected according with g09
+        convention.
+    color: list of color lists. Default all gray([0.5, 0.5, 0.5])
+        RGB triplets for each of the bonds. It can be one a triplet
+        in case of just one color in all bonds.
+    radii: float or list of floats. Default 0.1
+        radius of each bond.
+
+    Output
+    ======
+
+    Return the bonds in the system
+    &#34;&#34;&#34;
+
+    if colors is None:
+        colors = [0.5, 0.5, 0.5]
+
+    if type(colors[0]) is not list:
+        colors = [colors for i in range(len(atoms1indexes))]
+
+    if radii is None:
+        radii = 0.07
+
+    if type(radii) is not list:
+        radii = [radii for i in range(len(atoms1indexes))]
+
+    assert len(atoms1indexes) == len(atoms2indexes), \
+        &#34;The number of atoms in both lists must be the same&#34;
+    assert len(atoms1indexes) == len(colors), \
+        &#34;The number of colors in must be the same as the number of atoms&#34;
+    assert len(atoms1indexes) == len(radii), \
+        &#34;The number of radii must be the same as the number of atoms&#34;
+
+    for i in range(len(atoms1indexes)):
+        self.add_bond(atoms1indexes[i],
+                      atoms2indexes[i],
+                      colors[i],
+                      radii[i])
+    return self.bonds</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.add_dihedral"><code class="name flex">
+<span>def <span class="ident">add_dihedral</span></span>(<span>self, atom1index, atom2index, atom3index, atom4index, color=[0.5, 0.5, 0.5], n=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add an dihedral angle between four atoms:
+atom1, atom2, atom3 and atom4
+- with the vertex in the midle of the atom 2 and 3</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index, atom2index, atom3index and atom4index: int
+Indexes of the three atoms that defines the angle.
+color: color list. Default all gray([0.5, 0.5, 0.5])
+RGB triplet.
+n: int. Default 10
+number of intermedia points to add in the arc of
+the angle.</p>
+<h1 id="output">Output</h1>
+<p>Return the dihedral angles</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_dihedral(self, atom1index, atom2index, atom3index,
+                 atom4index, color=[0.5, 0.5, 0.5], n=0):
+    &#34;&#34;&#34; Add an dihedral angle between four atoms:
+    atom1, atom2, atom3 and atom4
+    - with the vertex in the midle of the atom 2 and 3
+
+    Parameters
+    ==========
+
+    atom1index, atom2index, atom3index and atom4index: int
+        Indexes of the three atoms that defines the angle.
+    color: color list. Default all gray([0.5, 0.5, 0.5])
+        RGB triplet.
+    n: int. Default 10
+        number of intermedia points to add in the arc of
+        the angle.
+
+    Output
+    ======
+    Return the dihedral angles
+    &#34;&#34;&#34;
+    indexes = [atom1index, atom2index, atom3index, atom4index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+    axis = (self.atoms[atom3index-1].position -
+            self.atoms[atom2index-1].position)
+    vertex = 0.5 * (self.atoms[atom3index-1].position +
+                    self.atoms[atom2index-1].position)
+    axis1 = (self.atoms[atom1index-1].position -
+             self.atoms[atom2index-1].position)
+    axis2 = (self.atoms[atom4index-1].position -
+             self.atoms[atom3index-1].position)
+
+    side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
+    side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
+
+    lenside1 = np.linalg.norm(side1)
+    lenside2 = np.linalg.norm(side2)
+    lensides = min(lenside1, lenside2)
+    side1 = 0.7 * lensides * side1/lenside1
+    side2 = 0.7 * lensides * side2/lenside2
+
+    arcdots = [side1, side2]
+    color = color * 3
+
+    new = self.intermedia_vectors(side1,
+                                  side2,
+                                  n)
+
+    if n != 0:
+        [arcdots.insert(1, vert) for vert in new[::-1]]
+
+    self.dihedrals[name] = self.plot_arc(vertex, arcdots, color)
+
+    return self.dihedrals[name]</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.download_image"><code class="name flex">
+<span>def <span class="ident">download_image</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def download_image(self):
+    self.viewer.view.download_image()</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.intermedia_vectors"><code class="name flex">
+<span>def <span class="ident">intermedia_vectors</span></span>(<span>self, a, b, n)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Define the intermedia arc dots between two vectors</p>
+<h1 id="parameters">Parameters</h1>
+<p>a, b: arrays
+side vectors of the angles.
+n: int
+number of intermedia dots.</p>
+<h1 id="output">Output</h1>
+<p>Return the intermedia vectors between two side vectors.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intermedia_vectors(self, a, b, n):
+    &#34;&#34;&#34; Define the intermedia arc dots between two vectors
+
+    Parameters
+    ==========
+
+    a, b: arrays
+         side vectors of the angles.
+    n: int
+         number of intermedia dots.
+
+    Output
+    ======
+    Return the intermedia vectors between two side vectors.
+    &#34;&#34;&#34;
+
+    if n == 0:
+        return []
+    n += 1
+    c = b - a
+    lena = np.linalg.norm(a)
+    lenb = np.linalg.norm(b)
+    lenc = np.linalg.norm(c)
+    lend = min(lena, lenb)
+
+    theta_total = np.arccos(np.dot(a, b)/(lena * lenb))
+    beta = np.arccos(np.dot(a, c)/(lena * lenc))
+    intermedia = []
+
+    for i in range(1, n):
+        theta = i * theta_total/n
+        gamma = beta - theta
+        factor = (lena * np.sin(theta))/(lenc * np.sin(gamma))
+        dird = a + factor * c
+        d = lend * dird/np.linalg.norm(dird)
+        intermedia.append(d)
+    return intermedia</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.picked"><code class="name flex">
+<span>def <span class="ident">picked</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def picked(self):
+    return self.viewer.view.picked</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.plot_arc"><code class="name flex">
+<span>def <span class="ident">plot_arc</span></span>(<span>self, vertex, arcdots, color)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add an arc using triangles.</p>
+<h1 id="parameters">Parameters</h1>
+<p>vertex: array
+center of the arc
+arcdots: list of arrays
+vectors that define the points of the arc. These
+vectors must be defined respect the vertex.</p>
+<h1 id="output">Output</h1>
+<p>Return the triangles in the angle.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_arc(self, vertex, arcdots, color):
+    &#34;&#34;&#34; Add an arc using triangles.
+
+    Parameters
+    ==========
+
+    vertex: array
+        center of the arc
+    arcdots: list of arrays
+        vectors that define the points of the arc. These
+        vectors must be defined respect the vertex.
+
+    Output
+    ======
+
+    Return the triangles in the angle.
+    &#34;&#34;&#34;
+
+    triangles = []
+    for i in range(len(arcdots)-1):
+        vertexes = np.hstack((vertex,
+                              vertex + arcdots[i],
+                              vertex + arcdots[i+1]))
+        t = self.shape.add_mesh(vertexes, color)
+        triangles.append(t)
+
+    return triangles</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_all_angles"><code class="name flex">
+<span>def <span class="ident">remove_all_angles</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>remove all angles</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_all_angles(self):
+    &#34;&#34;&#34; remove all angles&#34;&#34;&#34;
+    names = self.angles.keys()
+
+    for name in names:
+        for triangle in self.angles[name]:
+            self.viewer.view.remove_component(triangle)
+    self.angles.clear()</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_all_bonds"><code class="name flex">
+<span>def <span class="ident">remove_all_bonds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>remove all bonds</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_all_bonds(self):
+    &#34;&#34;&#34; remove all bonds&#34;&#34;&#34;
+    return self.remove_bonds()</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_all_dihedrals"><code class="name flex">
+<span>def <span class="ident">remove_all_dihedrals</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>remove all dihedral angles</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_all_dihedrals(self):
+    &#34;&#34;&#34; remove all dihedral angles&#34;&#34;&#34;
+    names = self.dihedrals.keys()
+
+    for name in names:
+        for triangle in self.dihedrals[name]:
+            self.viewer.view.remove_component(triangle)
+    self.dihedrals.clear()</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_angle"><code class="name flex">
+<span>def <span class="ident">remove_angle</span></span>(<span>self, atom1index, atom2index, atom3index)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove an angle if it exists</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index (and atom2/3index): int
+Indexes of the three atoms that defines the angle
+to remove.</p>
+<h1 id="output">Output</h1>
+<p>Return the angles</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_angle(self, atom1index, atom2index, atom3index):
+    &#34;&#34;&#34;
+    Remove an angle if it exists
+
+    Parameters
+    ==========
+
+    atom1index (and atom2/3index): int
+        Indexes of the three atoms that defines the angle
+        to remove.
+
+    Output
+    ======
+    Return the angles
+    &#34;&#34;&#34;
+    indexes = [atom1index, atom2index, atom3index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+    if name in self.angles.keys():
+        for triangle in self.angles[name]:
+            self.viewer.view.remove_component(triangle)
+        del self.angles[name]
+
+    return self.angles</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_axis"><code class="name flex">
+<span>def <span class="ident">remove_axis</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>remove xyz axis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_axis(self):
+    &#34;&#34;&#34;
+    remove xyz axis
+    &#34;&#34;&#34;
+    for name in self.axis.keys():
+        self.viewer.view.remove_component(self.axis[name])
+    self.axis.clear()</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_bond"><code class="name flex">
+<span>def <span class="ident">remove_bond</span></span>(<span>self, atom1index, atom2index)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a bond between two atoms:
+atoms1 and atoms2.</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index (and atom2index): int
+Indexes of the atoms that are connected. This bond
+will be removed.</p>
+<h1 id="output">Output</h1>
+<p>Return the bonds in the system</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_bond(self, atom1index, atom2index):
+    &#34;&#34;&#34; Remove a bond between two atoms:
+    atoms1 and atoms2.
+
+    Parameters
+    ==========
+
+    atom1index (and atom2index): int
+        Indexes of the atoms that are connected. This bond
+        will be removed.
+
+    Output
+    ======
+
+    Return the bonds in the system
+    &#34;&#34;&#34;
+    indexes = [atom1index, atom2index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+    if name in self.bonds.keys():
+        self.viewer.view.remove_component(self.bonds[name])
+        del self.bonds[name]
+    return self.bonds</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_bonds"><code class="name flex">
+<span>def <span class="ident">remove_bonds</span></span>(<span>self, atoms1indexes=None, atoms2indexes=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>remove several bonds in the plot between two list of atoms:
+atoms1 and atoms2.</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index (and atom2index): list[int]
+Indexes of the atoms that are connected.</p>
+<p>Note: if atoms2 is None, all bonds with atoms1 will me removed.
+If atoms1 and atoms2 are None, all bonds in the structure are
+removed.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
+    &#34;&#34;&#34; remove several bonds in the plot between two list of atoms:
+    atoms1 and atoms2.
+
+    Parameters
+    ==========
+
+    atom1index (and atom2index): list[int]
+        Indexes of the atoms that are connected.
+
+    Note: if atoms2 is None, all bonds with atoms1 will me removed.
+    If atoms1 and atoms2 are None, all bonds in the structure are
+    removed.
+    &#34;&#34;&#34;
+
+    if (atoms1indexes is None) and (atoms2indexes is None):
+        for name in self.bonds.keys():
+            self.viewer.view.remove_component(self.bonds[name])
+        self.bonds.clear()
+        return self.bonds
+
+    elif (atoms1indexes is not None) and (atoms2indexes is None):
+        to_remove = []
+        for name in self.bonds.keys():
+            for index in atoms1indexes:
+                if str(index) in name:
+                    self.viewer.view.remove_component(self.bonds[name])
+                    to_remove.append(name)
+        for name in to_remove:
+            del self.bonds[name]
+        return self.bonds
+
+    else:
+        assert len(atoms1indexes) == len(atoms2indexes), \
+            &#34;The number of atoms in both lists must be the same&#34;
+        [self.remove_bond(index1, index2)
+         for index1, index2 in
+         zip(atoms1indexes, atoms2indexes)]
+        return self.bonds</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.MoleculeViewer.remove_dihedral"><code class="name flex">
+<span>def <span class="ident">remove_dihedral</span></span>(<span>self, atom1index, atom2index, atom3index, atom4index)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove the dihedral angle between 4 atoms:</p>
+<p>atom1, atom2, atom3 and atom4</p>
+<h1 id="parameters">Parameters</h1>
+<p>atom1index, atom2index, atom3index and atom4index: int
+Indexes of the three atoms that defines the angle.</p>
+<h1 id="output">Output</h1>
+<p>Return the dihedral angles</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_dihedral(self, atom1index, atom2index, atom3index, atom4index):
+    &#34;&#34;&#34; Remove the dihedral angle between 4 atoms:
+
+    atom1, atom2, atom3 and atom4
+
+    Parameters
+    ==========
+
+    atom1index, atom2index, atom3index and atom4index: int
+        Indexes of the three atoms that defines the angle.
+
+    Output
+    ======
+
+    Return the dihedral angles
+    &#34;&#34;&#34;
+    indexes = [atom1index, atom2index, atom3index, atom4index]
+    indexes.sort()
+    name = &#39;&#39;.join(str(i).zfill(3) for i in indexes)
+
+    if name in self.dihedrals.keys():
+        for triangle in self.dihedrals[name]:
+            self.viewer.view.remove_component(triangle)
+        del self.dihedrals[name]
+    return self.dihedrals</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies"><code class="flex name class">
+<span>class <span class="ident">VisualizeEnergies</span></span>
+<span>(</span><span>sith_info, idef=0, alignment=None, axis=False, background='#ffc', **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set of tools to show a molecule and the
+distribution of energies in the different DOF.</p>
+<h1 id="params">Params</h1>
+<p>sith_info :
+sith object or sith.utilities.ReadSummary object
+idef: int
+number of the deformation to be analized. Default=0
+alignment: list
+3 indexes to fix the correspondig atoms in the xy plane.
+axis: bool
+add xyz axis
+background: color
+background color. Default: '#ffc'</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class VisualizeEnergies(MoleculeViewer):
+    def __init__(self, sith_info, idef=0, alignment=None, axis=False,
+                 background=&#39;#ffc&#39;, **kwargs):
+        &#34;&#34;&#34;
+        Set of tools to show a molecule and the
+        distribution of energies in the different DOF.
+
+        Params
+        ======
+
+        sith_info :
+            sith object or sith.utilities.ReadSummary object
+        idef: int
+            number of the deformation to be analized. Default=0
+        alignment: list
+            3 indexes to fix the correspondig atoms in the xy plane.
+        axis: bool
+            add xyz axis
+        background: color
+            background color. Default: &#39;#ffc&#39;
+        &#34;&#34;&#34;
+        self.idef = idef
+        self.sith = sith_info
+        if self.sith.energies is None:
+            self._analize_energies(**kwargs)
+
+        atoms = self.sith._deformed[self.idef].atoms
+
+        MoleculeViewer.__init__(self, atoms, alignment, axis)
+
+        self.viewer.view.background = background
+
+        dims = self.sith._reference.dims
+        self.nbonds = dims[1]
+        self.nangles = dims[2]
+        self.ndihedral = dims[3]
+
+    def _analize_energies(self):
+        &#34;&#34;&#34;
+        Execute JEDI method to obtain the energies of each
+        DOFs
+
+        see: https://doi.org/10.1063/1.4870334
+        &#34;&#34;&#34;
+        self.sith.extractData()
+        self.sith.energyAnalysis()
+
+    def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
+        &#34;&#34;&#34;
+        Add the degree of freedom to the molecule image
+
+        Parameters
+        ==========
+
+        dof: tuple
+            label of the degree of freedom according with g09 convention.
+
+        Example
+        =======
+            i=(1, 2) means a bond between atoms 1 and 2
+            i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2 and 3
+        &#34;&#34;&#34;
+
+        types = [&#34;bond&#34;, &#34;angle&#34;, &#34;dihedral&#34;]
+        type_dof = types[len(dof)-2]
+
+        if type_dof == &#34;bond&#34;:
+            index1, index2 = dof
+            return self.add_bond(index1, index2, color, radius=radius)
+
+        elif type_dof == &#34;angle&#34;:
+            index1, index2, index3 = dof
+            return self.add_angle(index1, index2, index3, color, n=n)
+
+        elif type_dof == &#34;dihedral&#34;:
+            index1, index2, index3, index4 = dof
+            return self.add_dihedral(index1, index2, index3,
+                                     index4, color, n=n)
+        else:
+            raise TypeError(f&#34;{dof} is not an accepted degree of freedom.&#34;)
+
+    def energies_bonds(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the bonds with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_angles(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the angles with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
+                                               self.nangles]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_dihedrals(self, **kwargs):
+        &#34;&#34;&#34;
+        Add the dihedral angles with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_all_dof(self, **kwargs):
+        &#34;&#34;&#34;
+        Add all DOF with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        optional kwargs for energies_some_dof
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices
+        self.energies_some_dof(dofs, **kwargs)
+
+    def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap(&#34;Blues&#34;),
+                          label=&#34;Energy [a.u]&#34;, labelsize=20,
+                          orientation=&#34;vertical&#34;, div=5, deci=2,
+                          width=&#34;700px&#34;, height=&#34;500px&#34;, **kwargs):
+        &#34;&#34;&#34;
+        Add the bonds with a color scale that represents the
+        distribution of energy according to the JEDI method.
+
+        Parameters
+        ==========
+
+        dofs: list of tuples.
+            list of degrees of freedom defined according with g09 convention.
+
+        cmap: cmap. Default: mpl.cm.get_cmap(&#34;Blues&#34;)
+            cmap used in the color bar.
+
+        label: str. Default: &#34;Energy [a.u]&#34;
+            label of the color bar.
+
+        labelsize: float.
+            size of the label in the
+
+        orientation: &#34;vertical&#34; or &#34;horizontal&#34;. Default: &#34;vertical&#34;
+            orientation of the color bar.
+
+        div: int. Default: 5
+            number of colors in the colorbar.
+        &#34;&#34;&#34;
+        energies = []
+        for dof in dofs:
+            for index, sithdof in enumerate(self.sith._reference.dimIndices):
+                if dof == sithdof:
+                    energies.append(self.sith.energies[index][self.idef])
+
+        assert len(dofs) == len(energies), &#34;The number of DOFs &#34; + \
+            f&#34;({len(dofs)}) does not correspond with the number of &#34; + \
+            f&#34;energies ({len(energies)})&#34;
+
+        minval = min(energies)
+        maxval = max(energies)
+
+        if orientation == &#39;v&#39; or orientation == &#39;vertical&#39;:
+            rotation = 0
+        else:
+            rotation = 90
+
+        boundaries = np.linspace(minval, maxval, div+1)
+        normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
+
+        self.fig, self.ax = plt.subplots(figsize=(0.5, 8))
+
+        # Costumize cbar
+        cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
+                                                       cmap=cmap),
+                                 cax=self.ax, orientation=&#39;vertical&#39;,
+                                 format=&#39;%1.{}f&#39;.format(deci), )
+        cbar.set_label(label=label, fontsize=labelsize)
+        cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
+
+        # Insert colorbar in view
+        self.viewer.view._remote_call(&#34;setSize&#34;, targe=&#34;Widget&#34;,
+                                      args=[width, height])
+        for i, dof in enumerate(dofs):
+            color = cmap(normalize(energies[i]))[:3]
+            self.add_dof(dof, color=color, **kwargs)
+
+        self.viewer.view._remote_call(&#34;setSize&#34;,
+                                      targe=&#34;Widget&#34;,
+                                      args=[width, height])
+        out = Output()
+        with out:
+            plt.show()
+        self.box = HBox(children=[self.viewer.view, out])
+
+    def show_dof(self, dofs, **kwargs):
+        &#34;&#34;&#34;
+        Show specific degrees of freedom.
+
+        Params
+        ======
+
+        dofs: list of tuples.
+            list of degrees of freedom defined according with g09 convention.
+
+        Notes
+        -----
+        The color is not related with the JEDI method. It
+        could be changed with the kwarg color=rgb list.
+        &#34;&#34;&#34;
+        for dof in dofs:
+            self.add_dof(dof, **kwargs)
+
+    def show_bonds(self, **kwargs):
+        &#34;&#34;&#34;
+        Show the bonds in the molecule of freedom.
+
+        Notes
+        -----
+        The color is not related with the JEDI method. It
+        could be changed with the kwarg color=rgb list.
+        &#34;&#34;&#34;
+        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        self.show_dof(dofs, **kwargs)
+
+    def show(self):
+        &#34;&#34;&#34;
+        Show the molecule.
+        &#34;&#34;&#34;
+        return self.box
+
+    # Alignment
+
+    def rot_x(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[1, 0, 0],
+                      [0, c, -s],
+                      [0, s, c]])
+        return R
+
+    def rot_y(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, 0, s],
+                      [0, 1, 0],
+                      [-s, 0, c]])
+        return R
+
+    def rot_z(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, -s, 0],
+                      [s, c, 0],
+                      [0, 0, 1]])
+        return R
+
+    def align_axis(self, vector):
+        &#34;&#34;&#34;
+        Apply the necessary rotations to set a
+        vector aligned with positive x axis
+        &#34;&#34;&#34;
+        xyproj = vector.copy()
+        xyproj[2] = 0
+        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
+        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        if vector[1] &lt; 0:
+            theta *= -1
+        trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
+        return trans
+
+    def align_plane(self, vector):
+        &#34;&#34;&#34;
+        Rotation around x axis to set a vector in the xy plane
+        &#34;&#34;&#34;
+        reference = vector.copy()
+        reference[0] = 0
+        angle = np.arccos(reference[1]/np.linalg.norm(reference))
+        if reference[2] &lt; 0:
+            angle *= -1
+        return self.rot_x(-angle)
+
+    def apply_trans(self, trans):
+        &#34;&#34;&#34;
+        Apply a transformation to all vector positions of the
+        atoms object
+        &#34;&#34;&#34;
+        new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
+        self.atoms.set_positions(new_positions)
+        return new_positions
+
+    def xy_alignment(self, index1, index2, index3):
+        &#34;&#34;&#34;
+        transforme the positions of the atoms such that
+        the atoms of indexes 1 and 2 are aligned in the
+        x axis
+
+        the atom 3 is in the xy plane&#34;&#34;&#34;
+        # center
+        center = (self.atoms[index1].position+self.atoms[index2].position)/2
+        self.atoms.set_positions(self.atoms.positions - center)
+        axis = self.atoms[index2].position
+        self.apply_trans(self.align_axis(axis))
+        third = self.atoms[index3].position
+        self.apply_trans(self.align_plane(third))
+        return self.atoms.positions</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="SITH.Visualization.MoleculeViewer" href="#SITH.Visualization.MoleculeViewer">MoleculeViewer</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.Visualization.VisualizeEnergies.add_dof"><code class="name flex">
+<span>def <span class="ident">add_dof</span></span>(<span>self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add the degree of freedom to the molecule image</p>
+<h1 id="parameters">Parameters</h1>
+<p>dof: tuple
+label of the degree of freedom according with g09 convention.</p>
+<h1 id="example">Example</h1>
+<pre><code>i=(1, 2) means a bond between atoms 1 and 2
+i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2 and 3
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
+    &#34;&#34;&#34;
+    Add the degree of freedom to the molecule image
+
+    Parameters
+    ==========
+
+    dof: tuple
+        label of the degree of freedom according with g09 convention.
+
+    Example
+    =======
+        i=(1, 2) means a bond between atoms 1 and 2
+        i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+        i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2 and 3
+    &#34;&#34;&#34;
+
+    types = [&#34;bond&#34;, &#34;angle&#34;, &#34;dihedral&#34;]
+    type_dof = types[len(dof)-2]
+
+    if type_dof == &#34;bond&#34;:
+        index1, index2 = dof
+        return self.add_bond(index1, index2, color, radius=radius)
+
+    elif type_dof == &#34;angle&#34;:
+        index1, index2, index3 = dof
+        return self.add_angle(index1, index2, index3, color, n=n)
+
+    elif type_dof == &#34;dihedral&#34;:
+        index1, index2, index3, index4 = dof
+        return self.add_dihedral(index1, index2, index3,
+                                 index4, color, n=n)
+    else:
+        raise TypeError(f&#34;{dof} is not an accepted degree of freedom.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.align_axis"><code class="name flex">
+<span>def <span class="ident">align_axis</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply the necessary rotations to set a
+vector aligned with positive x axis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def align_axis(self, vector):
+    &#34;&#34;&#34;
+    Apply the necessary rotations to set a
+    vector aligned with positive x axis
+    &#34;&#34;&#34;
+    xyproj = vector.copy()
+    xyproj[2] = 0
+    phi = np.arcsin(vector[2]/np.linalg.norm(vector))
+    theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
+    if vector[1] &lt; 0:
+        theta *= -1
+    trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
+    return trans</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.align_plane"><code class="name flex">
+<span>def <span class="ident">align_plane</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Rotation around x axis to set a vector in the xy plane</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def align_plane(self, vector):
+    &#34;&#34;&#34;
+    Rotation around x axis to set a vector in the xy plane
+    &#34;&#34;&#34;
+    reference = vector.copy()
+    reference[0] = 0
+    angle = np.arccos(reference[1]/np.linalg.norm(reference))
+    if reference[2] &lt; 0:
+        angle *= -1
+    return self.rot_x(-angle)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.apply_trans"><code class="name flex">
+<span>def <span class="ident">apply_trans</span></span>(<span>self, trans)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply a transformation to all vector positions of the
+atoms object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_trans(self, trans):
+    &#34;&#34;&#34;
+    Apply a transformation to all vector positions of the
+    atoms object
+    &#34;&#34;&#34;
+    new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
+    self.atoms.set_positions(new_positions)
+    return new_positions</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.energies_all_dof"><code class="name flex">
+<span>def <span class="ident">energies_all_dof</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add all DOF with a color scale that represents the
+distribution of energy according to the JEDI method.</p>
+<h1 id="parameters">Parameters</h1>
+<p>optional kwargs for energies_some_dof</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energies_all_dof(self, **kwargs):
+    &#34;&#34;&#34;
+    Add all DOF with a color scale that represents the
+    distribution of energy according to the JEDI method.
+
+    Parameters
+    ==========
+
+    optional kwargs for energies_some_dof
+    &#34;&#34;&#34;
+    dofs = self.sith._reference.dimIndices
+    self.energies_some_dof(dofs, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.energies_angles"><code class="name flex">
+<span>def <span class="ident">energies_angles</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add the angles with a color scale that represents the
+distribution of energy according to the JEDI method.</p>
+<h1 id="parameters">Parameters</h1>
+<p>optional kwargs for energies_some_dof</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energies_angles(self, **kwargs):
+    &#34;&#34;&#34;
+    Add the angles with a color scale that represents the
+    distribution of energy according to the JEDI method.
+
+    Parameters
+    ==========
+
+    optional kwargs for energies_some_dof
+    &#34;&#34;&#34;
+    dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
+                                           self.nangles]
+    self.energies_some_dof(dofs, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.energies_bonds"><code class="name flex">
+<span>def <span class="ident">energies_bonds</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add the bonds with a color scale that represents the
+distribution of energy according to the JEDI method.</p>
+<h1 id="parameters">Parameters</h1>
+<p>optional kwargs for energies_some_dof</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energies_bonds(self, **kwargs):
+    &#34;&#34;&#34;
+    Add the bonds with a color scale that represents the
+    distribution of energy according to the JEDI method.
+
+    Parameters
+    ==========
+
+    optional kwargs for energies_some_dof
+    &#34;&#34;&#34;
+    dofs = self.sith._reference.dimIndices[:self.nbonds]
+    self.energies_some_dof(dofs, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.energies_dihedrals"><code class="name flex">
+<span>def <span class="ident">energies_dihedrals</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add the dihedral angles with a color scale that represents the
+distribution of energy according to the JEDI method.</p>
+<h1 id="parameters">Parameters</h1>
+<p>optional kwargs for energies_some_dof</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energies_dihedrals(self, **kwargs):
+    &#34;&#34;&#34;
+    Add the dihedral angles with a color scale that represents the
+    distribution of energy according to the JEDI method.
+
+    Parameters
+    ==========
+
+    optional kwargs for energies_some_dof
+    &#34;&#34;&#34;
+    dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
+    self.energies_some_dof(dofs, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.energies_some_dof"><code class="name flex">
+<span>def <span class="ident">energies_some_dof</span></span>(<span>self, dofs, cmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;, label='Energy [a.u]', labelsize=20, orientation='vertical', div=5, deci=2, width='700px', height='500px', **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add the bonds with a color scale that represents the
+distribution of energy according to the JEDI method.</p>
+<h1 id="parameters">Parameters</h1>
+<p>dofs: list of tuples.
+list of degrees of freedom defined according with g09 convention.</p>
+<p>cmap: cmap. Default: mpl.cm.get_cmap("Blues")
+cmap used in the color bar.</p>
+<p>label: str. Default: "Energy [a.u]"
+label of the color bar.</p>
+<p>labelsize: float.
+size of the label in the</p>
+<p>orientation: "vertical" or "horizontal". Default: "vertical"
+orientation of the color bar.</p>
+<p>div: int. Default: 5
+number of colors in the colorbar.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap(&#34;Blues&#34;),
+                      label=&#34;Energy [a.u]&#34;, labelsize=20,
+                      orientation=&#34;vertical&#34;, div=5, deci=2,
+                      width=&#34;700px&#34;, height=&#34;500px&#34;, **kwargs):
+    &#34;&#34;&#34;
+    Add the bonds with a color scale that represents the
+    distribution of energy according to the JEDI method.
+
+    Parameters
+    ==========
+
+    dofs: list of tuples.
+        list of degrees of freedom defined according with g09 convention.
+
+    cmap: cmap. Default: mpl.cm.get_cmap(&#34;Blues&#34;)
+        cmap used in the color bar.
+
+    label: str. Default: &#34;Energy [a.u]&#34;
+        label of the color bar.
+
+    labelsize: float.
+        size of the label in the
+
+    orientation: &#34;vertical&#34; or &#34;horizontal&#34;. Default: &#34;vertical&#34;
+        orientation of the color bar.
+
+    div: int. Default: 5
+        number of colors in the colorbar.
+    &#34;&#34;&#34;
+    energies = []
+    for dof in dofs:
+        for index, sithdof in enumerate(self.sith._reference.dimIndices):
+            if dof == sithdof:
+                energies.append(self.sith.energies[index][self.idef])
+
+    assert len(dofs) == len(energies), &#34;The number of DOFs &#34; + \
+        f&#34;({len(dofs)}) does not correspond with the number of &#34; + \
+        f&#34;energies ({len(energies)})&#34;
+
+    minval = min(energies)
+    maxval = max(energies)
+
+    if orientation == &#39;v&#39; or orientation == &#39;vertical&#39;:
+        rotation = 0
+    else:
+        rotation = 90
+
+    boundaries = np.linspace(minval, maxval, div+1)
+    normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
+
+    self.fig, self.ax = plt.subplots(figsize=(0.5, 8))
+
+    # Costumize cbar
+    cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
+                                                   cmap=cmap),
+                             cax=self.ax, orientation=&#39;vertical&#39;,
+                             format=&#39;%1.{}f&#39;.format(deci), )
+    cbar.set_label(label=label, fontsize=labelsize)
+    cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
+
+    # Insert colorbar in view
+    self.viewer.view._remote_call(&#34;setSize&#34;, targe=&#34;Widget&#34;,
+                                  args=[width, height])
+    for i, dof in enumerate(dofs):
+        color = cmap(normalize(energies[i]))[:3]
+        self.add_dof(dof, color=color, **kwargs)
+
+    self.viewer.view._remote_call(&#34;setSize&#34;,
+                                  targe=&#34;Widget&#34;,
+                                  args=[width, height])
+    out = Output()
+    with out:
+        plt.show()
+    self.box = HBox(children=[self.viewer.view, out])</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.rot_x"><code class="name flex">
+<span>def <span class="ident">rot_x</span></span>(<span>self, angle)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rot_x(self, angle):
+    c = np.cos(angle)
+    s = np.sin(angle)
+    R = np.array([[1, 0, 0],
+                  [0, c, -s],
+                  [0, s, c]])
+    return R</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.rot_y"><code class="name flex">
+<span>def <span class="ident">rot_y</span></span>(<span>self, angle)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rot_y(self, angle):
+    c = np.cos(angle)
+    s = np.sin(angle)
+    R = np.array([[c, 0, s],
+                  [0, 1, 0],
+                  [-s, 0, c]])
+    return R</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.rot_z"><code class="name flex">
+<span>def <span class="ident">rot_z</span></span>(<span>self, angle)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rot_z(self, angle):
+    c = np.cos(angle)
+    s = np.sin(angle)
+    R = np.array([[c, -s, 0],
+                  [s, c, 0],
+                  [0, 0, 1]])
+    return R</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Show the molecule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(self):
+    &#34;&#34;&#34;
+    Show the molecule.
+    &#34;&#34;&#34;
+    return self.box</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.show_bonds"><code class="name flex">
+<span>def <span class="ident">show_bonds</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Show the bonds in the molecule of freedom.</p>
+<h2 id="notes">Notes</h2>
+<p>The color is not related with the JEDI method. It
+could be changed with the kwarg color=rgb list.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show_bonds(self, **kwargs):
+    &#34;&#34;&#34;
+    Show the bonds in the molecule of freedom.
+
+    Notes
+    -----
+    The color is not related with the JEDI method. It
+    could be changed with the kwarg color=rgb list.
+    &#34;&#34;&#34;
+    dofs = self.sith._reference.dimIndices[:self.nbonds]
+    self.show_dof(dofs, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.show_dof"><code class="name flex">
+<span>def <span class="ident">show_dof</span></span>(<span>self, dofs, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Show specific degrees of freedom.</p>
+<h1 id="params">Params</h1>
+<p>dofs: list of tuples.
+list of degrees of freedom defined according with g09 convention.</p>
+<h2 id="notes">Notes</h2>
+<p>The color is not related with the JEDI method. It
+could be changed with the kwarg color=rgb list.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show_dof(self, dofs, **kwargs):
+    &#34;&#34;&#34;
+    Show specific degrees of freedom.
+
+    Params
+    ======
+
+    dofs: list of tuples.
+        list of degrees of freedom defined according with g09 convention.
+
+    Notes
+    -----
+    The color is not related with the JEDI method. It
+    could be changed with the kwarg color=rgb list.
+    &#34;&#34;&#34;
+    for dof in dofs:
+        self.add_dof(dof, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="SITH.Visualization.VisualizeEnergies.xy_alignment"><code class="name flex">
+<span>def <span class="ident">xy_alignment</span></span>(<span>self, index1, index2, index3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>transforme the positions of the atoms such that
+the atoms of indexes 1 and 2 are aligned in the
+x axis</p>
+<p>the atom 3 is in the xy plane</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xy_alignment(self, index1, index2, index3):
+    &#34;&#34;&#34;
+    transforme the positions of the atoms such that
+    the atoms of indexes 1 and 2 are aligned in the
+    x axis
+
+    the atom 3 is in the xy plane&#34;&#34;&#34;
+    # center
+    center = (self.atoms[index1].position+self.atoms[index2].position)/2
+    self.atoms.set_positions(self.atoms.positions - center)
+    axis = self.atoms[index2].position
+    self.apply_trans(self.align_axis(axis))
+    third = self.atoms[index3].position
+    self.apply_trans(self.align_plane(third))
+    return self.atoms.positions</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="SITH.Visualization.MoleculeViewer" href="#SITH.Visualization.MoleculeViewer">MoleculeViewer</a></b></code>:
+<ul class="hlist">
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_angle" href="#SITH.Visualization.MoleculeViewer.add_angle">add_angle</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_axis" href="#SITH.Visualization.MoleculeViewer.add_axis">add_axis</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_bond" href="#SITH.Visualization.MoleculeViewer.add_bond">add_bond</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_bonds" href="#SITH.Visualization.MoleculeViewer.add_bonds">add_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_dihedral" href="#SITH.Visualization.MoleculeViewer.add_dihedral">add_dihedral</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.intermedia_vectors" href="#SITH.Visualization.MoleculeViewer.intermedia_vectors">intermedia_vectors</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.plot_arc" href="#SITH.Visualization.MoleculeViewer.plot_arc">plot_arc</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_angles" href="#SITH.Visualization.MoleculeViewer.remove_all_angles">remove_all_angles</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_bonds" href="#SITH.Visualization.MoleculeViewer.remove_all_bonds">remove_all_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_dihedrals" href="#SITH.Visualization.MoleculeViewer.remove_all_dihedrals">remove_all_dihedrals</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_angle" href="#SITH.Visualization.MoleculeViewer.remove_angle">remove_angle</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_axis" href="#SITH.Visualization.MoleculeViewer.remove_axis">remove_axis</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_bond" href="#SITH.Visualization.MoleculeViewer.remove_bond">remove_bond</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_bonds" href="#SITH.Visualization.MoleculeViewer.remove_bonds">remove_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_dihedral" href="#SITH.Visualization.MoleculeViewer.remove_dihedral">remove_dihedral</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="SITH" href="index.html">SITH</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="SITH.Visualization.MoleculeViewer" href="#SITH.Visualization.MoleculeViewer">MoleculeViewer</a></code></h4>
+<ul class="">
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_angle" href="#SITH.Visualization.MoleculeViewer.add_angle">add_angle</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_axis" href="#SITH.Visualization.MoleculeViewer.add_axis">add_axis</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_bond" href="#SITH.Visualization.MoleculeViewer.add_bond">add_bond</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_bonds" href="#SITH.Visualization.MoleculeViewer.add_bonds">add_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.add_dihedral" href="#SITH.Visualization.MoleculeViewer.add_dihedral">add_dihedral</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.download_image" href="#SITH.Visualization.MoleculeViewer.download_image">download_image</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.intermedia_vectors" href="#SITH.Visualization.MoleculeViewer.intermedia_vectors">intermedia_vectors</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.picked" href="#SITH.Visualization.MoleculeViewer.picked">picked</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.plot_arc" href="#SITH.Visualization.MoleculeViewer.plot_arc">plot_arc</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_angles" href="#SITH.Visualization.MoleculeViewer.remove_all_angles">remove_all_angles</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_bonds" href="#SITH.Visualization.MoleculeViewer.remove_all_bonds">remove_all_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_all_dihedrals" href="#SITH.Visualization.MoleculeViewer.remove_all_dihedrals">remove_all_dihedrals</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_angle" href="#SITH.Visualization.MoleculeViewer.remove_angle">remove_angle</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_axis" href="#SITH.Visualization.MoleculeViewer.remove_axis">remove_axis</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_bond" href="#SITH.Visualization.MoleculeViewer.remove_bond">remove_bond</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_bonds" href="#SITH.Visualization.MoleculeViewer.remove_bonds">remove_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.MoleculeViewer.remove_dihedral" href="#SITH.Visualization.MoleculeViewer.remove_dihedral">remove_dihedral</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="SITH.Visualization.VisualizeEnergies" href="#SITH.Visualization.VisualizeEnergies">VisualizeEnergies</a></code></h4>
+<ul class="two-column">
+<li><code><a title="SITH.Visualization.VisualizeEnergies.add_dof" href="#SITH.Visualization.VisualizeEnergies.add_dof">add_dof</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.align_axis" href="#SITH.Visualization.VisualizeEnergies.align_axis">align_axis</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.align_plane" href="#SITH.Visualization.VisualizeEnergies.align_plane">align_plane</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.apply_trans" href="#SITH.Visualization.VisualizeEnergies.apply_trans">apply_trans</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.energies_all_dof" href="#SITH.Visualization.VisualizeEnergies.energies_all_dof">energies_all_dof</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.energies_angles" href="#SITH.Visualization.VisualizeEnergies.energies_angles">energies_angles</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.energies_bonds" href="#SITH.Visualization.VisualizeEnergies.energies_bonds">energies_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.energies_dihedrals" href="#SITH.Visualization.VisualizeEnergies.energies_dihedrals">energies_dihedrals</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.energies_some_dof" href="#SITH.Visualization.VisualizeEnergies.energies_some_dof">energies_some_dof</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.rot_x" href="#SITH.Visualization.VisualizeEnergies.rot_x">rot_x</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.rot_y" href="#SITH.Visualization.VisualizeEnergies.rot_y">rot_y</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.rot_z" href="#SITH.Visualization.VisualizeEnergies.rot_z">rot_z</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.show" href="#SITH.Visualization.VisualizeEnergies.show">show</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.show_bonds" href="#SITH.Visualization.VisualizeEnergies.show_bonds">show_bonds</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.show_dof" href="#SITH.Visualization.VisualizeEnergies.show_dof">show_dof</a></code></li>
+<li><code><a title="SITH.Visualization.VisualizeEnergies.xy_alignment" href="#SITH.Visualization.VisualizeEnergies.xy_alignment">xy_alignment</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
