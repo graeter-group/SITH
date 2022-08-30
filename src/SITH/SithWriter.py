@@ -9,24 +9,27 @@ from SITH.Utilities import Geometry, UnitConverter
 
 
 #region: Write
-def write_all(sith: SITH, filePrefix="") -> bool:
-    """Write all SITH output files: summary, energies, error, and \u0394q.
+def write_all(sith: SITH, filePrefix='') -> bool:
+    """Write all SITH output files: summary, energies, error, and \u0394q in the parent directory of the reference structure.
 
     This function simply calls all SithWriter.write methods which take a SITH object as input.
+    Units are Angstroms, degrees, and Hartrees.
 
     Args:
         sith (SITH): analyzed SITH object
-        filePrefix (str, optional): prefix for file output. Defaults to "".
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
 
     Returns:
         bool: If all files were successfully written.
     """    '''
     '''
-    return write_summary(sith, filePrefix) and writeDeltaQ(sith, filePrefix) and writeEnergyMatrix(sith, filePrefix) and writeError(sith, filePrefix)
+    return write_summary(sith, filePrefix) and write_delta_q(sith, filePrefix) and write_dof_energies(sith, filePrefix) and write_error(sith, filePrefix)
 
 
 def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
-    """Write summary.txt file of sith analysis
+    """Write 'summary.txt' file of sith analysis  in the parent directory of the reference structure.
+
+    Units are Angstroms, degrees, and Hartrees.
 
     Args:
         sith (SITH): analyzed SITH object whose information to write out
@@ -36,12 +39,12 @@ def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
     Returns:
         bool: True if successful
     """    
-    totE = buildTotEnergiesString(sith)
-    dq = buildDeltaQString(sith)
-    ric = buildInternalCoordsString(sith)
-    error = buildErrorStrings(sith)
-    expectedDE, errorDE, pErrorDE = compareEnergies(sith)
-    energies = buildEnergyMatrix(sith)
+    totE = build_tot_energies(sith)
+    dq = build_delta_q(sith)
+    ric = build_dof_indices(sith)
+    error = build_error(sith)
+    expectedDE, errorDE, pErrorDE = compare_energies(sith)
+    energies = build_dof_energies(sith)
     try:
         with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", "w") as s:
             s.write("Summary of SITH analysis\n")
@@ -74,15 +77,22 @@ def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
         return False
 
 
-def writeTotEnergiesString(sith: SITH, filePrefix="") -> True:
-    """
-    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
-    -----
-    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+def write_total_energies(sith: SITH, filePrefix='') -> bool:
+    """Writes the change in RIC energies per structure to 'total_energies.txt'
+     in the parent directory of the reference structure.
+
+    Units are in Hartrees. Format is (row:DOF, column:deformation structure).
+
+    Args:
+        sith (SITH): analyzed SITH object whose information to write out
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
+
+    Returns:
+        bool: True if successful.
     """
     try:
-        lines = buildTotEnergiesString(sith)
-        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"totalStressEnergy.txt", "w") as dq:
+        lines = build_tot_energies(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"total_energies.txt", "w") as dq:
             dq.writelines('\n'.join(lines))
             dq.write('\n')
         return True
@@ -95,14 +105,21 @@ def writeTotEnergiesString(sith: SITH, filePrefix="") -> True:
         return False
 
 
-def writeDeltaQ(sith: SITH, filePrefix="") -> bool:
-    """
-    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
-    -----
-    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
-    """
+def write_delta_q(sith: SITH, filePrefix='') -> bool:
+    """Writes the change in Redundant Internal Coordinates (RICs) per structure to 'delta_q.txt' 
+    in the parent directory of the reference structure.
+
+    Units are in Angstroms and degrees. Format is (row:DOF, column:deformation structure)
+
+    Args:
+        sith (SITH): analyzed SITH object whose information to write out
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
+
+    Returns:
+        bool: True if successful.
+    """    
     try:
-        dqPrint = buildDeltaQString(sith)
+        dqPrint = build_delta_q(sith)
         with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"delta_q.txt", "w") as dq:
             dq.writelines('\n'.join(dqPrint))
             dq.write('\n')
@@ -116,13 +133,21 @@ def writeDeltaQ(sith: SITH, filePrefix="") -> bool:
         return False
 
 
-def writeError(sith: SITH, filePrefix="") -> bool:
-    """Takes in SITH object sith, Writes error data, Returns True if successful
-    -----
-    Writes to .txt file in directory of sith input files' parent"""
+def write_error(sith: SITH, filePrefix='') -> bool:
+    """Writes error information to 'error.txt' in the parent directory of the reference structure.
+
+    Units are in Hartrees and percentages.
+
+    Args:
+        sith (SITH): analyzed SITH object whose information to write out
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
+
+    Returns:
+        bool: True if successful
+    """
     try:
-        lines = buildErrorStrings(sith)
-        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'Error.txt', "w") as dq:
+        lines = build_error(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'error.txt', "w") as dq:
             dq.writelines('\n'.join(lines))
             dq.write('\n')
         return True
@@ -135,15 +160,22 @@ def writeError(sith: SITH, filePrefix="") -> bool:
         return False
 
 
-def writeEnergyMatrix(sith: SITH, filePrefix='') -> bool:
-    """
-    Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
-    -----
-    Data is in Hartrees and of the format row:DOF column:deformation structure.
+def write_dof_energies(sith: SITH, filePrefix='') -> bool:
+    """Writes the energy in each degree of freedom per deformed geometry.
+
+    Writes to 'dof_energies.txt' in the parent directory of the reference geometry.
+    Units are in Hartrees.  Form is (row:DOF, column:deformation).
+
+    Args:
+        sith (SITH): analyzed SITH object whose information to write out
+        filePrefix (str, optional): prefix for file output. Defaults to ''.
+
+    Returns:
+        bool: True if successful
     """
     try:
-        ePrint = buildEnergyMatrix(sith)
-        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'E_RICs.txt', "w") as dq:
+        ePrint = build_dof_energies(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+'dof_energies.txt', "w") as dq:
             dq.writelines('\n'.join(ePrint))
             dq.write('\n')
         return True
@@ -156,26 +188,39 @@ def writeEnergyMatrix(sith: SITH, filePrefix='') -> bool:
         return False
 
 
-def writeXYZ(geometry: Geometry):
-    """
-    Writes a .xyz file of the geometry
+def write_xyz(geometry: Geometry):
+    """Writes a .xyz file of the geometry
+
+    Args:
+        geometry (Geometry): Geometry to write
     """
     write(str(geometry._path.parent.as_posix()+geometry._path.root +
           geometry._path.stem+".xyz"), geometry.atoms, format='xyz', append=False)
 
 
-def writeXYZs(sith: SITH):
-    """
-    Writes .xyz files of all geometries
-    """
-    writeXYZ(sith.reference)
+def write_all_xyz(sith: SITH):
+    """Writes .xyz files of all geometries
+
+    Args:
+        sith (SITH): SITH object from which to write all geometries
+    """ 
+    write_xyz(sith.reference)
     for deformation in sith.deformed:
-        writeXYZ(deformation)
+        write_xyz(deformation)
 # endregion
 #region: Build
 
 
-def buildTotEnergiesString(sith: SITH) -> list:
+def build_tot_energies(sith: SITH) -> list:
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        list: _description_
+    """    
+    
     """
     Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
     Data is in Hartrees and percentages.
@@ -191,7 +236,15 @@ def buildTotEnergiesString(sith: SITH) -> list:
     return lines
 
 
-def buildDeltaQString(sith: SITH) -> list:
+def build_delta_q(sith: SITH) -> list:
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        list: _description_
+    """    
     """
     Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom 
     per deformed geometry. Data is in Angstroms and degrees of the format row:DOF column: deformation
@@ -234,7 +287,15 @@ def buildDeltaQString(sith: SITH) -> list:
     return dqAngstroms
 
 
-def buildInternalCoordsString(sith: SITH) -> list:
+def build_dof_indices(sith: SITH) -> list:
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        list: _description_
+    """
     """
     Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
     """
@@ -242,7 +303,15 @@ def buildInternalCoordsString(sith: SITH) -> list:
     return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
 
 
-def buildEnergyMatrix(sith: SITH) -> list:
+def build_dof_energies(sith: SITH) -> list:
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        list: _description_
+    """    
     """
     Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
     per deformed geometry. Data is in Hartrees and of the format row:DOF column:deformation
@@ -267,12 +336,20 @@ def buildEnergyMatrix(sith: SITH) -> list:
     return eMat
 
 
-def buildErrorStrings(sith: SITH):
+def build_error(sith: SITH):
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        _type_: _description_
+    """    
     """
     Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
     Data is in Hartrees and percentages.
     """
-    expected, error, pError = compareEnergies(sith)
+    expected, error, pError = compare_energies(sith)
     lines = list()
     lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format(
         'Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
@@ -284,7 +361,15 @@ def buildErrorStrings(sith: SITH):
 # endregion
 
 
-def compareEnergies(sith: SITH) -> Tuple:
+def compare_energies(sith: SITH) -> Tuple:
+    """_summary_
+
+    Args:
+        sith (SITH): _description_
+
+    Returns:
+        Tuple: _description_
+    """    
     """
     Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
     -----

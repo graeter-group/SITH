@@ -491,7 +491,7 @@ class SummaryReader:
         lines = self.read_section('Redundant Internal Coordinate' +
                                   ' Definitions\n',
                                   'Changes in internal coordinates' +
-                                  ' (Delta q)\n',
+                                  ' (\u0394q)\n',
                                   iplus=2)
         return [tuple(np.fromstring(line.replace('(',
                                                  '').replace(',',
@@ -508,7 +508,7 @@ class SummaryReader:
         i-th deformed config.
         """
         lines = self.read_section('Changes in internal coordinates' +
-                                  ' (Delta q)\n',
+                                  ' (\u0394q)\n',
                                   '**  Energy Analysis  **\n',
                                   iplus=3, jminus=2)
         return np.array([np.fromstring(line, sep=' ')[1:] for line in lines])

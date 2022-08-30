@@ -4,20 +4,17 @@
 Welcome to SITH's documentation!
 ================================
 
+   
 
-.. automodule:: SITH.SITH
-	:members:
-.. automodule:: SITH.SithWriter
-	:members:
-.. automodule:: SITH.Visualization
-	:members:
-.. automodule:: SITH.Utilities
-	:members:
+
+Modules
+================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
+   :caption: Modules
+   
+   modules/modules
 
 
 Indices and tables

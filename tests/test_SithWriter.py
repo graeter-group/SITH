@@ -13,7 +13,7 @@ def test_buildDQ():
     sith.extractData()
     sith.energyAnalysis()
 
-    blah = buildDeltaQString(sith)
+    blah = build_delta_q(sith)
 
 
 def test_buildDQ2():
@@ -21,7 +21,7 @@ def test_buildDQ2():
     sith.extractData()
     sith.energyAnalysis()
 
-    blah = buildDeltaQString(sith)
+    blah = build_delta_q(sith)
 
 
 def test_compareEnergies():
@@ -29,9 +29,9 @@ def test_compareEnergies():
     sith.extractData()
     sith.energyAnalysis()
 
-    assert writeDeltaQ(sith)
-    assert writeError(sith)
-    assert writeEnergyMatrix(sith)
+    assert write_delta_q(sith)
+    assert write_error(sith)
+    assert write_dof_energies(sith)
     assert write_summary(sith)
 
 
@@ -48,7 +48,7 @@ def test_writeXYZ():
     sith.extractData()
     sith.energyAnalysis()
 
-    writeXYZ(sith.reference)
+    write_xyz(sith.reference)
 
 
 def test_writeSummaryXYZ():
