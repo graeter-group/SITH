@@ -222,7 +222,7 @@ def build_tot_energies(sith: SITH) -> list:
     Returns:
         list: strings containing stress energy of each deformed geometry.
     """    
-    assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no information available."
+    assert sith.deformationEnergy is not None, "SITH.analyze() has not been performed yet, no information available."
     lines = list()
     header = "            "
     for deformation in sith._deformed:
@@ -250,7 +250,7 @@ def build_delta_q(sith: SITH) -> list:
     2               change              change              ...
     ...
     """
-    assert sith.deltaQ is not None, "SITH.extractData() has not been performed yet, no deltaQ information available."
+    assert sith.deltaQ is not None, "SITH.extract_data() has not been performed yet, no deltaQ information available."
     uc = UnitConverter()
     dqAngstroms = list()
     header = "DOF         "
@@ -294,7 +294,7 @@ def build_dof_indices(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom (DOF).
     """
-    assert sith._reference.dimIndices is not None, "SITH.extractData() has not been performed yet, no summary information available."
+    assert sith._reference.dimIndices is not None, "SITH.extract_data() has not been performed yet, no summary information available."
     return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
 
 
@@ -315,7 +315,7 @@ def build_dof_energies(sith: SITH) -> list:
     2               stress E            stress E            ...
     ...             ...                 ...                 ...
     """
-    assert sith.energies is not None, "SITH.energyAnalysis() has not been performed yet, no summary information available."
+    assert sith.energies is not None, "SITH.analyze() has not been performed yet, no summary information available."
     uc = UnitConverter()
     eMat = list()
     header = "DOF         "
@@ -370,7 +370,7 @@ def calculate_error(sith: SITH) -> Tuple:
 
         %Error: Stress Energy Error / Expected Stress Energy
     """    
-    assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no summary information available."
+    assert sith.deformationEnergy is not None, "SITH.analyze() has not been performed yet, no summary information available."
     expectedDE = np.zeros((1, len(sith._deformed)))
     for i in range(len(sith._deformed)):
         expectedDE[0, i] = sith._deformed[i].energy - \

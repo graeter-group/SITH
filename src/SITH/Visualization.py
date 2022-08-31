@@ -119,6 +119,15 @@ class MoleculeViewer:
         return self.bonds
 
     def remove_bond(self, atom1index, atom2index):
+        """Remove a bond between two atoms: atom1 and atom2
+
+        Args:
+            atom1index (_type_): index of atom1
+            atom2index (_type_): index of atom2
+
+        Returns:
+            _type_: the bonds in the system
+        """        
         """ Remove a bond between two atoms:
         atoms1 and atoms2.
 
@@ -514,8 +523,8 @@ class VisualizeEnergies(MoleculeViewer):
 
         see: https://doi.org/10.1063/1.4870334
         """
-        self.sith.extractData()
-        self.sith.energyAnalysis()
+        self.sith.extract_data()
+        self.sith.analyze()
 
     def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
         """

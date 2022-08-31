@@ -182,7 +182,7 @@ def test_build_atoms_integrated():
 
 def test_killDOF():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
+    sith.extract_data()
     assert compare_arrays(sith.reference.hessian, eHessFull)
     sith._reference._killDOFs([0])
     assert all(sith._reference.dimIndices == dimIndices[1:])
@@ -192,7 +192,7 @@ def test_killDOF():
 
 def test_killDOFs():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
+    sith.extract_data()
     assert compare_arrays(sith._reference.hessian, eHessFull)
     sith._reference._killDOFs([0, 14])
     assert all(sith._reference.dimIndices == dimIndices[1:14])
@@ -276,8 +276,8 @@ def test_compares():
 
 def test_summary_reader():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
     write_summary(sith, includeXYZ=True)
     path = sith._referencePath.parent.as_posix()+sith._referencePath.root
 

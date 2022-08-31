@@ -10,24 +10,24 @@ This can be expanded upon later if necessary."""
 
 def test_buildDQ():
     sith = SITH(x0string, xFstring)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     blah = build_delta_q(sith)
 
 
 def test_buildDQ2():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     blah = build_delta_q(sith)
 
 
 def test_compareEnergies():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     assert write_delta_q(sith)
     assert write_error(sith)
@@ -37,23 +37,23 @@ def test_compareEnergies():
 
 def test_writeAll():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     assert write_all(sith)
 
 
 def test_writeXYZ():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     write_xyz(sith.reference)
 
 
 def test_writeSummaryXYZ():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
     assert write_summary(sith, "xyz", includeXYZ=True)
