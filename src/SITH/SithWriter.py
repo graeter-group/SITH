@@ -32,7 +32,7 @@ def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
     Units are Angstroms, degrees, and Hartrees.
 
     Args:
-        sith (SITH): analyzed SITH object whose information to write out
+        sith (SITH): analyzed SITH object
         filePrefix (str, optional): prefix for file output. Defaults to ''.
         includeXYZ (bool, optional): _description_. Defaults to False.
 
@@ -43,7 +43,7 @@ def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
     dq = build_delta_q(sith)
     ric = build_dof_indices(sith)
     error = build_error(sith)
-    expectedDE, errorDE, pErrorDE = compare_energies(sith)
+    expectedDE, errorDE, pErrorDE = calculate_error(sith)
     energies = build_dof_energies(sith)
     try:
         with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+"summary.txt", "w") as s:
@@ -78,13 +78,13 @@ def write_summary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
 
 
 def write_total_energies(sith: SITH, filePrefix='') -> bool:
-    """Writes the change in RIC energies per structure to 'total_energies.txt'
+    """Writes the change in energy per structure to 'total_energies.txt'
      in the parent directory of the reference structure.
 
-    Units are in Hartrees. Format is (row:DOF, column:deformation structure).
+    Units are Hartrees. Format is (row:DOF, column:deformation structure).
 
     Args:
-        sith (SITH): analyzed SITH object whose information to write out
+        sith (SITH): analyzed SITH object
         filePrefix (str, optional): prefix for file output. Defaults to ''.
 
     Returns:
@@ -109,10 +109,10 @@ def write_delta_q(sith: SITH, filePrefix='') -> bool:
     """Writes the change in Redundant Internal Coordinates (RICs) per structure to 'delta_q.txt' 
     in the parent directory of the reference structure.
 
-    Units are in Angstroms and degrees. Format is (row:DOF, column:deformation structure)
+    Units are Angstroms and degrees. Format is (row:DOF, column:deformation structure)
 
     Args:
-        sith (SITH): analyzed SITH object whose information to write out
+        sith (SITH): extracted SITH object
         filePrefix (str, optional): prefix for file output. Defaults to ''.
 
     Returns:
@@ -136,10 +136,10 @@ def write_delta_q(sith: SITH, filePrefix='') -> bool:
 def write_error(sith: SITH, filePrefix='') -> bool:
     """Writes error information to 'error.txt' in the parent directory of the reference structure.
 
-    Units are in Hartrees and percentages.
+    Units are Hartrees and percentages.
 
     Args:
-        sith (SITH): analyzed SITH object whose information to write out
+        sith (SITH): analyzed SITH object
         filePrefix (str, optional): prefix for file output. Defaults to ''.
 
     Returns:
@@ -161,13 +161,13 @@ def write_error(sith: SITH, filePrefix='') -> bool:
 
 
 def write_dof_energies(sith: SITH, filePrefix='') -> bool:
-    """Writes the energy in each degree of freedom per deformed geometry.
+    """Writes the energy in each degree of freedom (RIC) per deformed geometry.
 
     Writes to 'dof_energies.txt' in the parent directory of the reference geometry.
-    Units are in Hartrees.  Form is (row:DOF, column:deformation).
+    Units are Hartrees.  Form is (row:DOF, column:deformation).
 
     Args:
-        sith (SITH): analyzed SITH object whose information to write out
+        sith (SITH): extracted SITH object
         filePrefix (str, optional): prefix for file output. Defaults to ''.
 
     Returns:
@@ -212,19 +212,16 @@ def write_all_xyz(sith: SITH):
 
 
 def build_tot_energies(sith: SITH) -> list:
-    """_summary_
+    """Gathers and formats total stress energy of deformed geometries
+
+    Units are Hartrees and percentages.
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): analyzed SITH object
 
     Returns:
-        list: _description_
+        list: strings containing stress energy of each deformed geometry.
     """    
-    
-    """
-    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
-    Data is in Hartrees and percentages.
-    """
     assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no information available."
     lines = list()
     header = "            "
@@ -237,18 +234,16 @@ def build_tot_energies(sith: SITH) -> list:
 
 
 def build_delta_q(sith: SITH) -> list:
-    """_summary_
+    """Gathers and formats the change in RICs (\u0394q) per deformed geometry
+
+    Units are Angstroms and degrees. Format is (row:DOF, column: deformation).
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): extracted SITH object
 
     Returns:
-        list: _description_
+        list: strings containing the change in each degree of freedom (RIC) per deformed geometry
     """    
-    """
-    Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom 
-    per deformed geometry. Data is in Angstroms and degrees of the format row:DOF column: deformation
-    """
     """
     DOF Index       Deformation 1       Deformation 2       ...
     1               change              change              ...
@@ -288,34 +283,32 @@ def build_delta_q(sith: SITH) -> list:
 
 
 def build_dof_indices(sith: SITH) -> list:
-    """_summary_
+    """Gathers and formats the DOF atom indices.
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): extracted SITH object
 
     Returns:
-        list: _description_
+        list: strings containing the atom indices involved in each degree of freedom.
     """
     """
-    Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
+    Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom (DOF).
     """
     assert sith._reference.dimIndices is not None, "SITH.extractData() has not been performed yet, no summary information available."
     return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
 
 
 def build_dof_energies(sith: SITH) -> list:
-    """_summary_
+    """Gathers and formats the energy in each DOF per deformed geometry.
+
+    Units are Hartrees. Format is (row:DOF, column:deformation).
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): analyzed SITH object
 
     Returns:
-        list: _description_
+        list: strings containing the energy in each DOF (degree of freedom) per deformed geometry
     """    
-    """
-    Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
-    per deformed geometry. Data is in Hartrees and of the format row:DOF column:deformation
-    """
     """
     DOF Index       Deformation 1       Deformation 2       ...
     1               stress E            stress E            ...
@@ -336,20 +329,18 @@ def build_dof_energies(sith: SITH) -> list:
     return eMat
 
 
-def build_error(sith: SITH):
-    """_summary_
+def build_error(sith: SITH)->list:
+    """Gathers and formats error data per deformed geometry.
+
+    Units are Hartrees and percentages.
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): analyzed SITH object
 
     Returns:
-        _type_: _description_
+        list: strings containing error information per deformed geometry.
     """    
-    """
-    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
-    Data is in Hartrees and percentages.
-    """
-    expected, error, pError = compare_energies(sith)
+    expected, error, pError = calculate_error(sith)
     lines = list()
     lines.append("{: <12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}".format(
         'Deformation', "\u0394E", "Expected \u0394E", "\u0025Error", "Error"))
@@ -361,21 +352,24 @@ def build_error(sith: SITH):
 # endregion
 
 
-def compare_energies(sith: SITH) -> Tuple:
-    """_summary_
+def calculate_error(sith: SITH) -> Tuple:
+    """Performs error calculation
+
+    Error calculation is based off of the discrepancy between the energy given by the input geometry optimization
+    calculations and the total stress energy calculated by SITH analysis using the Hessian and \u0394q.
 
     Args:
-        sith (SITH): _description_
+        sith (SITH): analyzed SITH object
 
-    Returns:
-        Tuple: _description_
+    Returns: 
+        Tuple: (expected stress energy, stress energy error, %Error)
+
+        Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
+
+        Stress Energy Error: calculated stress energy - Expected Stress Energy
+
+        %Error: Stress Energy Error / Expected Stress Energy
     """    
-    """
-    Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
-    -----
-    Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
-    Stress Energy Error: calculated stress energy - Expected Stress Energy
-    %Error: Stress Energy Error / Expected Stress Energy"""
     assert sith.deformationEnergy is not None, "SITH.energyAnalysis() has not been performed yet, no summary information available."
     expectedDE = np.zeros((1, len(sith._deformed)))
     for i in range(len(sith._deformed)):

@@ -1,0 +1,4 @@
+.. SITH Extraction documentation
+
+Extraction
+==========

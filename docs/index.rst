@@ -1,19 +1,16 @@
 .. SITH documentation master file, created by
    sphinx-quickstart on Fri Aug 26 12:18:30 2022.
 
-Welcome to SITH's documentation!
-================================
 
-   
-
-
-Modules
-================================
+Contents
+========
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Modules
+   :maxdepth: 3
+   :name: contents
    
+   intro
+   workflow/workflow
    modules/modules
 
 
