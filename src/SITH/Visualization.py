@@ -571,7 +571,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        dofs = self.sith._reference.dim_indices[:self.nbonds]
         self.energies_some_dof(dofs, **kwargs)
 
     def energies_angles(self, **kwargs):
@@ -584,7 +584,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
+        dofs = self.sith._reference.dim_indices[self.nbonds:self.nbonds +
                                                self.nangles]
         self.energies_some_dof(dofs, **kwargs)
 
@@ -598,7 +598,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
+        dofs = self.sith._reference.dim_indices[self.nbonds+self.nangles:]
         self.energies_some_dof(dofs, **kwargs)
 
     def energies_all_dof(self, **kwargs):
@@ -611,7 +611,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dimIndices
+        dofs = self.sith._reference.dim_indices
         self.energies_some_dof(dofs, **kwargs)
 
     def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap("Blues"),
@@ -645,7 +645,7 @@ class VisualizeEnergies(MoleculeViewer):
         """
         energies = []
         for dof in dofs:
-            for index, sithdof in enumerate(self.sith._reference.dimIndices):
+            for index, sithdof in enumerate(self.sith._reference.dim_indices):
                 if dof == sithdof:
                     energies.append(self.sith.energies[index][self.idef])
 
@@ -716,7 +716,7 @@ class VisualizeEnergies(MoleculeViewer):
         The color is not related with the JEDI method. It
         could be changed with the kwarg color=rgb list.
         """
-        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        dofs = self.sith._reference.dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
 
     def show(self):

@@ -138,7 +138,7 @@ class SITH:
         dimsToKill = list()
         for atom in self._killAtoms:
             dimsToKill.extend(
-                [dim for dim in self._reference.dimIndices if atom in dim])
+                [dim for dim in self._reference.dim_indices if atom in dim])
         self.__kill_dofs(dimsToKill)
         print("Atoms and DOFs killed...")
 
@@ -150,8 +150,8 @@ class SITH:
         rIndices = list()
         for dof in dofs:
             rIndices.extend([i for i in range(self._reference.dims[0])
-                            if self._reference.dimIndices[i] == dof])
-        self._reference._killDOFs(rIndices)
+                            if self._reference.dim_indices[i] == dof])
+        self._reference._kill_DOFs(rIndices)
 
 # endregion
 
@@ -237,13 +237,13 @@ class SITH:
             for j in range(max(deformation.dims[0], self._reference.dims[0])):
                 if j < deformation.dims[0]:
                     # deformed not in reference
-                    if deformation.dimIndices[j] not in list(self._reference.dimIndices):
+                    if deformation.dim_indices[j] not in list(self._reference.dim_indices):
                         dofsToRemove.append(j)
                 if j < self._reference.dims[0]:  # reference not in deformed
-                    assert self._reference.dimIndices[j] in deformation.dimIndices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(
-                        self._reference.dimIndices[j])+"."
+                    assert self._reference.dim_indices[j] in deformation.dim_indices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(
+                        self._reference.dim_indices[j])+"."
 
-            deformation._killDOFs(dofsToRemove)
+            deformation._kill_DOFs(dofsToRemove)
 
     def extract_data(self):       
         """
@@ -261,12 +261,12 @@ class SITH:
         rExtractor = Extractor(self._referencePath, self._rData)
         rExtractor._extract()
         # Create Geometry objects from reference and deformed data
-        self._reference = rExtractor.getGeometry()
+        self._reference = rExtractor.get_geometry()
         self._deformed = list()
         for dd in self._dData:
             dExtractor = Extractor(dd[0], dd[1])
             dExtractor._extract()
-            self._deformed.append(dExtractor.getGeometry())
+            self._deformed.append(dExtractor.get_geometry())
 
         print("Finished data extraction...")
 
@@ -361,8 +361,8 @@ class SITH:
         Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
         """
         print("Validating geometries...")
-        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(
-            deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
+        assert all([deformn.n_atoms == self._reference.n_atoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(
+            deformn.dim_indices, self._reference.dim_indices) for deformn in self._deformed]), "Incompatible number of atoms or dimensions amongst input files."
 
 # endregion
 

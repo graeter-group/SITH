@@ -257,7 +257,7 @@ def build_delta_q(sith: SITH) -> list:
     for deformation in sith._deformed:
         header += "{: ^16s}".format(deformation.name)
     dqAngstroms.append(header)
-    dqAng = [uc.bohrToAngstrom(dq)
+    dqAng = [uc.bohr_to_angstrom(dq)
              for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
     dqAng = np.asarray(dqAng)
     for dof in range(sith._reference.dims[1]):
@@ -294,8 +294,8 @@ def build_dof_indices(sith: SITH) -> list:
     """
     Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom (DOF).
     """
-    assert sith._reference.dimIndices is not None, "SITH.extract_data() has not been performed yet, no summary information available."
-    return ["{: <12}".format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
+    assert sith._reference.dim_indices is not None, "SITH.extract_data() has not been performed yet, no summary information available."
+    return ["{: <12}".format(dof+1) + str(sith._reference.dim_indices[dof]) for dof in range(sith._reference.dims[0])]
 
 
 def build_dof_energies(sith: SITH) -> list:

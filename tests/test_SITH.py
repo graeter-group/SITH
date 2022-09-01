@@ -171,7 +171,7 @@ def test_kill():
     sith.set_kill_dofs(killDOFs)
     sith.extract_data()
     killedGeo = deepcopy(refGeo)
-    killedGeo._killDOFs([0])
+    killedGeo._kill_DOFs([0])
     assert sith.reference == killedGeo
     assert len(sith.deformed) == 1
     assert sith.deformed[0] == killedGeo
@@ -185,7 +185,7 @@ def test_killAtom():
     sith.set_kill_atoms(killAtoms)
     sith.extract_data()
     killedGeo = deepcopy(refGeo)
-    killedGeo._killDOFs([0, 5, 6, 7, 12])
+    killedGeo._kill_DOFs([0, 5, 6, 7, 12])
     assert sith.reference == killedGeo
     assert len(sith.deformed) == 1
     assert sith.deformed[0] == killedGeo
@@ -229,14 +229,14 @@ def test_remove_extra_dofs_noKill():
     sith._get_contents()
     extractor = Extractor(sith._referencePath, sith._rData)
     extractor._extract()
-    sith._reference = extractor.getGeometry()
+    sith._reference = extractor.get_geometry()
     extractor = Extractor(sith._deformedPath, sith._dData[0][1])
     extractor._extract()
-    sith._deformed = [extractor.getGeometry()]
+    sith._deformed = [extractor.get_geometry()]
     ref = deepcopy(sith.reference)
     defd = deepcopy(sith.deformed[0])
     sith.remove_extra_dofs()
-    defd._killDOFs([4])
+    defd._kill_DOFs([4])
     assert sith.reference == ref
     assert len(sith.deformed) == 1
     assert sith.deformed[0] == defd
@@ -249,14 +249,14 @@ def test_remove_extra_dofs_kill():
     sith._get_contents()
     extractor = Extractor(sith._referencePath, sith._rData)
     extractor._extract()
-    ref = extractor.getGeometry()
+    ref = extractor.get_geometry()
     extractor = Extractor(sith._deformedPath, sith._dData[0][1])
     extractor._extract()
-    defd = extractor.getGeometry()
+    defd = extractor.get_geometry()
     sith.set_kill_dofs([(1, 2)])
     sith.extract_data()
-    ref._killDOFs([0])
-    defd._killDOFs([0, 4])
+    ref._kill_DOFs([0])
+    defd._kill_DOFs([0, 4])
     assert sith.reference == ref
     assert len(sith.deformed) == 1
     assert sith.deformed[0] == defd
@@ -264,7 +264,7 @@ def test_remove_extra_dofs_kill():
 
 def test_validate_geometries():
     ditto = deepcopy(refGeo)
-    ditto._killDOFs([1])
+    ditto._kill_DOFs([1])
     sith = SITH(x0string, xFstring)
     sith._reference = refGeo
     sith._deformed = [ditto]
@@ -274,7 +274,7 @@ def test_validate_geometries():
         e.value) == "Incompatible number of atoms or dimensions amongst input files."
 
     ditto = deepcopy(refGeo)
-    ditto.nAtoms -= 1
+    ditto.n_atoms -= 1
     sith = SITH(x0string, xFstring)
     sith._reference = refGeo
     sith._deformed = [ditto]
@@ -402,20 +402,20 @@ def test_movedx0():
     assert sith.deformationEnergy.shape == (1, 5)
     write_summary(sith, 'moh-x0-moved-')
 
-def test_glyGoof():  # full with mismatched to remove, deformed directory
-    local_sith = SITH('tests/local-ref-test/Gly-opt08.fchk',
-                '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/3-OptStreched')
-    local_sith.extract_data()
-    local_sith.analyze()
-    write_all(local_sith, filePrefix='local-ref-gly-')
+# def test_glyGoof():  # full with mismatched to remove, deformed directory
+#     local_sith = SITH('tests/local-ref-test/Gly-opt08.fchk',
+#                 '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/3-OptStreched')
+#     local_sith.extract_data()
+#     local_sith.analyze()
+#     write_all(local_sith, filePrefix='local-ref-gly-')
 
-    global_sith = SITH('tests/global-ref-test/Gly-streched00.fchk',
-                '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/2-OptStreched02/Glycine/')
-    global_sith.extract_data()
-    global_sith.analyze()
-    write_all(global_sith, filePrefix='global-ref-gly-')
+#     global_sith = SITH('tests/global-ref-test/Gly-streched00.fchk',
+#                 '../../../../../basement/mbm/sucerquia/first_aminoacids/g09/2-OptStreched02/Glycine/')
+#     global_sith.extract_data()
+#     global_sith.analyze()
+#     write_all(global_sith, filePrefix='global-ref-gly-')
 
-    blah = 2
+#     blah = 2
 
 
 # endregion

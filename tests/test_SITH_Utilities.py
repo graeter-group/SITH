@@ -22,7 +22,7 @@ def test_geometry():
     geo = Geometry('testName', 'blah', 3)
     assert geo.name == 'testName'
     assert geo._path == 'blah'
-    assert geo.nAtoms == 3
+    assert geo.n_atoms == 3
     assert geo.energy == None
 
 
@@ -30,15 +30,15 @@ def test_geo_energy():
     geo = Geometry('blah', 'blah', 6)
     geo.energy = 42
     assert geo.name == 'blah'
-    assert geo.nAtoms == 6
+    assert geo.n_atoms == 6
     assert geo.energy == 42
 
 
-def test_buildRICGood():
+def test_build_RICGood():
     geo = Geometry('methanol-test', 'blah', 6)
-    geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
+    geo.build_RIC(dims, dim_indicesGoodInput, coordLinesGoodInput)
     assert geo.dims == dims
-    assert geo.dimIndices == dimIndices
+    assert geo.dim_indices == dim_indices
     assert compare_arrays(geo.ric, coords)
 
 
@@ -47,7 +47,7 @@ def test_equals():
     assert geoCopy == refGeo
     assert refGeo != Geometry('test', 'test', 6)
     geo = Geometry('methanol-test', 'blah', 6)
-    geo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
+    geo.build_RIC(dims, dim_indicesGoodInput, coordLinesGoodInput)
     assert refGeo != geo
     geoCopy.name = 'blah'
     assert geoCopy != refGeo
@@ -66,7 +66,7 @@ def test_equals():
     geoCopy.ric[2] = 26
     assert geoCopy != refGeo
     geoCopy.ric = refGeo.ric
-    geoCopy.dimIndices[2] = (1, 2)
+    geoCopy.dim_indices[2] = (1, 2)
     assert geoCopy != refGeo
 
 
@@ -77,7 +77,7 @@ def test_letterCoord():
     letterCoord = coordLinesGoodInput + ['blah']
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesGoodInput, letterCoord)
+        geo.build_RIC(dims, dim_indicesGoodInput, letterCoord)
     assert str(
         e.value) == "Redundant internal coordinates contains invalid values, such as strings."
 
@@ -86,7 +86,7 @@ def test_moreCoords():
     coordsMore = coordLinesGoodInput + ['100.78943']
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesGoodInput, coordsMore)
+        geo.build_RIC(dims, dim_indicesGoodInput, coordsMore)
     assert str(e.value) == "Mismatch between the number of degrees of freedom expected (" + \
         str(dims[0])+") and number of coordinates given ("+str(dims[0]+1)+")."
 
@@ -95,7 +95,7 @@ def test_lessCoords():
     coordsLess = coordLinesGoodInput[1:]
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesGoodInput, coordsLess)
+        geo.build_RIC(dims, dim_indicesGoodInput, coordsLess)
     assert str(e.value) == "Mismatch between the number of degrees of freedom expected (" + \
         str(dims[0])+") and number of coordinates given ("+str(dims[0]-5)+")."
 
@@ -108,11 +108,11 @@ def test_lessCoords():
 def test_riciBad():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndices59, coordLinesGoodInput)
+        geo.build_RIC(dims, dim_indices59, coordLinesGoodInput)
     assert str(
         e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndices59[1:], coordLinesGoodInput)
+        geo.build_RIC(dims, dim_indices59[1:], coordLinesGoodInput)
     assert str(
         e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
 
@@ -120,7 +120,7 @@ def test_riciBad():
 def test_riciLetters():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesLetters, coordLinesGoodInput)
+        geo.build_RIC(dims, dim_indicesLetters, coordLinesGoodInput)
     assert str(
         e.value) == "Invalid atom index given as input."
 
@@ -128,38 +128,38 @@ def test_riciLetters():
 def test_riciNumIndices():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesNumI, coordLinesGoodInput)
+        geo.build_RIC(dims, dim_indicesNumI, coordLinesGoodInput)
     assert str(
         e.value) == "Mismatch between given 'RIC dimensions' and given RIC indices."
 
 
 def test_riciInvalid():
-    dimIndicesInvalid = [
-        '           1           7           0           0           1           3']+dimIndicesGoodInput[1:]
+    dim_indicesInvalid = [
+        '           1           7           0           0           1           3']+dim_indicesGoodInput[1:]
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesInvalid, coords)
+        geo.build_RIC(dims, dim_indicesInvalid, coords)
     assert str(e.value) == "Invalid atom index given as input."
 
 
-def test_buildRICIBad():
+def test_build_RICIBad():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC(dims, dimIndicesGoodInput[2:], coordLinesGoodInput)
+        geo.build_RIC(dims, dim_indicesGoodInput[2:], coordLinesGoodInput)
     assert str(
         e.value) == "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
 
 # endregion
 
 
-def test_buildRIC_badDims():
+def test_build_RIC_badDims():
     geo = Geometry('methanol-test', 'blah', 6)
     with pytest.raises(Exception) as e:
-        geo.buildRIC([16, 5, 7, 3], dimIndicesGoodInput, coordLinesGoodInput)
+        geo.build_RIC([16, 5, 7, 3], dim_indicesGoodInput, coordLinesGoodInput)
     assert str(
         e.value) == "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
     with pytest.raises(Exception) as e:
-        geo.buildRIC([16, 'h', 7, 3], dimIndicesGoodInput, coordLinesGoodInput)
+        geo.build_RIC([16, 'h', 7, 3], dim_indicesGoodInput, coordLinesGoodInput)
     assert str(
         e.value) == "Invalid input given for Redundant internal dimensions."
 
@@ -167,13 +167,13 @@ def test_buildRIC_badDims():
 
 def test_build_atoms():
     geo = Geometry('methanol-test', 'blah', 6)
-    geo.buildAtoms(cartesianCoords, atomicList)
-    assert geo.nAtoms == 6 == len(geo.atoms)
+    geo.build_atoms(cartesianCoords, atomicList)
+    assert geo.n_atoms == 6 == len(geo.atoms)
     assert all(geo.atoms[i] == refAtoms[i] for i in range(6))
 
 
 def test_build_atoms_integrated():
-    assert refGeo.nAtoms == 6 == len(refGeo.atoms)
+    assert refGeo.n_atoms == 6 == len(refGeo.atoms)
     assert all(refGeo.atoms[i] == refAtoms[i] for i in range(6))
 
 
@@ -184,18 +184,18 @@ def test_killDOF():
     sith = SITH(x0string, deformedString)
     sith.extract_data()
     assert compare_arrays(sith.reference.hessian, eHessFull)
-    sith._reference._killDOFs([0])
-    assert all(sith._reference.dimIndices == dimIndices[1:])
+    sith._reference._kill_DOFs([0])
+    assert all(sith._reference.dim_indices == dim_indices[1:])
     assert sith._reference.dims == array('i', [14, 4, 7, 3])
     assert compare_arrays(sith.reference.hessian, eHessKill0)
 
 
-def test_killDOFs():
+def test_kill_DOFs():
     sith = SITH(x0string, deformedString)
     sith.extract_data()
     assert compare_arrays(sith._reference.hessian, eHessFull)
-    sith._reference._killDOFs([0, 14])
-    assert all(sith._reference.dimIndices == dimIndices[1:14])
+    sith._reference._kill_DOFs([0, 14])
+    assert all(sith._reference.dim_indices == dim_indices[1:14])
     assert sith._reference.dims == array('i', [13, 4, 7, 2])
     assert compare_arrays(sith.reference.hessian, eHessKill0_14)
 
@@ -214,27 +214,27 @@ def test_creationEmptyList():
 def test_extract():
     extractor = Extractor(testPath, frankenNoLines)
     extractor._extract()
-    assert compare_arrays(np.array(extractor.hRaw), ehRaw)
+    assert compare_arrays(np.array(extractor.h_raw), ehRaw)
 
 
 def test_extractedGeometry():
     extractor = Extractor(Path(
         '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
     extractor._extract()
-    geo = extractor.getGeometry()
+    geo = extractor.get_geometry()
     egeo = Geometry('frankenTest-methanol', 'blah', 6)
     egeo.energy = energy
     egeo.atoms = geo.atoms
-    egeo.buildRIC(dims, dimIndicesGoodInput, coordLinesGoodInput)
-    egeo.buildAtoms(cartesianCoords, atomicList)
+    egeo.build_RIC(dims, dim_indicesGoodInput, coordLinesGoodInput)
+    egeo.build_atoms(cartesianCoords, atomicList)
     egeo.hessian = eHessFull
     assert geo == egeo
 
-def test_buildAtoms():
+def test_build_atoms():
     extractor = Extractor(Path(
         '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
     extractor._extract()
-    geo = extractor.getGeometry()
+    geo = extractor.get_geometry()
     assert geo.atoms.get_chemical_formula() == refAtoms.get_chemical_formula()
     assert geo.atoms.positions.flatten() == approx(refAtoms.positions.flatten(), abs=1E-5)
 
@@ -250,19 +250,19 @@ def test_getGeometry():
     extractor = Extractor(testPath, frankenNoLines)
     egeo = Geometry('testName', 'blah', 3)
     with pytest.raises(Exception) as e:
-        geo = extractor.getGeometry()
+        geo = extractor.get_geometry()
     assert str(e.value) == "There is no geometry."
     extractor.geometry = Geometry('testName', 'blah', 3)
-    geo = extractor.getGeometry()
+    geo = extractor.get_geometry()
     assert geo == egeo
 
 
 # endregion
 
 def test_units():
-    assert UnitConverter.angstromToBohr(1.3) == approx(2.456644)
-    assert UnitConverter.bohrToAngstrom(1.3) == approx(0.68793035)
-    assert UnitConverter.radianToDegree(1.3) == approx(74.48451)
+    assert UnitConverter.angstrom_to_bohr(1.3) == approx(2.456644)
+    assert UnitConverter.bohr_to_angstrom(1.3) == approx(0.68793035)
+    assert UnitConverter.radian_to_degree(1.3) == approx(74.48451)
 
 def test_compares():
     foo = np.full((3,3), 4.678)
@@ -286,8 +286,8 @@ def test_summary_reader():
     sith_result = SummaryReader(path + 'summary.txt')
 
 
-    assert sith_result._reference.dimIndices == \
-           sith._reference.dimIndices, \
+    assert sith_result._reference.dim_indices == \
+           sith._reference.dim_indices, \
            "Error reading degrees of freedom from summary.txt"
     assert (sith_result._reference.dims == sith._reference.dims).all(), \
            "Error reading dimensions from summary.txt"
