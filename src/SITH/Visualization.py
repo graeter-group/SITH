@@ -463,8 +463,8 @@ class MoleculeViewer:
             self.viewer.view.remove_component(self.axis[name])
         self.axis.clear()
 
-    def download_image(self):
-        self.viewer.view.download_image()
+    def download_image(self, *args, **kwargs):
+        self.viewer.view.download_image(*args, **kwargs)
 
     def picked(self):
         return self.viewer.view.picked
@@ -563,7 +563,7 @@ class VisualizeEnergies(MoleculeViewer):
         optional kwargs for energies_some_dof
         """
         dofs = self.sith._reference.dimIndices[:self.nbonds]
-        self.energies_some_dof(dofs, **kwargs)
+        return self.energies_some_dof(dofs, **kwargs)
 
     def energies_angles(self, **kwargs):
         """
@@ -577,7 +577,7 @@ class VisualizeEnergies(MoleculeViewer):
         """
         dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
                                                self.nangles]
-        self.energies_some_dof(dofs, **kwargs)
+        return self.energies_some_dof(dofs, **kwargs)
 
     def energies_dihedrals(self, **kwargs):
         """
@@ -590,7 +590,7 @@ class VisualizeEnergies(MoleculeViewer):
         optional kwargs for energies_some_dof
         """
         dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
-        self.energies_some_dof(dofs, **kwargs)
+        return self.energies_some_dof(dofs, **kwargs)
 
     def energies_all_dof(self, **kwargs):
         """
@@ -603,7 +603,7 @@ class VisualizeEnergies(MoleculeViewer):
         optional kwargs for energies_some_dof
         """
         dofs = self.sith._reference.dimIndices
-        self.energies_some_dof(dofs, **kwargs)
+        return self.energies_some_dof(dofs, **kwargs)
 
     def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap("Blues"),
                           label="Energy [a.u]", labelsize=20,
@@ -679,6 +679,8 @@ class VisualizeEnergies(MoleculeViewer):
         with out:
             plt.show()
         self.box = HBox(children=[self.viewer.view, out])
+
+        return self.fig, self.ax
 
     def show_dof(self, dofs, **kwargs):
         """
