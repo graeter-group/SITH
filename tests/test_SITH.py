@@ -95,17 +95,17 @@ def test_emptyInput():
     with pytest.raises(Exception) as e:
         sith = SITH(emptyPath, xFstring)
         sith.extractData()
-    assert str(e.value) == "Reference data file is empty."
+        assert str(e.value) == "Reference data file is empty."
 
     with pytest.raises(Exception) as e:
         sith = SITH(x0string, dePath=emptyPath)
         sith.extractData()
-    assert str(e.value) == "One or more deformed files are empty."
+        assert str(e.value) == "One or more deformed files are empty."
 
     with pytest.raises(Exception) as e:
         sith = SITH(x0string, dePath=emptyDir)
         sith.extractData()
-    assert str(e.value) == "Deformed directory is empty."
+        assert str(e.value) == "Deformed directory is empty."
 
 
 def test_getContents():

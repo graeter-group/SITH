@@ -1,14 +1,17 @@
 from array import array
 from pathlib import Path
 import pathlib
-from ase import Atoms, Atom
+from ase import Atoms
 from ase.data import chemical_symbols
 from ase.units import Bohr
 import numpy as np
 
 
 class LTMatrix(list):
-    """LTMatrix class and code comes from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py"""
+    """
+    LTMatrix class and code comes from
+    https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
+    """
 
     def __init__(self, L):
         """
@@ -34,8 +37,8 @@ class LTMatrix(list):
     @staticmethod
     def getRowColumn(N):
         """
-        Return the row and column number of the Nth entry  of a lower triangular matrix.
-        N, ROW, COLUMN are counted from ZERO!
+        Return the row and column number of the Nth entry  of a lower
+        triangular matrix. N, ROW, COLUMN are counted from ZERO!
         Example:
            C0 C1 C2 C3 C4 C5
         R0 0
@@ -59,7 +62,8 @@ class LTMatrix(list):
     @staticmethod
     def getPosition(i, j):
         """
-        Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+        Return the number of entry in the i-th row and j-th column of a
+        symmetric matrix.
         All numbers are counted from ZERO.
         >>> LTMatrix.getPosition(3, 4)
         13
@@ -131,17 +135,23 @@ class LTMatrix(list):
 
 
 class Geometry:
-    """Houses data associated with a molecular structure, all public variables are intended for access not modification."""
+    """
+    Houses data associated with a molecular structure, all public variables
+    are intended for access not modification.
+    """
 
     def __init__(self, name: str, path: pathlib.Path, nAtoms: int) -> None:
         self.name = name
-        """Name of geometry, based off of stem of .fchk file path unless otherwise modified."""
+        """Name of geometry, based off of stem of .fchk file path unless
+           otherwise modified."""
         self._path = path
         """Path of geometry .fchk file."""
         self.ric = array('f')
-        """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
+        """Redundant Internal Coordinates of geometry in atomic units (Bohr
+        radius)"""
         self.energy = None
-        """Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input"""
+        """Energy associated with geometry based on the DFT or higher level
+        calculations used to generate the .fchk file input"""
         self.atoms = list()
         """<ase.Atoms> object associated with geometry."""
         self.nAtoms = nAtoms
@@ -154,14 +164,20 @@ class Geometry:
         [3]: dihedral angles
         """
         self.dimIndices = list()
-        """List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric"""
+        """List of Tuples referring to the indices of the atoms involved in
+        each dimension/DOF in order of DOF index in ric"""
 
         self.hessian = None
-        """Hessian matrix associated with the geometry. If 'None', then the associated fchk file did not contain any Hessian,
-        in the case of Gaussian the Hessian is generated when a freq analysis is performed."""
+        """
+        Hessian matrix associated with the geometry. If 'None', then the
+        associated fchk file did not contain any Hessian, in the case of
+        Gaussian the Hessian is generated when a freq analysis is performed.
+        """
 
-    def buildAtoms(self, raw_coords:list, atomic_num:list):
-        assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+" cartesian coordinates given, incorrect for "+str(len(atomic_num))+" atoms."
+    def buildAtoms(self, raw_coords: list, atomic_num: list):
+        assert len(raw_coords) == len(atomic_num) * 3, \
+               f"{len(raw_coords)} cartesian coordinates given, incorrect " +\
+               f"for {len(atomic_num)} atoms."
         atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
         atomic_coord = np.reshape(atomic_coord, (self.nAtoms, 3))
         molecule = ''.join([chemical_symbols[int(i)] for i in atomic_num])
@@ -169,10 +185,10 @@ class Geometry:
 
     def buildRIC(self, dims: list, dimILines: list, coordLines: list):
         """
-        Takes in lists of RIC-related data, Populates 
+        Takes in lists of RIC-related data, Populates
 
             dims: quantities of each RIC dimension type
-            dimILines: list of strings of each line of RIC Indices 
+            dimILines: list of strings of each line of RIC Indices
             coordLines: list of strings of each line of RICs
         """
         try:
@@ -180,12 +196,14 @@ class Geometry:
         except ValueError:
             raise Exception(
                 "Invalid input given for Redundant internal dimensions.")
-        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
-            dims) == 4, "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
+        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and \
+               len(dims) == 4, \
+               "Invalid quantities of dimension types (bond lengths, " +\
+               "angles, dihedrals) given in .fchk."
 
         # region Indices
-        # Parses through the 'dimILines' input which indicates which atoms (by index)
-        # are involved in each RIC degree of freedom
+        # Parses through the 'dimILines' input which indicates which
+        # atoms (by index) are involved in each RIC degree of freedom
 
         rawIndices = list()
         for iLine in dimILines:
@@ -197,10 +215,14 @@ class Geometry:
                 raise Exception("Invalid atom index given as input.")
 
         # Check that # indices is divisible by 4
-        assert len(rawIndices) % 4 == 0 and len(
-            rawIndices) == self.dims[0] * 4, "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
+        assert len(rawIndices) % 4 == 0 and \
+               len(rawIndices) == self.dims[0] * 4, \
+               "One or more redundant internal coordinate indices are " +\
+               "missing or do not have the expected format. Please refer " +\
+               "to documentation"
 
-        # Parse into sets of 4, then into tuples of the relevant number of values
+        # Parse into sets of 4, then into tuples of the relevant number of
+        # values
         lengthsCount = 0
         anglesCount = 0
         dihedsCount = 0
@@ -209,31 +231,51 @@ class Geometry:
             a2 = rawIndices[i+1]
             a3 = rawIndices[i+2]
             a4 = rawIndices[i+3]
-            # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+            # Check that the number of values in each tuple matches the
+            # dimension type (length, angle, dihedral) for that dim index.
             # These should line up with self.dims correctly
             assert all([(x <= self.nAtoms and x >= 0)
-                       for x in rawIndices[i:i+4]]), "Invalid atom index given as input."
-            assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
-                a3 != a4 or a3 == 0), "Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom."
-            assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                        for x in rawIndices[i:i+4]]), \
+                   "Invalid atom index given as input."
+            assert a1 != a2 and a1 != a3 and \
+                   a1 != a4 and a2 != a3 and \
+                   a2 != a4 and (a3 != a4 or a3 == 0), \
+                   "Invalid RIC dimension given, atomic indices cannot " +\
+                   "repeat within a degree of freedom."
+            assert a1 != 0 and \
+                   a2 != 0, \
+                   "Mismatch between given 'RIC dimensions' and given " +\
+                   "RIC indices."
             # bond lengths check
             if i < self.dims[1]*4:
-                assert a3 == 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 == 0 and \
+                       a4 == 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dimIndices.append((a1, a2))
                 lengthsCount += 1
             # bond angles check
             elif i < (self.dims[1] + self.dims[2])*4:
-                assert a3 != 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 != 0 and \
+                       a4 == 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dimIndices.append((a1, a2, a3))
                 anglesCount += 1
             # dihedral angles check
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
-                assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 != 0 and \
+                       a4 != 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dimIndices.append((a1, a2, a3, a4))
                 dihedsCount += 1
 
-        assert lengthsCount == self.dims[1] and anglesCount == self.dims[2] and dihedsCount == self.dims[
-            3], "Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given."
+        assert lengthsCount == self.dims[1] and \
+               anglesCount == self.dims[2] and \
+               dihedsCount == self.dims[3], \
+               "Redundant internal coordinate indices given inconsistent " +\
+               "with Redundant internal dimensions given."
 
         # endregion
 
@@ -241,26 +283,31 @@ class Geometry:
             for line in coordLines:
                 self.ric.extend([float(ric) for ric in line.split()])
         except ValueError:
-            raise(Exception(
-                "Redundant internal coordinates contains invalid values, such as strings."))
+            raise(Exception("Redundant internal coordinates contains " +
+                            "invalid values, such as strings."))
 
         self.ric = np.asarray(self.ric, dtype=np.float32)
-        assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
-            dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
+        assert len(self.ric) == self.dims[0], \
+               "Mismatch between the number of degrees of freedom expected " +\
+               f"({self.dims[0]}) and number of coordinates given " +\
+               f"({len(self.ric)})."
 
         # Angles are moved (-pi, pi)
         for i in range(self.dims[1], self.dims[0]):
             self.ric[i] = self.ric[i]
 
     def _killDOFs(self, dofis: list[int]):
-        """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dimIndices, and hessian, updates dims"""
+        """
+        Takes in list of indices of degrees of freedom to remove, Removes DOFs
+        from ric, dimIndices, and hessian, updates dims
+        """
         self.ric = np.delete(self.ric, dofis)
         self.dimIndices = np.delete(self.dimIndices, dofis)
         lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
-        anglesDeleted = sum(
-            x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dofis)
-        dihedralsDeleted = sum(
-            x < self.dims[0] and x >= self.dims[2] + self.dims[1] for x in dofis)
+        anglesDeleted = sum(x < self.dims[2] + self.dims[1] and
+                            x >= self.dims[1] for x in dofis)
+        dihedralsDeleted = sum(x < self.dims[0] and x >= self.dims[2] +
+                               self.dims[1] for x in dofis)
         self.dims[0] -= len(dofis)
         self.dims[1] -= lengthsDeleted
         self.dims[2] -= anglesDeleted
@@ -285,11 +332,12 @@ class Geometry:
 
 class UnitConverter:
     """
-    Class to convert units utilizing Atomic Simulation Environment (ase) constants
-    xyz standard input is in Angstrom
-    RIC are in atomic units
-    internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
-    Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units
+    Class to convert units utilizing Atomic Simulation Environment (ASE)
+    constants xyz standard input is in Angstrom RIC are in atomic units
+    internal Hessian is in atomic units of length: Ha/Bohr^2 angle:
+    Hartree/radian^2
+    Note: values in all Gaussian version 3 formatted checkpoint files are in
+    atomic units
     """
 
     def __init__(self) -> None:
@@ -309,11 +357,15 @@ class UnitConverter:
 
 
 class Extractor:
-    """Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
+    """
+    Used on a per .fchk file basis to organize lines from the fchk file into a
+    Geometry
 
     -----
-    The user really shouldn't be using this class 0.0 unless they perhaps want a custom one for
-    non-fchk files, in which case they should make a new class inheriting from this one."""
+    The user really shouldn't be using this class 0.0 unless they perhaps want
+    a custom one for non-fchk files, in which case they should make a new class
+    inheriting from this one.
+    """
 
     def __init__(self, path: Path, linesList: list) -> None:
         self.__energyHeader = "Total Energy"
@@ -336,7 +388,10 @@ class Extractor:
         self.__lines = linesList
 
     def _extract(self) -> bool:
-        """Extracts and populates Geometry information from self.__lines, Returns false is unsuccessful"""
+        """
+        Extracts and populates Geometry information from self.__lines.
+        Returns false is unsuccessful
+        """
 
         try:
             i = 0
@@ -344,8 +399,10 @@ class Extractor:
             while i < len(self.__lines):
                 line = self.__lines[i]
 
-                # This all must be in order because of the way things show up in the fchk file, it makes no sense to build
-                # these out separately to reduce dependencies because it will just increase the number of times to traverse the data.
+                # This all must be in order because of the way things show up
+                # in the fchk file, it makes no sense to build these out
+                # separately to reduce dependencies because it will just
+                # increase the number of times to traverse the data.
                 if self.__numAtomsHeader in line:
                     splitLine = line.split()
                     numAtoms = int(splitLine[len(splitLine)-1])
@@ -377,8 +434,8 @@ class Extractor:
                         count += len(self.__lines[i].split())
                         i += 1
                     xrDims = self.__lines[rdiStart:i+1]
-                    assert len(
-                        xrDims) > 0, "Missing Redundant internal coordinate indices."
+                    assert len(xrDims) > 0, \
+                           "Missing Redundant internal coordinate indices."
 
                 if self.__ricHeader in line:
                     i = i+1
@@ -393,7 +450,6 @@ class Extractor:
 
                 if self.__cartesianCoordsHeader in line:
                     i = i+1
-                    cStart = i
                     stop = int(line.split()[-1])
                     count = 0
                     cRaw = list()
@@ -401,7 +457,9 @@ class Extractor:
                         cRaw.extend(self.__lines[i].split())
                         count += len(self.__lines[i].split())
                         i += 1
-                    assert len(atomicNums) == numAtoms, "Mismatch between length of atomic numbers and number of atoms specified."
+                    assert len(atomicNums) == numAtoms, \
+                           "Mismatch between length of atomic numbers and " +\
+                           "number of atoms specified."
                     self.geometry.buildAtoms(cRaw, atomicNums)
 
                 elif self.__hessianHeader in line:
@@ -413,13 +471,9 @@ class Extractor:
                         rowsplit = row.split()
                         self.hRaw.extend([float(i) for i in rowsplit])
                         i = i+1
-
-                
-                    
                 i = i + 1
             print("Building full Hessian matrix.")
             self.buildHessian()
-
 
             print("Cartesian data extracted successfully.")
             return True
@@ -429,13 +483,19 @@ class Extractor:
             return False
 
     def buildHessian(self):
-        """Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data"""
+        """
+        Properly formats the Hessian matrix from the lower triangular
+        matrix given by the .fchk data
+        """
         ltMat = LTMatrix(self.hRaw)
         self.hessian = ltMat.fullmat
         self.geometry.hessian = self.hessian
 
     def getGeometry(self) -> Geometry:
-        """Returns the geometry populated by the Extractor based on the input lines from a .fchk file"""
+        """
+        Returns the geometry populated by the Extractor based on the input
+        lines from a .fchk file
+        """
         if self.geometry is not None:
             return self.geometry
         else:
