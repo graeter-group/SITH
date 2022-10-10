@@ -550,5 +550,5 @@ class SITH:
         """
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
             for dq in dqit:
-                dq[...] = 2*np.pi - dq if dq > np.pi \
-                    else (-(dq + 2*np.pi) if dq < -np.pi else dq)
+                dq[...] = dq - 2*np.pi if dq > np.pi \
+                    else (dq + 2*np.pi if dq < -np.pi else dq)

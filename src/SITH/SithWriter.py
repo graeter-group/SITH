@@ -26,7 +26,7 @@ def writeSummary(sith: SITH, filePrefix='', includeXYZ=False) -> bool:
     dq = buildDeltaQString(sith)
     ric = buildInternalCoordsString(sith)
     error = buildErrorStrings(sith)
-    expectedDE, errorDE, pErrorDE = compareEnergies(sith)
+    compareEnergies(sith)
     energies = buildEnergyMatrix(sith)
     try:
         with open(sith._referencePath.parent.as_posix() +
