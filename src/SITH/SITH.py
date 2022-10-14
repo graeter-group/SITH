@@ -236,6 +236,7 @@ class SITH:
         for dof in dofs:
             rIndices.extend([i for i in range(self._reference.dims[0])
                             if self._reference.dimIndices[i] == dof])
+        rIndices = list(set(rIndices))
         self._reference._killDOFs(rIndices)
 
 # endregion
@@ -325,6 +326,7 @@ class SITH:
                            "missing reference DOF " +\
                            f"{self._reference.dimIndices[j]}."
 
+            dofsToRemove = list(set(dofsToRemove))
             deformation._killDOFs(dofsToRemove)
 
     def extractData(self):
