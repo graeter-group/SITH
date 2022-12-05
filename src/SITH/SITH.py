@@ -329,10 +329,15 @@ class SITH:
             dofsToRemove = list(set(dofsToRemove))
             deformation._killDOFs(dofsToRemove)
 
-    def extractData(self):
+    def extractData(self, ignore_last=None):
         """
         Extracts, validates, curates data from input files, removes any
         specified atoms and DOFs.
+
+        Parameters
+        ----------
+        ignore_last: int
+            ignore the last n stretched configs.
 
         -----
         Input files specified in SITH constructor, atoms and DOFs to remove
@@ -349,6 +354,10 @@ class SITH:
         # Create Geometry objects from reference and deformed data
         self._reference = rExtractor.getGeometry()
         self._deformed = list()
+
+        if ignore_last is not None:
+            self._dData = self._dData[:-ignore_last]
+
         for dd in self._dData:
             dExtractor = Extractor(dd[0], dd[1])
             dExtractor._extract()
