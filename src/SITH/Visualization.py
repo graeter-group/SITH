@@ -531,7 +531,7 @@ class VisualizeEnergies(MoleculeViewer):
         =======
             i=(1, 2) means a bond between atoms 1 and 2
             i=(1, 2, 3) means an angle between atoms 1, 2 and 3
-            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2 and 3
+            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2, 3 and 4
         """
 
         types = ["bond", "angle", "dihedral"]
@@ -661,7 +661,7 @@ class VisualizeEnergies(MoleculeViewer):
         cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
                                                        cmap=cmap),
                                  cax=self.ax, orientation='vertical',
-                                 format='%1.{}f'.format(deci), )
+                                 format='%1.{}f'.format(deci) )
         cbar.set_label(label=label, fontsize=labelsize)
         cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
 
