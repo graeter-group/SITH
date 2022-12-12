@@ -94,7 +94,7 @@ class MoleculeViewer:
         atom1index (and atom2index): int
             Indexes of the atoms to be connected according with g09
             convention.
-        color: list of color lists. Default all gray([0.5, 0.5, 0.5])
+        colors: list of color lists. Default all gray([0.5, 0.5, 0.5])
             RGB triplets for each of the bonds. It can be one a triplet
             in case of just one color in all bonds.
         radii: float or list of floats. Default 0.1
@@ -775,7 +775,7 @@ class VisualizeEnergies(MoleculeViewer):
         cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
                                                        cmap=cmap),
                                  cax=self.ax, orientation='vertical',
-                                 format='%1.{}f'.format(deci) )
+                                 format='%1.{}f'.format(deci))
         cbar.set_label(label=label, fontsize=labelsize)
         cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
 
@@ -795,6 +795,36 @@ class VisualizeEnergies(MoleculeViewer):
         self.box = HBox(children=[self.viewer.view, out])
 
         return self.fig, self.ax
+
+    def show_bonds_of_DOF(self, dof, unique=False, color=None):
+        """
+        Show an specific dof.
+
+        Params
+        ======
+
+        dof: int.
+            index in sith object that corresponds to the dof you want to show.
+        unique: Bool. default False.
+            True if you want to remove all the other bonds and only keeping
+            these ones.
+        color: list[int]*3. default R G B for bonds, angles, dihedrals
+               respectively.
+            color that you want to use in this dof.
+        """
+        dof_indices = self.sith._reference.dimIndices[dof]
+        if color is None:
+            colors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            color = colors[len(dof_indices) - 2]
+        atoms1 = []
+        atoms2 = []
+        for i in range(len(dof_indices)-1):
+            atoms1.append(dof_indices[i])
+            atoms2.append(dof_indices[i + 1])
+        if unique:
+            self.remove_all_bonds()
+
+        return self.add_bonds(atoms1, atoms2, colors=color)
 
     def show_dof(self, dofs, **kwargs):
         """
@@ -825,8 +855,7 @@ class VisualizeEnergies(MoleculeViewer):
         """
         dofs = self.sith._reference.dimIndices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
-    
+
     def create_trajectory(self, **kwargs):
         self.traj = VisualizeEnergies(self.sith, trajectory=True, **kwargs)
         return self.traj
-
