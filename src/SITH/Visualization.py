@@ -16,11 +16,21 @@ class MoleculeViewer:
             indexes of the atoms in the xy plane. the first
             two atoms are set to the x axis.
         """
-        self.atoms = atoms.copy()
+
+        if type(atoms) is list:
+            self.is_trajectory = True
+            self.atoms = [config.copy() for config in atoms]
+        else:
+            self.is_trajectory = False
+            self.atoms = atoms.copy()
 
         if alignment is not None:
             index1, index2, index3 = alignment
-            self.xy_alignment(index1, index2, index3)
+            if type(atoms) is list:
+                [self.xy_alignment(config, index1, index2, index3)
+                 for config in self.atoms]
+            else:
+                self.xy_alignment(self.atoms, index1, index2, index3)
 
         self.viewer = view(self.atoms, viewer='ngl')
         self.bonds = {}
@@ -54,14 +64,18 @@ class MoleculeViewer:
 
         Return the bonds in the system
         """
+        if self.is_trajectory:
+            atoms = self.atoms[0]
+        else:
+            atoms = self.atoms
 
         indexes = [atom1index, atom2index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
 
         self.remove_bond(atom1index, atom2index)
-        b = self.shape.add_cylinder(self.atoms[atom1index-1].position,
-                                    self.atoms[atom2index-1].position,
+        b = self.shape.add_cylinder(atoms[atom1index-1].position,
+                                    atoms[atom2index-1].position,
                                     color,
                                     radius)
 
@@ -237,15 +251,20 @@ class MoleculeViewer:
         Return the angles in the system
         """
 
+        if self.is_trajectory:
+            atoms = self.atoms[0]
+        else:
+            atoms = self.atoms
+
         indexes = [atom1index, atom2index, atom3index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
         self.remove_angle(atom1index, atom2index, atom3index)
         self.angles[name] = []
 
-        vertex = self.atoms[atom2index-1].position
-        side1 = self.atoms[atom1index-1].position - vertex
-        side2 = self.atoms[atom3index-1].position - vertex
+        vertex = atoms[atom2index-1].position
+        side1 = atoms[atom1index-1].position - vertex
+        side2 = atoms[atom3index-1].position - vertex
         lenside1 = np.linalg.norm(side1)
         lenside2 = np.linalg.norm(side2)
         lensides = min(lenside1, lenside2)
@@ -360,18 +379,24 @@ class MoleculeViewer:
         ======
         Return the dihedral angles
         """
+
+        if self.is_trajectory:
+            atoms = self.atoms[0]
+        else:
+            atoms = self.atoms
+
         indexes = [atom1index, atom2index, atom3index, atom4index]
         indexes.sort()
         name = ''.join(str(i).zfill(3) for i in indexes)
 
-        axis = (self.atoms[atom3index-1].position -
-                self.atoms[atom2index-1].position)
-        vertex = 0.5 * (self.atoms[atom3index-1].position +
-                        self.atoms[atom2index-1].position)
-        axis1 = (self.atoms[atom1index-1].position -
-                 self.atoms[atom2index-1].position)
-        axis2 = (self.atoms[atom4index-1].position -
-                 self.atoms[atom3index-1].position)
+        axis = (atoms[atom3index-1].position -
+                atoms[atom2index-1].position)
+        vertex = 0.5 * (atoms[atom3index-1].position +
+                        atoms[atom2index-1].position)
+        axis1 = (atoms[atom1index-1].position -
+                 atoms[atom2index-1].position)
+        axis2 = (atoms[atom4index-1].position -
+                 atoms[atom3index-1].position)
 
         side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
         side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
@@ -469,10 +494,93 @@ class MoleculeViewer:
     def picked(self):
         return self.viewer.view.picked
 
+    # Alignment
+
+    def rot_x(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[1, 0, 0],
+                      [0, c, -s],
+                      [0, s, c]])
+        return R
+
+    def rot_y(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, 0, s],
+                      [0, 1, 0],
+                      [-s, 0, c]])
+        return R
+
+    def rot_z(self, angle):
+        c = np.cos(angle)
+        s = np.sin(angle)
+        R = np.array([[c, -s, 0],
+                      [s, c, 0],
+                      [0, 0, 1]])
+        return R
+
+    def align_axis(self, vector):
+        """
+        Apply the necessary rotations to set a
+        vector aligned with positive x axis
+        """
+        xyproj = vector.copy()
+        xyproj[2] = 0
+        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
+        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        if vector[1] < 0:
+            theta *= -1
+        trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
+        return trans
+
+    def align_plane(self, vector):
+        """
+        Rotation around x axis to set a vector in the xy plane
+        """
+        reference = vector.copy()
+        reference[0] = 0
+        angle = np.arccos(reference[1]/np.linalg.norm(reference))
+        if reference[2] < 0:
+            angle *= -1
+        return self.rot_x(-angle)
+
+    def apply_trans(self, atoms, trans):
+        """
+        Apply a transformation to all vector positions of the
+        atoms object
+        """
+        new_positions = [np.dot(trans, atom.position) for atom in atoms]
+        atoms.set_positions(new_positions)
+        return new_positions
+
+    def xy_alignment(self, atoms, index1, index2, index3):
+        """
+        transforme the positions of the atoms such that
+        the atoms of indexes 1 and 2 are aligned in the
+        x axis
+
+        the atom 3 is in the xy plane"""
+        # center
+        center = (atoms[index1].position+atoms[index2].position)/2
+        atoms.set_positions(atoms.positions - center)
+        axis = atoms[index2].position
+        self.apply_trans(atoms, self.align_axis(axis))
+        third = atoms[index3].position
+        self.apply_trans(atoms, self.align_plane(third))
+
+        return atoms.positions
+
+    def show(self):
+        """
+        Show the molecule.
+        """
+        return self.box
+
 
 class VisualizeEnergies(MoleculeViewer):
     def __init__(self, sith_info, idef=0, alignment=None, axis=False,
-                 background='#ffc', **kwargs):
+                 background='#ffc', trajectory=False, **kwargs):
         """
         Set of tools to show a molecule and the
         distribution of energies in the different DOF.
@@ -486,6 +594,9 @@ class VisualizeEnergies(MoleculeViewer):
             number of the deformation to be analized. Default=0
         alignment: list
             3 indexes to fix the correspondig atoms in the xy plane.
+            The first atom is placed in the negative side of the x axis,
+            the second atom is placed in the positive side of the x axis,
+            and the third atom is placed in the positive side of the y axis.
         axis: bool
             add xyz axis
         background: color
@@ -496,7 +607,10 @@ class VisualizeEnergies(MoleculeViewer):
         if self.sith.energies is None:
             self._analize_energies(**kwargs)
 
-        atoms = self.sith._deformed[self.idef].atoms
+        if trajectory:
+            atoms = [config.atoms for config in self.sith._deformed]
+        else:
+            atoms = self.sith._deformed[self.idef].atoms
 
         MoleculeViewer.__init__(self, atoms, alignment, axis)
 
@@ -702,7 +816,7 @@ class VisualizeEnergies(MoleculeViewer):
 
     def show_bonds(self, **kwargs):
         """
-        Show the bonds in the molecule of freedom.
+        Show the bonds in the molecule.
 
         Notes
         -----
@@ -711,85 +825,8 @@ class VisualizeEnergies(MoleculeViewer):
         """
         dofs = self.sith._reference.dimIndices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
+    
+    def create_trajectory(self, **kwargs):
+        self.traj = VisualizeEnergies(self.sith, trajectory=True, **kwargs)
+        return self.traj
 
-    def show(self):
-        """
-        Show the molecule.
-        """
-        return self.box
-
-    # Alignment
-
-    def rot_x(self, angle):
-        c = np.cos(angle)
-        s = np.sin(angle)
-        R = np.array([[1, 0, 0],
-                      [0, c, -s],
-                      [0, s, c]])
-        return R
-
-    def rot_y(self, angle):
-        c = np.cos(angle)
-        s = np.sin(angle)
-        R = np.array([[c, 0, s],
-                      [0, 1, 0],
-                      [-s, 0, c]])
-        return R
-
-    def rot_z(self, angle):
-        c = np.cos(angle)
-        s = np.sin(angle)
-        R = np.array([[c, -s, 0],
-                      [s, c, 0],
-                      [0, 0, 1]])
-        return R
-
-    def align_axis(self, vector):
-        """
-        Apply the necessary rotations to set a
-        vector aligned with positive x axis
-        """
-        xyproj = vector.copy()
-        xyproj[2] = 0
-        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
-        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
-        if vector[1] < 0:
-            theta *= -1
-        trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
-        return trans
-
-    def align_plane(self, vector):
-        """
-        Rotation around x axis to set a vector in the xy plane
-        """
-        reference = vector.copy()
-        reference[0] = 0
-        angle = np.arccos(reference[1]/np.linalg.norm(reference))
-        if reference[2] < 0:
-            angle *= -1
-        return self.rot_x(-angle)
-
-    def apply_trans(self, trans):
-        """
-        Apply a transformation to all vector positions of the
-        atoms object
-        """
-        new_positions = [np.dot(trans, atom.position) for atom in self.atoms]
-        self.atoms.set_positions(new_positions)
-        return new_positions
-
-    def xy_alignment(self, index1, index2, index3):
-        """
-        transforme the positions of the atoms such that
-        the atoms of indexes 1 and 2 are aligned in the
-        x axis
-
-        the atom 3 is in the xy plane"""
-        # center
-        center = (self.atoms[index1].position+self.atoms[index2].position)/2
-        self.atoms.set_positions(self.atoms.positions - center)
-        axis = self.atoms[index2].position
-        self.apply_trans(self.align_axis(axis))
-        third = self.atoms[index3].position
-        self.apply_trans(self.align_plane(third))
-        return self.atoms.positions
