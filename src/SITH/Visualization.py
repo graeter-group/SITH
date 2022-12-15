@@ -31,7 +31,6 @@ class MoleculeViewer:
                  for config in self.atoms]
             else:
                 self.xy_alignment(self.atoms, index1, index2, index3)
-
         self.viewer = view(self.atoms, viewer='ngl')
         self.bonds = {}
         self.angles = {}
@@ -858,4 +857,33 @@ class VisualizeEnergies(MoleculeViewer):
 
     def create_trajectory(self, **kwargs):
         self.traj = VisualizeEnergies(self.sith, trajectory=True, **kwargs)
+        self.traj.viewer.view.clear_representations()
+        self.traj.viewer.view.add_ball_and_stick()
+
         return self.traj
+
+    def aminoacids(self, pdb_file):
+        residues = np.loadtxt(pdb_file, comments='END', usecols=5, dtype=int)
+        index_aminos = {}
+
+        for l in residues:
+            index_aminos[int(l)] = []
+        for i,l in enumerate(residues):
+            index_aminos[int(l)].append(i)
+
+        return index_aminos
+
+    def show_aminos(self, pdb_file, colors=[[1, 0, 0], [0, 1, 0], [0, 0,1]]):
+        aminos = self.aminoacids(pdb_file)
+        labels_aminos = []
+        for indexes in aminos.values():
+            numbers = [str(i) for i in indexes]
+            labels_aminos.append('@'+','.join(numbers))
+        self.viewer.view.clear_representations()
+        for i, label in enumerate(labels_aminos):
+            self.viewer.view.add_surface(label, probeRadius=0.001,
+                                         color=colors[i%len(colors)], opacity=0.2)
+        self.viewer.view.add_ball_and_stick()
+
+        return aminos, label
+        
