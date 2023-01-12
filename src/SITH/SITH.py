@@ -481,8 +481,7 @@ class SITH:
         print("Validating geometries...")
         assert all([deformn.nAtoms == self._reference.nAtoms and
                    np.array_equal(deformn.dims, self._reference.dims) and
-                   np.array_equal(deformn.dimIndices,
-                                  self._reference.dimIndices)
+                   deformn.dimIndices == self._reference.dimIndices
                    for deformn in self._deformed]), \
                "Incompatible number of atoms or dimensions amongst input " +\
                "files."

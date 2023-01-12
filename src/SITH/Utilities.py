@@ -302,16 +302,17 @@ class Geometry:
         from ric, dimIndices, and hessian, updates dims
         """
         self.ric = np.delete(self.ric, dofis)
-        self.dimIndices = np.delete(self.dimIndices, dofis)
-        lengthsDeleted = sum(x < self.dims[1] and x >= 0 for x in dofis)
-        anglesDeleted = sum(x < self.dims[2] + self.dims[1] and
-                            x >= self.dims[1] for x in dofis)
-        dihedralsDeleted = sum(x < self.dims[0] and x >= self.dims[2] +
-                               self.dims[1] for x in dofis)
+        tdofremoved = [0, 0, 0]  # counter of the number of DOF removed 
+                                 # arranged in types (lenght, angle, dihedral)
+        for index in sorted(dofis, reverse=True):
+            tdofremoved[len(self.dimIndices[index]) - 2] += 1
+            del self.dimIndices[index]
+
         self.dims[0] -= len(dofis)
-        self.dims[1] -= lengthsDeleted
-        self.dims[2] -= anglesDeleted
-        self.dims[3] -= dihedralsDeleted
+        self.dims[1] -= tdofremoved[0]
+        self.dims[2] -= tdofremoved[1]
+        self.dims[3] -= tdofremoved[2]
+
         if(self.hessian is not None):
             self.hessian = np.delete(self.hessian, dofis, axis=0)
             self.hessian = np.delete(self.hessian, dofis, axis=1)
