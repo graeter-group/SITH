@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SithWriter &mdash; SITH 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="Utilities.html" />
+    <link rel="prev" title="SITH" href="SITH.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> SITH
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#abbreviation-glossary">Abbreviation Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow/workflow.html">Workflow</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="SITH.html">SITH</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SithWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Visualization.html">Visualization</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SITH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>SithWriter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/SithWriter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-SITH.SithWriter">
+<span id="sithwriter"></span><h1>SithWriter<a class="headerlink" href="#module-SITH.SithWriter" title="Permalink to this headline"></a></h1>
+<p>Contains methods which format, organize, and output data from SITH objects</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.build_delta_q">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">build_delta_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SITH.SithWriter.build_delta_q" title="Permalink to this definition"></a></dt>
+<dd><p>Gathers and formats the change in RICs (Δq) per deformed geometry</p>
+<p>Units are Angstroms and degrees. Format is (row:DOF, column: deformation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – extracted SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>strings containing the change in each degree of freedom (RIC) per deformed geometry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.build_dof_energies">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">build_dof_energies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SITH.SithWriter.build_dof_energies" title="Permalink to this definition"></a></dt>
+<dd><p>Gathers and formats the energy in each DOF per deformed geometry.</p>
+<p>Units are Hartrees. Format is (row:DOF, column:deformation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>strings containing the energy in each DOF (degree of freedom) per deformed geometry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.build_dof_indices">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">build_dof_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SITH.SithWriter.build_dof_indices" title="Permalink to this definition"></a></dt>
+<dd><p>Gathers and formats the DOF atom indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – extracted SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>strings containing the atom indices involved in each degree of freedom.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.build_error">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">build_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SITH.SithWriter.build_error" title="Permalink to this definition"></a></dt>
+<dd><p>Gathers and formats error data per deformed geometry.</p>
+<p>Units are Hartrees and percentages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>strings containing error information per deformed geometry.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.build_tot_energies">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">build_tot_energies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SITH.SithWriter.build_tot_energies" title="Permalink to this definition"></a></dt>
+<dd><p>Gathers and formats total stress energy of deformed geometries</p>
+<p>Units are Hartrees and percentages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>strings containing stress energy of each deformed geometry.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.calculate_error">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">calculate_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span></span></span><a class="headerlink" href="#SITH.SithWriter.calculate_error" title="Permalink to this definition"></a></dt>
+<dd><p>Performs error calculation</p>
+<p>Error calculation is based off of the discrepancy between the energy given by the input geometry optimization
+calculations and the total stress energy calculated by SITH analysis using the Hessian and Δq.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>(expected stress energy, stress energy error, %Error)</p>
+<p>Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk</p>
+<p>Stress Energy Error: calculated stress energy - Expected Stress Energy</p>
+<p>%Error: Stress Energy Error / Expected Stress Energy</p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_all">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_all" title="Permalink to this definition"></a></dt>
+<dd><p>Write all SITH output files: summary, energies, error, and Δq in the parent directory of the reference structure.</p>
+<p>This function simply calls all SithWriter.write methods which take a SITH object as input.
+Units are Angstroms, degrees, and Hartrees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If all files were successfully written.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_all_xyz">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_all_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SithWriter.write_all_xyz" title="Permalink to this definition"></a></dt>
+<dd><p>Writes .xyz files of all geometries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – SITH object from which to write all geometries</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_delta_q">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_delta_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_delta_q" title="Permalink to this definition"></a></dt>
+<dd><p>Writes the change in Redundant Internal Coordinates (RICs) per structure to ‘delta_q.txt’
+in the parent directory of the reference structure.</p>
+<p>Units are Angstroms and degrees. Format is (row:DOF, column:deformation structure)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – extracted SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_dof_energies">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_dof_energies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_dof_energies" title="Permalink to this definition"></a></dt>
+<dd><p>Writes the energy in each degree of freedom (RIC) per deformed geometry.</p>
+<p>Writes to ‘dof_energies.txt’ in the parent directory of the reference geometry.
+Units are Hartrees.  Form is (row:DOF, column:deformation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – extracted SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_error">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_error" title="Permalink to this definition"></a></dt>
+<dd><p>Writes error information to ‘error.txt’ in the parent directory of the reference structure.</p>
+<p>Units are Hartrees and percentages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_summary">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeXYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_summary" title="Permalink to this definition"></a></dt>
+<dd><p>Write ‘summary.txt’ file of sith analysis  in the parent directory of the reference structure.</p>
+<p>Units are Angstroms, degrees, and Hartrees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+<li><p><strong>includeXYZ</strong> (<em>bool</em><em>, </em><em>optional</em>) – _description_. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_total_energies">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_total_energies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sith</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><span class="pre">SITH.SITH.SITH</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filePrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SITH.SithWriter.write_total_energies" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Writes the change in energy per structure to ‘total_energies.txt’</dt><dd><p>in the parent directory of the reference structure.</p>
+</dd>
+</dl>
+<p>Units are Hartrees. Format is (row:DOF, column:deformation structure).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sith</strong> (<a class="reference internal" href="SITH.html#SITH.SITH.SITH" title="SITH.SITH.SITH"><em>SITH</em></a>) – analyzed SITH object</p></li>
+<li><p><strong>filePrefix</strong> (<em>str</em><em>, </em><em>optional</em>) – prefix for file output. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SITH.SithWriter.write_xyz">
+<span class="sig-prename descclassname"><span class="pre">SITH.SithWriter.</span></span><span class="sig-name descname"><span class="pre">write_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="Utilities.html#SITH.Utilities.Geometry" title="SITH.Utilities.Geometry"><span class="pre">SITH.Utilities.Geometry</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SithWriter.write_xyz" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a .xyz file of the geometry</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>geometry</strong> (<a class="reference internal" href="Utilities.html#SITH.Utilities.Geometry" title="SITH.Utilities.Geometry"><em>Geometry</em></a>) – Geometry to write</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="SITH.html" class="btn btn-neutral float-left" title="SITH" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Utilities.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Mikaela Farrugia, Daniel Sucerquia.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
