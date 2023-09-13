@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SITH &mdash; SITH 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SithWriter" href="SithWriter.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> SITH
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#abbreviation-glossary">Abbreviation Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow/workflow.html">Workflow</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SITH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SithWriter.html">SithWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Visualization.html">Visualization</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SITH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>SITH</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/SITH.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-SITH.SITH">
+<span id="sith"></span><h1>SITH<a class="headerlink" href="#module-SITH.SITH" title="Permalink to this headline"></a></h1>
+<p>Calculates &amp; houses SITH analysis data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="SITH.SITH.SITH">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SITH.SITH.</span></span><span class="sig-name descname"><span class="pre">SITH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rePath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dePath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH" title="Permalink to this definition"></a></dt>
+<dd><p>A class to calculate &amp; house SITH analysis data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.analyze" title="Permalink to this definition"></a></dt>
+<dd><p>Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.</p>
+<p>Consists of the dot multiplication of the deformation vectors and the Hessian matrix
+(analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
+between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+each DOF (SITH.energies).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.deformationEnergy">
+<span class="sig-name descname"><span class="pre">deformationEnergy</span></span><a class="headerlink" href="#SITH.SITH.SITH.deformationEnergy" title="Permalink to this definition"></a></dt>
+<dd><p>Total stress energy associated with going from the reference structure to the ith deformed structure.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.deformed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deformed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="Utilities.html#SITH.Utilities.Geometry" title="SITH.Utilities.Geometry"><span class="pre">SITH.Utilities.Geometry</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#SITH.SITH.SITH.deformed" title="Permalink to this definition"></a></dt>
+<dd><p>deformed geometries</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.deltaQ">
+<span class="sig-name descname"><span class="pre">deltaQ</span></span><a class="headerlink" href="#SITH.SITH.SITH.deltaQ" title="Permalink to this definition"></a></dt>
+<dd><p>Changes in RIC values from reference geometry to each deformed geometry.</p>
+<p>deltaQ[DOF index, row or deformed geometry index] -&gt; value of DOF for deformed geometry at index of self.deformed</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it
+and it is a result of calculations in _populate_q().</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.energies">
+<span class="sig-name descname"><span class="pre">energies</span></span><a class="headerlink" href="#SITH.SITH.SITH.energies" title="Permalink to this definition"></a></dt>
+<dd><p>Stress energy associated with a DOF for each deformation</p>
+<p>Organized in the form of [DOF index, deformation index].</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.extract_data">
+<span class="sig-name descname"><span class="pre">extract_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.extract_data" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts, validates, and organizes data from input files. Removes any marked atoms and DOFs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Input files must be specified in SITH constructor, atoms and DOFs to remove previously must be specified by the user with
+set_kill_atoms or set_kill_dofs.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method must always be called prior to analyze() to extract and set up
+the relevant data.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.hessian">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hessian</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#SITH.SITH.SITH.hessian" title="Permalink to this definition"></a></dt>
+<dd><p>Hessian matrix used to calculate the change in stress energy during SITH.analysis().</p>
+<p>Default value is that of the reference Geometry’s Hessian.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+by a frequency analysis at the level of DFT or higher.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+If you would like to manually change this value for a SITH object, instead implement the method set_reference() and the associated refactoring recommended in its documentation.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.pEnergies">
+<span class="sig-name descname"><span class="pre">pEnergies</span></span><a class="headerlink" href="#SITH.SITH.SITH.pEnergies" title="Permalink to this definition"></a></dt>
+<dd><p>Percentage of stress energy in each degree of freedom to the each structure’s total stress energy
+in the form [DOF index, deformation index]</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.q0">
+<span class="sig-name descname"><span class="pre">q0</span></span><a class="headerlink" href="#SITH.SITH.SITH.q0" title="Permalink to this definition"></a></dt>
+<dd><p>Vector of RIC values of reference geometry</p>
+<p>q[DOF index, 0] -&gt; value of DOF for reference geometry</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.qF">
+<span class="sig-name descname"><span class="pre">qF</span></span><a class="headerlink" href="#SITH.SITH.SITH.qF" title="Permalink to this definition"></a></dt>
+<dd><p>RIC values of deformed geometries</p>
+<p>qF[DOF index, row or deformed geometry index] -&gt; value of DOF for deformed geometry at index of self.deformed</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.reference">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="Utilities.html#SITH.Utilities.Geometry" title="SITH.Utilities.Geometry"><span class="pre">SITH.Utilities.Geometry</span></a></em><a class="headerlink" href="#SITH.SITH.SITH.reference" title="Permalink to this definition"></a></dt>
+<dd><p>reference geometry</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.remove_extra_dofs">
+<span class="sig-name descname"><span class="pre">remove_extra_dofs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.remove_extra_dofs" title="Permalink to this definition"></a></dt>
+<dd><p>Removes any DOFs in the deformed geometry which are not in the reference geometry.</p>
+<p>Ensures that deformed geometry data is compatible with analysis based on the reference geometry and its Hessian.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+and indicates an issue with the calculation which must be fixed in the generation of input.</p>
+<p>Solution: <a class="reference external" href="https://gaussian.com/gic/">https://gaussian.com/gic/</a> specify Active GIC in deformed opt</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.set_kill_atoms">
+<span class="sig-name descname"><span class="pre">set_kill_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.set_kill_atoms" title="Permalink to this definition"></a></dt>
+<dd><p>Marks which atoms in the reference geometry should be removed during data extraction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>list</em>) – atoms which should be removed from the reference geometry</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Any atoms in the deformed geometries not present
+in the reference geometry are automatically removed during extraction.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This must be set prior to calling SITH.extract_data().</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.set_kill_dofs">
+<span class="sig-name descname"><span class="pre">set_kill_dofs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dofs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">typing.Tuple</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.set_kill_dofs" title="Permalink to this definition"></a></dt>
+<dd><p>Marks which DOFs in the reference geometry should be removed during data extraction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dofs</strong> (<em>list</em><em>[</em><em>Tuple</em><em>]</em>) – DOFs to be removed from the reference geometry.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Any atoms in the deformed geometries not present
+in the reference geometry are automatically removed during extraction.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This must be set prior to calling SITH.extract_data().</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SITH.SITH.SITH.set_reference">
+<span class="sig-name descname"><span class="pre">set_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometryName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SITH.SITH.SITH.set_reference" title="Permalink to this definition"></a></dt>
+<dd><p>UNIMPLEMENTED</p>
+<p>Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+reference geometry to the deforation list.
+If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+energy is still calculated for all geometries aside from the new reference geometry.</p>
+<dl class="simple">
+<dt>Use Case Note:</dt><dd><p>This could be useful for cases where the error increases unacceptably and multiple reference points along a
+deformation are needed in order to have a more accurate energy calculation as the stretching coordinate progresses.</p>
+</dd>
+<dt>Implementation Instructions:</dt><dd><p>To implement this without re-extracting the data (which is basically the current workflow of creating a new SITH instead),
+you must set the SITH._reference geometry to that with the new geometryName, move the old reference geometry into the list of
+deformed geometries, and then _validate_geometries() _populate_q(). This seems unnecessary as the cost which it saves is minimal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="SithWriter.html" class="btn btn-neutral float-right" title="SithWriter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Mikaela Farrugia, Daniel Sucerquia.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
