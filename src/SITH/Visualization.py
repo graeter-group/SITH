@@ -119,6 +119,15 @@ class MoleculeViewer:
         return self.bonds
 
     def remove_bond(self, atom1index, atom2index):
+        """Remove a bond between two atoms: atom1 and atom2
+
+        Args:
+            atom1index (_type_): index of atom1
+            atom2index (_type_): index of atom2
+
+        Returns:
+            _type_: the bonds in the system
+        """        
         """ Remove a bond between two atoms:
         atoms1 and atoms2.
 
@@ -514,8 +523,8 @@ class VisualizeEnergies(MoleculeViewer):
 
         see: https://doi.org/10.1063/1.4870334
         """
-        self.sith.extractData()
-        self.sith.energyAnalysis()
+        self.sith.extract_data()
+        self.sith.analyze()
 
     def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
         """
@@ -565,6 +574,7 @@ class VisualizeEnergies(MoleculeViewer):
         dofs = self.sith._reference.dimIndices[:self.nbonds]
         return self.energies_some_dof(dofs, **kwargs)
 
+
     def energies_angles(self, **kwargs):
         """
         Add the angles with a color scale that represents the
@@ -575,7 +585,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dimIndices[self.nbonds:self.nbonds +
+        dofs = self.sith._reference.dim_indices[self.nbonds:self.nbonds +
                                                self.nangles]
         return self.energies_some_dof(dofs, **kwargs)
 
@@ -589,8 +599,10 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
+
         dofs = self.sith._reference.dimIndices[self.nbonds+self.nangles:]
         return self.energies_some_dof(dofs, **kwargs)
+
 
     def energies_all_dof(self, **kwargs):
         """
@@ -602,8 +614,10 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
+
         dofs = self.sith._reference.dimIndices
         return self.energies_some_dof(dofs, **kwargs)
+
 
     def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap("Blues"),
                           label="Energy [a.u]", labelsize=20,
@@ -636,7 +650,7 @@ class VisualizeEnergies(MoleculeViewer):
         """
         energies = []
         for dof in dofs:
-            for index, sithdof in enumerate(self.sith._reference.dimIndices):
+            for index, sithdof in enumerate(self.sith._reference.dim_indices):
                 if dof == sithdof:
                     energies.append(self.sith.energies[index][self.idef])
 
@@ -709,7 +723,7 @@ class VisualizeEnergies(MoleculeViewer):
         The color is not related with the JEDI method. It
         could be changed with the kwarg color=rgb list.
         """
-        dofs = self.sith._reference.dimIndices[:self.nbonds]
+        dofs = self.sith._reference.dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
 
     def show(self):

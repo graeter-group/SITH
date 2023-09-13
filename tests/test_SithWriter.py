@@ -10,50 +10,50 @@ This can be expanded upon later if necessary."""
 
 def test_buildDQ():
     sith = SITH(x0string, xFstring)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    blah = buildDeltaQString(sith)
+    blah = build_delta_q(sith)
 
 
 def test_buildDQ2():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    blah = buildDeltaQString(sith)
+    blah = build_delta_q(sith)
 
 
 def test_compareEnergies():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    assert writeDeltaQ(sith)
-    assert writeError(sith)
-    assert writeEnergyMatrix(sith)
-    assert writeSummary(sith)
+    assert write_delta_q(sith)
+    assert write_error(sith)
+    assert write_dof_energies(sith)
+    assert write_summary(sith)
 
 
 def test_writeAll():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    assert writeAll(sith)
+    assert write_all(sith)
 
 
 def test_writeXYZ():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    writeXYZ(sith.reference)
+    write_xyz(sith.reference)
 
 
 def test_writeSummaryXYZ():
     sith = SITH(x0string, deformedString)
-    sith.extractData()
-    sith.energyAnalysis()
+    sith.extract_data()
+    sith.analyze()
 
-    assert writeSummary(sith, "xyz", includeXYZ=True)
+    assert write_summary(sith, "xyz", includeXYZ=True)

@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>SITH.SITH API documentation</title>
+<meta name="description" content="SITH class: calculates &amp; houses SITH analysis data." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>SITH.SITH</code></h1>
+</header>
+<section id="section-intro">
+<p>SITH class: calculates &amp; houses SITH analysis data.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;SITH class: calculates &amp; houses SITH analysis data.&#34;&#34;&#34;
+import sys
+from typing import Tuple
+import pathlib
+from pathlib import Path
+import numpy as np
+from SITH.Utilities import Extractor
+
+
+class SITH:
+    &#34;&#34;&#34;A class to calculate &amp; house SITH analysis data. Publicly accessable variables &amp; methods:
+
+    ...
+
+    Attributes
+    ----------
+    q0 : numpy.ndarray
+        RIC values of reference geometry [DOF index, deformation index]
+    qF : numpy.ndarray
+        RIC value matrix  of deformed geometries [DOF index, deformation index]
+    deltaQ : numpy.ndarray
+        RIC value matrix  of deformed - reference [DOF index, deformation index]
+    hessian : numpy.ndarray
+        Hessian matrix of reference geometry
+    energies : numpy.ndarray
+        stress energy per DOF per deformation [DOF index, deformation index]
+    pEnergies : numpy.ndarray
+        Proportion of total stress energy [DOF index, deformation index]
+    deformationEnergy : numpy.ndarray
+        Total stress energy per deformation [deformation index]
+
+    Methods
+    -------
+    reference():
+        Returns the reference geometry.
+    deformed():
+        Returns the list of deformed geometries.
+    setKillAtoms(atoms: list[int]):
+        Marks atoms to be ignored and removed from the reference geometry upon extraction.
+    setKillDOFs(dofs: list[Tuple]):
+        Marks DOFs to be ignored and removed from the reference geometry upon extraction.
+    removeMismatchedDOFs():
+        Removes DOFs from the deformed geometry which do not appear in the reference geometry upon extraction.
+    extractData():
+        Indicates that any killing of atoms and DOFs is finished, begins extraction and organization of data from input .fchk files.
+    energyAnalysis():
+        Conducts the SITH energy analysis.
+    &#34;&#34;&#34;
+
+    def __init__(self, rePath=&#39;&#39;, dePath=&#39;&#39;):
+        &#34;&#34;&#34;Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
+
+        Notes
+        -----
+        &#34;&#34;&#34;
+        self._workingPath = Path.cwd()
+
+        self._referencePath = None
+        &#34;&#34;&#34;Path to reference geometry, specified on SITH construction&#34;&#34;&#34;
+
+        self._deformedPath = None
+        &#34;&#34;&#34;Path to deformed geometry or directory of deformed geometries, specified on SITH construction&#34;&#34;&#34;
+
+        if(rePath == &#39;&#39;):
+            #self._referencePath = Path(&#39;/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk&#39;)
+            self._referencePath = self._workingPath / &#39;x0.fchk&#39;
+        else:
+            self._referencePath = self._workingPath / rePath
+
+        if(dePath == &#39;&#39;):
+            #self._deformedPath = Path(&#39;/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk&#39;)
+            self._deformedPath = self._workingPath / &#39;xF.fchk&#39;
+        else:
+            self._deformedPath = self._workingPath / dePath
+
+        # region variable documentation
+
+        self.energies = None
+        &#34;&#34;&#34;Stress energy associated with a DOF for each deformation organized in the form of [DOF index, deformation index]
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+        self.deformationEnergy = None
+        &#34;&#34;&#34;Total stress energy associated with going from the reference structure to the ith deformed structure.
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+        self.pEnergies = None
+        &#34;&#34;&#34;Proportion of stress energy in each degree of freedom to the each structure&#39;s total stress energy 
+        in the form [DOF index, deformation index]
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+
+        self._reference = None
+        &#34;&#34;&#34;Reference Geometry object
+        
+        Notes
+        -----
+        Please refrain from manually setting this value as other analysis variables depend upon it.
+        
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.&#34;&#34;&#34;
+
+        self._deformed = None
+        &#34;&#34;&#34;List of deformed Geometry objects
+
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+        self.q0 = None
+        &#34;&#34;&#34;Vector of RIC values of reference geometry
+        
+        q[d.o.f. index, 0] -&gt; value of d.o.f. for reference geometry
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        self.qF = None
+        &#34;&#34;&#34;Matrix of RIC values of deformed geometries
+        
+        qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        self.deltaQ = None
+        &#34;&#34;&#34;Matrix of changes in RIC values from reference geometry to each deformed geometry.
+        
+        deltaQ[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it
+        and it is a result of calculations in _populateQ().&#34;&#34;&#34;
+
+        self._kill = False
+        &#34;&#34;&#34;Sentinel value indicating if any atoms of DOFs present in the input files should be removed from geometries, hessian, and analysis.&#34;&#34;&#34;
+        self._killAtoms = list()
+        &#34;&#34;&#34;List of atoms to be removed from geometries, hessian, and analysis&#34;&#34;&#34;
+        self._killDOFs = list()
+        &#34;&#34;&#34;List of DOFs to be removed from geometries, hessian, and analysis&#34;&#34;&#34;
+
+        # endregion
+
+        self._validateFiles()
+        print(&#34;Successfully initialized SITH object with given input files...&#34;)
+
+# region Atomic Homicide
+
+    def __kill(self):
+        &#34;&#34;&#34;Executes the removal of degrees of freedom (DOFs) specified and any associated with specified atoms.&#34;&#34;&#34;
+        print(&#34;Killing atoms and degrees of freedom...&#34;)
+        self.__killDOFs(self._killDOFs)
+        dimsToKill = list()
+        for atom in self._killAtoms:
+            dimsToKill.extend(
+                [dim for dim in self._reference.dimIndices if atom in dim])
+        self.__killDOFs(dimsToKill)
+        print(&#34;Atoms and DOFs killed...&#34;)
+
+        &#34;&#34;&#34;Use Case Note:
+        This is a private method to limit user error. Specification of these DOFs is made by the user programmatically with the public functions SetKillAtoms(atoms: list)
+        and SetKillDOFs(dofs: list) prior to data extraction by calling SITH.extractData(). If no mismatch between
+        number of DOFs in each geometry&#39;s coordinates and Hessian, this can be manually called after extractData()
+        as well but is not recommended.&#34;&#34;&#34;
+
+    def __killDOFs(self, dofs: list[Tuple]):
+        &#34;&#34;&#34;
+        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries&#39; RICs
+        as well as from the Hessian matrix.
+        &#34;&#34;&#34;
+        rIndices = list()
+        for dof in dofs:
+            rIndices.extend([i for i in range(self._reference.dims[0])
+                            if self._reference.dimIndices[i] == dof])
+        self._reference._killDOFs(rIndices)
+
+# endregion
+
+# region Public Functions meant to be used by novice-intermediate user
+
+    @property
+    def reference(self):
+        &#34;&#34;&#34;
+        Return the reference geometry (SITH_Utilities.Geometry)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_reference&#39;)
+
+    @property
+    def deformed(self):
+        &#34;&#34;&#34;
+        Return the list of deformed geometries (list&lt;SITH_Utilities.Geometry&gt;)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_deformed&#39;)
+
+    @property
+    def hessian(self):
+        &#34;&#34;&#34;Returns Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry&#39;s Hessian.
+
+        Notes
+        -----
+        Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+        by a frequency analysis at the level of DFT or higher.
+
+        While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.&#34;&#34;&#34;
+        return self.reference.hessian
+
+    def setKillAtoms(self, atoms: list):
+        &#34;&#34;&#34;
+        Takes in the atoms which should be removed from the reference geometry, must be used prior to calling SITH.extractData(), which also
+        runs removeMismatchedDOFs.
+        &#34;&#34;&#34;
+        self._killAtoms = atoms
+        self._kill = True
+        print(&#34;Atoms to be killed are set...&#34;)
+
+    def setKillDOFs(self, dofs: list):
+        &#34;&#34;&#34;
+        Takes in the DOFs (degrees of freedom) which should be removed from the reference geometry, must be used prior to calling SITH.extractData(),
+        which also runs removeMismatchedDOFs.
+        &#34;&#34;&#34;
+        self._killDOFs = dofs
+        self._kill = True
+        print(&#34;DOFs to be killed are set...&#34;)
+
+    def removeMismatchedDOFs(self):
+        &#34;&#34;&#34;
+        Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs.
+
+        -----
+        NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+        and indicates an issue with the calculation which must be fixed in the generation of input. Solution: https://gaussian.com/gic/ specify Active GIC in deformed opt
+        &#34;&#34;&#34;
+        print(&#34;Removing DOFs in the deformed geometries which are not present in the reference geometry...&#34;)
+        for deformation in self._deformed:
+            dofsToRemove = list()
+            for j in range(max(deformation.dims[0], self._reference.dims[0])):
+                if j &lt; deformation.dims[0]:
+                    # deformed not in reference
+                    if deformation.dimIndices[j] not in list(self._reference.dimIndices):
+                        dofsToRemove.append(j)
+                if j &lt; self._reference.dims[0]:  # reference not in deformed
+                    assert self._reference.dimIndices[j] in deformation.dimIndices, &#34;Deformed geometry (&#34;+deformation.name+&#34;) is missing reference DOF &#34;+str(
+                        self._reference.dimIndices[j])+&#34;.&#34;
+
+            deformation._killDOFs(dofsToRemove)
+
+    def extractData(self):
+        &#34;&#34;&#34;
+        Extracts, validates, curates data from input files, removes any specified atoms and DOFs .  
+
+        -----
+        Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
+        SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
+        the relevant data.&#34;&#34;&#34;
+        print(&#34;Beginning data extraction...&#34;)
+        self._getContents()
+
+        rExtractor = Extractor(self._referencePath, self._rData)
+        rExtractor._extract()
+        # Create Geometry objects from reference and deformed data
+        self._reference = rExtractor.getGeometry()
+        self._deformed = list()
+        for dd in self._dData:
+            dExtractor = Extractor(dd[0], dd[1])
+            dExtractor._extract()
+            self._deformed.append(dExtractor.getGeometry())
+
+        print(&#34;Finished data extraction...&#34;)
+
+        # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
+        # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
+        # manually swap the reference geometry with that of another geometry in the deformd list and then re-run analysis.
+
+        # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
+        # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
+        if self._kill:
+            self.__kill()
+
+        self.removeMismatchedDOFs()
+
+        self._validateGeometries()
+
+        self._populateQ()
+        print(&#34;Finished setting up for energy analysis...&#34;)
+
+    def energyAnalysis(self):
+        &#34;&#34;&#34;
+        Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.
+
+        Notes
+        -----
+        Consists of the dot multiplication of the deformation vectors and the Hessian matrix 
+        (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
+        between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+        each DOF (SITH.energies).&#34;&#34;&#34;
+        print(&#34;Performing energy analysis...&#34;)
+        if self.deltaQ is None or self.q0 is None or self.qF is None:
+            raise Exception(
+                &#34;Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().&#34;)
+        self.energies = np.zeros(
+            (self.reference.dims[0], len(self._deformed)))
+        self.deformationEnergy = np.zeros((1, len(self._deformed)))
+        self.pEnergies = np.zeros(
+            (self._reference.dims[0], len(self._deformed)))
+
+        for i in range(len(self._deformed)):
+            self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
+                self._reference.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
+            for j in range(self._reference.dims[0]):
+                isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
+                    self._reference.dims[0]-j-1)))
+                self.energies[j, i] = 0.5 * \
+                    (isolatedDOF).dot(self._reference.hessian).dot(
+                        self.deltaQ[:, i])
+            self.pEnergies[:, i] = float(
+                100) * self.energies[:, i] / self.deformationEnergy[0, i]
+
+        print(&#34;Execute Order 67. Successful energy analysis completed.&#34;)
+
+    def setReference(self, geometryName: str):
+        &#34;&#34;&#34;
+        Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+        reference geometry to the deforation list.
+        If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+        energy is still calculated for all geometries aside from the new reference geometry.
+        &#34;&#34;&#34;
+
+        &#34;&#34;&#34;Implementation Instructions:
+        To implement this without re-extracting the data (which is basically the current workflow of creating a new SITH instead),
+        you must set the SITH._reference geometry to that with the new geometryName, move the old reference geometry into the list of
+        deformed geometries, and then _validateGeometries() _populateQ(). This seems unnecessary as the cost which it saves is minimal.&#34;&#34;&#34;
+        raise NotImplementedError(
+            &#34;Unimplemented due to current lack of necessity, contact @mmfarrugia on github for more info.&#34;)
+        &#34;&#34;&#34;Use Case Note:
+        This can be useful for cases where the error increases unacceptably and multiple reference points along a 
+        deformation are needed in order to have a more accurate energy calculation as the stretching coordinate progresses.&#34;&#34;&#34;
+
+# endregion
+
+# region Validation
+
+    def _validateFiles(self):
+        &#34;&#34;&#34;
+        Check that all files exist and whether the deformed path is a directory
+        &#34;&#34;&#34;
+        print(&#34;Validating input files...&#34;)
+        assert self._referencePath.exists(), &#34;Path to reference geometry data does not exist.&#34;
+        assert self._deformedPath.exists(), &#34;Path to deformed geometry data does not exist.&#34;
+
+        self.__deformedIsDirectory = self._deformedPath.is_dir()
+
+    def _validateGeometries(self):
+        &#34;&#34;&#34;
+        Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
+        &#34;&#34;&#34;
+        print(&#34;Validating geometries...&#34;)
+        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(
+            deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), &#34;Incompatible number of atoms or dimensions amongst input files.&#34;
+
+# endregion
+
+    def _getContents(self):
+        &#34;&#34;&#34;
+        Gets the contents of the input files, including those in a deformed directory and verifies they are not empty.
+        &#34;&#34;&#34;
+        print(&#34;Retrieving file contents...&#34;)
+        try:
+            with self._referencePath.open() as rFile:
+                self._rData = rFile.readlines()
+                assert len(self._rData) &gt; 0, &#34;Reference data file is empty.&#34;
+
+            self._dData = list()
+            if self.__deformedIsDirectory:
+                dPaths = list(sorted(self._deformedPath.glob(&#39;*.fchk&#39;)))
+                dPaths = [pathlib.Path(dp) for dp in dPaths]
+            else:
+                dPaths = [self._deformedPath]
+
+            assert len(dPaths) &gt; 0, &#34;Deformed directory is empty.&#34;
+            for dp in dPaths:
+                with dp.open() as dFile:
+                    dLines = dFile.readlines()
+                    assert len(
+                        dLines) &gt; 0, &#34;One or more deformed files are empty.&#34;
+                    self._dData.append((dp, dLines))
+
+        except AssertionError:
+            # This exception catch is specific so that the AssertionErrors are not caught and only &#34;raise&#34; is called so as to maintain the original
+            # stack trace
+            raise
+        except:
+            print(
+                &#34;An exception occurred during the extraction of the input files&#39; contents.&#34;)
+            sys.exit(sys.exc_info()[0])
+
+    def _populateQ(self):
+        &#34;&#34;&#34;Populates the reference RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs.&#34;&#34;&#34;
+        print(&#34;Populating RIC vectors and calculating \u0394q...&#34;)
+        self.q0 = np.zeros((self._reference.dims[0], 1))
+        self.qF = np.zeros((self._reference.dims[0], 1))
+        self.q0[:, 0] = np.transpose(np.asarray(self._reference.ric))
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+        self.qF[:, 0] = np.transpose(np.asarray(self._deformed[0].ric))
+        if len(self._deformed) &gt; 1:
+            for i in range(1, len(self._deformed)):
+                deformation = self._deformed[i]
+                temp = np.transpose(np.asarray(deformation.ric))
+                self.qF = np.column_stack((self.qF, temp))
+            # delta_q is organized in the same shape as qF
+        self.deltaQ = np.subtract(self.qF, self.q0)
+
+        &#34;&#34;&#34;This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
+        coordinate system in Gaussian for example is from pi to -pi, where k and l are small, it shows up as 
+        -   -(pi-k) - (pi - l) = -2pi + (k+l) should be: -(k + l) 
+                --&gt; -(result + 2pi)
+        +   (pi - k) - -(pi - l) = 2pi - (k+l) should be (k+l)
+                --&gt; -(result - 2pi) = 2pi - result
+        &#34;&#34;&#34;
+        with np.nditer(self.deltaQ, op_flags=[&#39;readwrite&#39;]) as dqit:
+            for dq in dqit:
+                #         dq[...] = np.abs(dq - 2*np.pi) if dq &gt; (2*np.pi -
+                #                                                 0.005) else (dq + 2*np.pi if dq &lt; -(2*np.pi - 0.005) else dq)
+                if dq &gt; np.pi:
+                    blah = 3
+                dq[...] = 2*np.pi - dq if dq &gt; np.pi else (-(dq + 2*np.pi) if dq &lt; -np.pi else dq)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="SITH.SITH.SITH"><code class="flex name class">
+<span>class <span class="ident">SITH</span></span>
+<span>(</span><span>rePath='', dePath='')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class to calculate &amp; house SITH analysis data. Publicly accessable variables &amp; methods:</p>
+<p>&hellip;</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>q0</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>RIC values of reference geometry [DOF index, deformation index]</dd>
+<dt><strong><code>qF</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>RIC value matrix
+of deformed geometries [DOF index, deformation index]</dd>
+<dt><strong><code>deltaQ</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>RIC value matrix
+of deformed - reference [DOF index, deformation index]</dd>
+<dt><strong><code>hessian</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Hessian matrix of reference geometry</dd>
+<dt><strong><code>energies</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>stress energy per DOF per deformation [DOF index, deformation index]</dd>
+<dt><strong><code>pEnergies</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Proportion of total stress energy [DOF index, deformation index]</dd>
+<dt><strong><code>deformationEnergy</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Total stress energy per deformation [deformation index]</dd>
+</dl>
+<h2 id="methods">Methods</h2>
+<p>reference():
+Returns the reference geometry.
+deformed():
+Returns the list of deformed geometries.
+setKillAtoms(atoms: list[int]):
+Marks atoms to be ignored and removed from the reference geometry upon extraction.
+setKillDOFs(dofs: list[Tuple]):
+Marks DOFs to be ignored and removed from the reference geometry upon extraction.
+removeMismatchedDOFs():
+Removes DOFs from the deformed geometry which do not appear in the reference geometry upon extraction.
+extractData():
+Indicates that any killing of atoms and DOFs is finished, begins extraction and organization of data from input .fchk files.
+energyAnalysis():
+Conducts the SITH energy analysis.</p>
+<p>Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.</p>
+<h2 id="notes">Notes</h2></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SITH:
+    &#34;&#34;&#34;A class to calculate &amp; house SITH analysis data. Publicly accessable variables &amp; methods:
+
+    ...
+
+    Attributes
+    ----------
+    q0 : numpy.ndarray
+        RIC values of reference geometry [DOF index, deformation index]
+    qF : numpy.ndarray
+        RIC value matrix  of deformed geometries [DOF index, deformation index]
+    deltaQ : numpy.ndarray
+        RIC value matrix  of deformed - reference [DOF index, deformation index]
+    hessian : numpy.ndarray
+        Hessian matrix of reference geometry
+    energies : numpy.ndarray
+        stress energy per DOF per deformation [DOF index, deformation index]
+    pEnergies : numpy.ndarray
+        Proportion of total stress energy [DOF index, deformation index]
+    deformationEnergy : numpy.ndarray
+        Total stress energy per deformation [deformation index]
+
+    Methods
+    -------
+    reference():
+        Returns the reference geometry.
+    deformed():
+        Returns the list of deformed geometries.
+    setKillAtoms(atoms: list[int]):
+        Marks atoms to be ignored and removed from the reference geometry upon extraction.
+    setKillDOFs(dofs: list[Tuple]):
+        Marks DOFs to be ignored and removed from the reference geometry upon extraction.
+    removeMismatchedDOFs():
+        Removes DOFs from the deformed geometry which do not appear in the reference geometry upon extraction.
+    extractData():
+        Indicates that any killing of atoms and DOFs is finished, begins extraction and organization of data from input .fchk files.
+    energyAnalysis():
+        Conducts the SITH energy analysis.
+    &#34;&#34;&#34;
+
+    def __init__(self, rePath=&#39;&#39;, dePath=&#39;&#39;):
+        &#34;&#34;&#34;Takes in the reference geometry .fchk file path and the deformed geometry .fchk file path or path to directory of deformed geometries .fchk files.
+
+        Notes
+        -----
+        &#34;&#34;&#34;
+        self._workingPath = Path.cwd()
+
+        self._referencePath = None
+        &#34;&#34;&#34;Path to reference geometry, specified on SITH construction&#34;&#34;&#34;
+
+        self._deformedPath = None
+        &#34;&#34;&#34;Path to deformed geometry or directory of deformed geometries, specified on SITH construction&#34;&#34;&#34;
+
+        if(rePath == &#39;&#39;):
+            #self._referencePath = Path(&#39;/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk&#39;)
+            self._referencePath = self._workingPath / &#39;x0.fchk&#39;
+        else:
+            self._referencePath = self._workingPath / rePath
+
+        if(dePath == &#39;&#39;):
+            #self._deformedPath = Path(&#39;/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk&#39;)
+            self._deformedPath = self._workingPath / &#39;xF.fchk&#39;
+        else:
+            self._deformedPath = self._workingPath / dePath
+
+        # region variable documentation
+
+        self.energies = None
+        &#34;&#34;&#34;Stress energy associated with a DOF for each deformation organized in the form of [DOF index, deformation index]
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+        self.deformationEnergy = None
+        &#34;&#34;&#34;Total stress energy associated with going from the reference structure to the ith deformed structure.
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+        self.pEnergies = None
+        &#34;&#34;&#34;Proportion of stress energy in each degree of freedom to the each structure&#39;s total stress energy 
+        in the form [DOF index, deformation index]
+        
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.&#34;&#34;&#34;
+
+        self._reference = None
+        &#34;&#34;&#34;Reference Geometry object
+        
+        Notes
+        -----
+        Please refrain from manually setting this value as other analysis variables depend upon it.
+        
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.&#34;&#34;&#34;
+
+        self._deformed = None
+        &#34;&#34;&#34;List of deformed Geometry objects
+
+        Notes
+        -----
+        While this may be publicly accessed, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+        self.q0 = None
+        &#34;&#34;&#34;Vector of RIC values of reference geometry
+        
+        q[d.o.f. index, 0] -&gt; value of d.o.f. for reference geometry
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        self.qF = None
+        &#34;&#34;&#34;Matrix of RIC values of deformed geometries
+        
+        qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.&#34;&#34;&#34;
+
+        self.deltaQ = None
+        &#34;&#34;&#34;Matrix of changes in RIC values from reference geometry to each deformed geometry.
+        
+        deltaQ[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+
+        Notes
+        -----
+        Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it
+        and it is a result of calculations in _populateQ().&#34;&#34;&#34;
+
+        self._kill = False
+        &#34;&#34;&#34;Sentinel value indicating if any atoms of DOFs present in the input files should be removed from geometries, hessian, and analysis.&#34;&#34;&#34;
+        self._killAtoms = list()
+        &#34;&#34;&#34;List of atoms to be removed from geometries, hessian, and analysis&#34;&#34;&#34;
+        self._killDOFs = list()
+        &#34;&#34;&#34;List of DOFs to be removed from geometries, hessian, and analysis&#34;&#34;&#34;
+
+        # endregion
+
+        self._validateFiles()
+        print(&#34;Successfully initialized SITH object with given input files...&#34;)
+
+# region Atomic Homicide
+
+    def __kill(self):
+        &#34;&#34;&#34;Executes the removal of degrees of freedom (DOFs) specified and any associated with specified atoms.&#34;&#34;&#34;
+        print(&#34;Killing atoms and degrees of freedom...&#34;)
+        self.__killDOFs(self._killDOFs)
+        dimsToKill = list()
+        for atom in self._killAtoms:
+            dimsToKill.extend(
+                [dim for dim in self._reference.dimIndices if atom in dim])
+        self.__killDOFs(dimsToKill)
+        print(&#34;Atoms and DOFs killed...&#34;)
+
+        &#34;&#34;&#34;Use Case Note:
+        This is a private method to limit user error. Specification of these DOFs is made by the user programmatically with the public functions SetKillAtoms(atoms: list)
+        and SetKillDOFs(dofs: list) prior to data extraction by calling SITH.extractData(). If no mismatch between
+        number of DOFs in each geometry&#39;s coordinates and Hessian, this can be manually called after extractData()
+        as well but is not recommended.&#34;&#34;&#34;
+
+    def __killDOFs(self, dofs: list[Tuple]):
+        &#34;&#34;&#34;
+        Removes the indicated degrees of freedom from the JEDI analysis, as such it removes them from the geometries&#39; RICs
+        as well as from the Hessian matrix.
+        &#34;&#34;&#34;
+        rIndices = list()
+        for dof in dofs:
+            rIndices.extend([i for i in range(self._reference.dims[0])
+                            if self._reference.dimIndices[i] == dof])
+        self._reference._killDOFs(rIndices)
+
+# endregion
+
+# region Public Functions meant to be used by novice-intermediate user
+
+    @property
+    def reference(self):
+        &#34;&#34;&#34;
+        Return the reference geometry (SITH_Utilities.Geometry)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_reference&#39;)
+
+    @property
+    def deformed(self):
+        &#34;&#34;&#34;
+        Return the list of deformed geometries (list&lt;SITH_Utilities.Geometry&gt;)
+        &#34;&#34;&#34;
+        return getattr(self, &#39;_deformed&#39;)
+
+    @property
+    def hessian(self):
+        &#34;&#34;&#34;Returns Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry&#39;s Hessian.
+
+        Notes
+        -----
+        Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+        by a frequency analysis at the level of DFT or higher.
+
+        While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+        If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.&#34;&#34;&#34;
+        return self.reference.hessian
+
+    def setKillAtoms(self, atoms: list):
+        &#34;&#34;&#34;
+        Takes in the atoms which should be removed from the reference geometry, must be used prior to calling SITH.extractData(), which also
+        runs removeMismatchedDOFs.
+        &#34;&#34;&#34;
+        self._killAtoms = atoms
+        self._kill = True
+        print(&#34;Atoms to be killed are set...&#34;)
+
+    def setKillDOFs(self, dofs: list):
+        &#34;&#34;&#34;
+        Takes in the DOFs (degrees of freedom) which should be removed from the reference geometry, must be used prior to calling SITH.extractData(),
+        which also runs removeMismatchedDOFs.
+        &#34;&#34;&#34;
+        self._killDOFs = dofs
+        self._kill = True
+        print(&#34;DOFs to be killed are set...&#34;)
+
+    def removeMismatchedDOFs(self):
+        &#34;&#34;&#34;
+        Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs.
+
+        -----
+        NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+        and indicates an issue with the calculation which must be fixed in the generation of input. Solution: https://gaussian.com/gic/ specify Active GIC in deformed opt
+        &#34;&#34;&#34;
+        print(&#34;Removing DOFs in the deformed geometries which are not present in the reference geometry...&#34;)
+        for deformation in self._deformed:
+            dofsToRemove = list()
+            for j in range(max(deformation.dims[0], self._reference.dims[0])):
+                if j &lt; deformation.dims[0]:
+                    # deformed not in reference
+                    if deformation.dimIndices[j] not in list(self._reference.dimIndices):
+                        dofsToRemove.append(j)
+                if j &lt; self._reference.dims[0]:  # reference not in deformed
+                    assert self._reference.dimIndices[j] in deformation.dimIndices, &#34;Deformed geometry (&#34;+deformation.name+&#34;) is missing reference DOF &#34;+str(
+                        self._reference.dimIndices[j])+&#34;.&#34;
+
+            deformation._killDOFs(dofsToRemove)
+
+    def extractData(self):
+        &#34;&#34;&#34;
+        Extracts, validates, curates data from input files, removes any specified atoms and DOFs .  
+
+        -----
+        Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
+        SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
+        the relevant data.&#34;&#34;&#34;
+        print(&#34;Beginning data extraction...&#34;)
+        self._getContents()
+
+        rExtractor = Extractor(self._referencePath, self._rData)
+        rExtractor._extract()
+        # Create Geometry objects from reference and deformed data
+        self._reference = rExtractor.getGeometry()
+        self._deformed = list()
+        for dd in self._dData:
+            dExtractor = Extractor(dd[0], dd[1])
+            dExtractor._extract()
+            self._deformed.append(dExtractor.getGeometry())
+
+        print(&#34;Finished data extraction...&#34;)
+
+        # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
+        # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
+        # manually swap the reference geometry with that of another geometry in the deformd list and then re-run analysis.
+
+        # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
+        # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
+        if self._kill:
+            self.__kill()
+
+        self.removeMismatchedDOFs()
+
+        self._validateGeometries()
+
+        self._populateQ()
+        print(&#34;Finished setting up for energy analysis...&#34;)
+
+    def energyAnalysis(self):
+        &#34;&#34;&#34;
+        Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.
+
+        Notes
+        -----
+        Consists of the dot multiplication of the deformation vectors and the Hessian matrix 
+        (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
+        between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+        each DOF (SITH.energies).&#34;&#34;&#34;
+        print(&#34;Performing energy analysis...&#34;)
+        if self.deltaQ is None or self.q0 is None or self.qF is None:
+            raise Exception(
+                &#34;Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().&#34;)
+        self.energies = np.zeros(
+            (self.reference.dims[0], len(self._deformed)))
+        self.deformationEnergy = np.zeros((1, len(self._deformed)))
+        self.pEnergies = np.zeros(
+            (self._reference.dims[0], len(self._deformed)))
+
+        for i in range(len(self._deformed)):
+            self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
+                self._reference.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
+            for j in range(self._reference.dims[0]):
+                isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
+                    self._reference.dims[0]-j-1)))
+                self.energies[j, i] = 0.5 * \
+                    (isolatedDOF).dot(self._reference.hessian).dot(
+                        self.deltaQ[:, i])
+            self.pEnergies[:, i] = float(
+                100) * self.energies[:, i] / self.deformationEnergy[0, i]
+
+        print(&#34;Execute Order 67. Successful energy analysis completed.&#34;)
+
+    def setReference(self, geometryName: str):
+        &#34;&#34;&#34;
+        Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+        reference geometry to the deforation list.
+        If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+        energy is still calculated for all geometries aside from the new reference geometry.
+        &#34;&#34;&#34;
+
+        &#34;&#34;&#34;Implementation Instructions:
+        To implement this without re-extracting the data (which is basically the current workflow of creating a new SITH instead),
+        you must set the SITH._reference geometry to that with the new geometryName, move the old reference geometry into the list of
+        deformed geometries, and then _validateGeometries() _populateQ(). This seems unnecessary as the cost which it saves is minimal.&#34;&#34;&#34;
+        raise NotImplementedError(
+            &#34;Unimplemented due to current lack of necessity, contact @mmfarrugia on github for more info.&#34;)
+        &#34;&#34;&#34;Use Case Note:
+        This can be useful for cases where the error increases unacceptably and multiple reference points along a 
+        deformation are needed in order to have a more accurate energy calculation as the stretching coordinate progresses.&#34;&#34;&#34;
+
+# endregion
+
+# region Validation
+
+    def _validateFiles(self):
+        &#34;&#34;&#34;
+        Check that all files exist and whether the deformed path is a directory
+        &#34;&#34;&#34;
+        print(&#34;Validating input files...&#34;)
+        assert self._referencePath.exists(), &#34;Path to reference geometry data does not exist.&#34;
+        assert self._deformedPath.exists(), &#34;Path to deformed geometry data does not exist.&#34;
+
+        self.__deformedIsDirectory = self._deformedPath.is_dir()
+
+    def _validateGeometries(self):
+        &#34;&#34;&#34;
+        Ensure that the reference and deformed geometries are compatible(# atoms, # dofs, etc.)
+        &#34;&#34;&#34;
+        print(&#34;Validating geometries...&#34;)
+        assert all([deformn.nAtoms == self._reference.nAtoms and np.array_equal(deformn.dims, self._reference.dims) and np.array_equal(
+            deformn.dimIndices, self._reference.dimIndices) for deformn in self._deformed]), &#34;Incompatible number of atoms or dimensions amongst input files.&#34;
+
+# endregion
+
+    def _getContents(self):
+        &#34;&#34;&#34;
+        Gets the contents of the input files, including those in a deformed directory and verifies they are not empty.
+        &#34;&#34;&#34;
+        print(&#34;Retrieving file contents...&#34;)
+        try:
+            with self._referencePath.open() as rFile:
+                self._rData = rFile.readlines()
+                assert len(self._rData) &gt; 0, &#34;Reference data file is empty.&#34;
+
+            self._dData = list()
+            if self.__deformedIsDirectory:
+                dPaths = list(sorted(self._deformedPath.glob(&#39;*.fchk&#39;)))
+                dPaths = [pathlib.Path(dp) for dp in dPaths]
+            else:
+                dPaths = [self._deformedPath]
+
+            assert len(dPaths) &gt; 0, &#34;Deformed directory is empty.&#34;
+            for dp in dPaths:
+                with dp.open() as dFile:
+                    dLines = dFile.readlines()
+                    assert len(
+                        dLines) &gt; 0, &#34;One or more deformed files are empty.&#34;
+                    self._dData.append((dp, dLines))
+
+        except AssertionError:
+            # This exception catch is specific so that the AssertionErrors are not caught and only &#34;raise&#34; is called so as to maintain the original
+            # stack trace
+            raise
+        except:
+            print(
+                &#34;An exception occurred during the extraction of the input files&#39; contents.&#34;)
+            sys.exit(sys.exc_info()[0])
+
+    def _populateQ(self):
+        &#34;&#34;&#34;Populates the reference RIC vector q0, deformed RIC matrix qF, and a matrix deltaQ containing the changes in RICs.&#34;&#34;&#34;
+        print(&#34;Populating RIC vectors and calculating \u0394q...&#34;)
+        self.q0 = np.zeros((self._reference.dims[0], 1))
+        self.qF = np.zeros((self._reference.dims[0], 1))
+        self.q0[:, 0] = np.transpose(np.asarray(self._reference.ric))
+        # qF columns correspond to each deformed geometry, the rows correspond to the degrees of freedom
+        # qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed
+        self.qF[:, 0] = np.transpose(np.asarray(self._deformed[0].ric))
+        if len(self._deformed) &gt; 1:
+            for i in range(1, len(self._deformed)):
+                deformation = self._deformed[i]
+                temp = np.transpose(np.asarray(deformation.ric))
+                self.qF = np.column_stack((self.qF, temp))
+            # delta_q is organized in the same shape as qF
+        self.deltaQ = np.subtract(self.qF, self.q0)
+
+        &#34;&#34;&#34;This adjustment is to account for cases where dihedral angles oscillate about 180 degrees or pi and, since the 
+        coordinate system in Gaussian for example is from pi to -pi, where k and l are small, it shows up as 
+        -   -(pi-k) - (pi - l) = -2pi + (k+l) should be: -(k + l) 
+                --&gt; -(result + 2pi)
+        +   (pi - k) - -(pi - l) = 2pi - (k+l) should be (k+l)
+                --&gt; -(result - 2pi) = 2pi - result
+        &#34;&#34;&#34;
+        with np.nditer(self.deltaQ, op_flags=[&#39;readwrite&#39;]) as dqit:
+            for dq in dqit:
+                #         dq[...] = np.abs(dq - 2*np.pi) if dq &gt; (2*np.pi -
+                #                                                 0.005) else (dq + 2*np.pi if dq &lt; -(2*np.pi - 0.005) else dq)
+                if dq &gt; np.pi:
+                    blah = 3
+                dq[...] = 2*np.pi - dq if dq &gt; np.pi else (-(dq + 2*np.pi) if dq &lt; -np.pi else dq)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="SITH.SITH.SITH.deformationEnergy"><code class="name">var <span class="ident">deformationEnergy</span></code></dt>
+<dd>
+<div class="desc"><p>Total stress energy associated with going from the reference structure to the ith deformed structure.</p>
+<h2 id="notes">Notes</h2>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.deformed"><code class="name">var <span class="ident">deformed</span></code></dt>
+<dd>
+<div class="desc"><p>Return the list of deformed geometries (list<SITH_Utilities.Geometry>)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def deformed(self):
+    &#34;&#34;&#34;
+    Return the list of deformed geometries (list&lt;SITH_Utilities.Geometry&gt;)
+    &#34;&#34;&#34;
+    return getattr(self, &#39;_deformed&#39;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.deltaQ"><code class="name">var <span class="ident">deltaQ</span></code></dt>
+<dd>
+<div class="desc"><p>Matrix of changes in RIC values from reference geometry to each deformed geometry.</p>
+<p>deltaQ[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed</p>
+<h2 id="notes">Notes</h2>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it
+and it is a result of calculations in _populateQ().</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.energies"><code class="name">var <span class="ident">energies</span></code></dt>
+<dd>
+<div class="desc"><p>Stress energy associated with a DOF for each deformation organized in the form of [DOF index, deformation index]</p>
+<h2 id="notes">Notes</h2>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.hessian"><code class="name">var <span class="ident">hessian</span></code></dt>
+<dd>
+<div class="desc"><p>Returns Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry's Hessian.</p>
+<h2 id="notes">Notes</h2>
+<p>Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+by a frequency analysis at the level of DFT or higher.</p>
+<p>While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hessian(self):
+    &#34;&#34;&#34;Returns Hessian matrix used to calculate the stress energy analysis, default value is that of the reference Geometry&#39;s Hessian.
+
+    Notes
+    -----
+    Hessian matrix is the analytical gradient of the harmonic potential energy surface at a reference geometry as calculated
+    by a frequency analysis at the level of DFT or higher.
+
+    While this value is accessable through the reference Geometry for retrieval purposes, please refrain from manually setting it.
+    If you would like to manually change this value for a SITH object, instead implement the method setReference() and the associated refactoring recommended in its documentation.&#34;&#34;&#34;
+    return self.reference.hessian</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.pEnergies"><code class="name">var <span class="ident">pEnergies</span></code></dt>
+<dd>
+<div class="desc"><p>Proportion of stress energy in each degree of freedom to the each structure's total stress energy
+in the form [DOF index, deformation index]</p>
+<h2 id="notes">Notes</h2>
+<p>While this may be publicly accessed, please refrain from manually setting this value as it is an analysis result.</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.q0"><code class="name">var <span class="ident">q0</span></code></dt>
+<dd>
+<div class="desc"><p>Vector of RIC values of reference geometry</p>
+<p>q[d.o.f. index, 0] -&gt; value of d.o.f. for reference geometry</p>
+<h2 id="notes">Notes</h2>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.qF"><code class="name">var <span class="ident">qF</span></code></dt>
+<dd>
+<div class="desc"><p>Matrix of RIC values of deformed geometries</p>
+<p>qF[d.o.f. index, row or deformed geometry index] -&gt; value of d.o.f. for deformed geometry at index of self.deformed</p>
+<h2 id="notes">Notes</h2>
+<p>Publicly accessable for retrieval and reference, please refrain from manually setting this value as other analysis variables depend upon it.</p></div>
+</dd>
+<dt id="SITH.SITH.SITH.reference"><code class="name">var <span class="ident">reference</span></code></dt>
+<dd>
+<div class="desc"><p>Return the reference geometry (SITH_Utilities.Geometry)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def reference(self):
+    &#34;&#34;&#34;
+    Return the reference geometry (SITH_Utilities.Geometry)
+    &#34;&#34;&#34;
+    return getattr(self, &#39;_reference&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="SITH.SITH.SITH.energyAnalysis"><code class="name flex">
+<span>def <span class="ident">energyAnalysis</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.</p>
+<h2 id="notes">Notes</h2>
+<p>Consists of the dot multiplication of the deformation vectors and the Hessian matrix
+(analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
+between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+each DOF (SITH.energies).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def energyAnalysis(self):
+    &#34;&#34;&#34;
+    Performs the SITH energy analysis, populates energies, deformationEnergy, and pEnergies.
+
+    Notes
+    -----
+    Consists of the dot multiplication of the deformation vectors and the Hessian matrix 
+    (analytical gradient of the harmonic potential energy surface) to produce both the total calculated change in energy
+    between the reference structure and each deformed structure (SITH.deformationEnergy) as well as the subdivision of that energy into
+    each DOF (SITH.energies).&#34;&#34;&#34;
+    print(&#34;Performing energy analysis...&#34;)
+    if self.deltaQ is None or self.q0 is None or self.qF is None:
+        raise Exception(
+            &#34;Populate Q has not been executed so necessary data for analysis is lacking. This is likely due to not calling extractData().&#34;)
+    self.energies = np.zeros(
+        (self.reference.dims[0], len(self._deformed)))
+    self.deformationEnergy = np.zeros((1, len(self._deformed)))
+    self.pEnergies = np.zeros(
+        (self._reference.dims[0], len(self._deformed)))
+
+    for i in range(len(self._deformed)):
+        self.deformationEnergy[0, i] = 0.5 * np.transpose(self.deltaQ[:, i]).dot(
+            self._reference.hessian).dot(self.deltaQ[:, i])  # scalar 1x1 total Energy
+        for j in range(self._reference.dims[0]):
+            isolatedDOF = np.hstack((np.zeros(j), self.deltaQ[j, i], np.zeros(
+                self._reference.dims[0]-j-1)))
+            self.energies[j, i] = 0.5 * \
+                (isolatedDOF).dot(self._reference.hessian).dot(
+                    self.deltaQ[:, i])
+        self.pEnergies[:, i] = float(
+            100) * self.energies[:, i] / self.deformationEnergy[0, i]
+
+    print(&#34;Execute Order 67. Successful energy analysis completed.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.extractData"><code class="name flex">
+<span>def <span class="ident">extractData</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extracts, validates, curates data from input files, removes any specified atoms and DOFs .
+</p>
+<hr>
+<p>Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
+SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
+the relevant data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extractData(self):
+    &#34;&#34;&#34;
+    Extracts, validates, curates data from input files, removes any specified atoms and DOFs .  
+
+    -----
+    Input files specified in SITH constructor, atoms and DOFs to remove previously specified by the user with
+    SetKillAtoms or SetKillDOFs This method must always be called prior to energyAnalysis to extract and set up
+    the relevant data.&#34;&#34;&#34;
+    print(&#34;Beginning data extraction...&#34;)
+    self._getContents()
+
+    rExtractor = Extractor(self._referencePath, self._rData)
+    rExtractor._extract()
+    # Create Geometry objects from reference and deformed data
+    self._reference = rExtractor.getGeometry()
+    self._deformed = list()
+    for dd in self._dData:
+        dExtractor = Extractor(dd[0], dd[1])
+        dExtractor._extract()
+        self._deformed.append(dExtractor.getGeometry())
+
+    print(&#34;Finished data extraction...&#34;)
+
+    # Defaults to the reference geometry Hessian, it is recommended to make new SITH objects for each new analysis for the
+    # sake of clearer output files but implementation of SITH.SetReference() as a public function would enable the user to
+    # manually swap the reference geometry with that of another geometry in the deformd list and then re-run analysis.
+
+    # Killing of atoms should occur here prior to validation for the sake of DOF # atoms consistency, as well as before
+    # populating the q vectors to ensure that no data which should be ignored leaks into the analysis
+    if self._kill:
+        self.__kill()
+
+    self.removeMismatchedDOFs()
+
+    self._validateGeometries()
+
+    self._populateQ()
+    print(&#34;Finished setting up for energy analysis...&#34;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.removeMismatchedDOFs"><code class="name flex">
+<span>def <span class="ident">removeMismatchedDOFs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs.</p>
+<hr>
+<p>NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+and indicates an issue with the calculation which must be fixed in the generation of input. Solution: <a href="https://gaussian.com/gic/">https://gaussian.com/gic/</a> specify Active GIC in deformed opt</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def removeMismatchedDOFs(self):
+    &#34;&#34;&#34;
+    Removes any DOFs which are not in the reference geometry to ensure that all geometries have the correct DOFs.
+
+    -----
+    NOTE: If there are DOFs in the reference geometry that do not exist in the deformed geometry, it will mess up this method
+    and indicates an issue with the calculation which must be fixed in the generation of input. Solution: https://gaussian.com/gic/ specify Active GIC in deformed opt
+    &#34;&#34;&#34;
+    print(&#34;Removing DOFs in the deformed geometries which are not present in the reference geometry...&#34;)
+    for deformation in self._deformed:
+        dofsToRemove = list()
+        for j in range(max(deformation.dims[0], self._reference.dims[0])):
+            if j &lt; deformation.dims[0]:
+                # deformed not in reference
+                if deformation.dimIndices[j] not in list(self._reference.dimIndices):
+                    dofsToRemove.append(j)
+            if j &lt; self._reference.dims[0]:  # reference not in deformed
+                assert self._reference.dimIndices[j] in deformation.dimIndices, &#34;Deformed geometry (&#34;+deformation.name+&#34;) is missing reference DOF &#34;+str(
+                    self._reference.dimIndices[j])+&#34;.&#34;
+
+        deformation._killDOFs(dofsToRemove)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.setKillAtoms"><code class="name flex">
+<span>def <span class="ident">setKillAtoms</span></span>(<span>self, atoms: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in the atoms which should be removed from the reference geometry, must be used prior to calling SITH.extractData(), which also
+runs removeMismatchedDOFs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setKillAtoms(self, atoms: list):
+    &#34;&#34;&#34;
+    Takes in the atoms which should be removed from the reference geometry, must be used prior to calling SITH.extractData(), which also
+    runs removeMismatchedDOFs.
+    &#34;&#34;&#34;
+    self._killAtoms = atoms
+    self._kill = True
+    print(&#34;Atoms to be killed are set...&#34;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.setKillDOFs"><code class="name flex">
+<span>def <span class="ident">setKillDOFs</span></span>(<span>self, dofs: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in the DOFs (degrees of freedom) which should be removed from the reference geometry, must be used prior to calling SITH.extractData(),
+which also runs removeMismatchedDOFs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setKillDOFs(self, dofs: list):
+    &#34;&#34;&#34;
+    Takes in the DOFs (degrees of freedom) which should be removed from the reference geometry, must be used prior to calling SITH.extractData(),
+    which also runs removeMismatchedDOFs.
+    &#34;&#34;&#34;
+    self._killDOFs = dofs
+    self._kill = True
+    print(&#34;DOFs to be killed are set...&#34;)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SITH.SITH.setReference"><code class="name flex">
+<span>def <span class="ident">setReference</span></span>(<span>self, geometryName: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+reference geometry to the deforation list.
+If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+energy is still calculated for all geometries aside from the new reference geometry.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setReference(self, geometryName: str):
+    &#34;&#34;&#34;
+    Replaces the current reference geometry used for calculation of stress energy with the specified geometry, pushing the current
+    reference geometry to the deforation list.
+    If the specified geometry does not exist or has no Hessian, the reference geometry will simply not be changed. Deformation
+    energy is still calculated for all geometries aside from the new reference geometry.
+    &#34;&#34;&#34;
+
+    &#34;&#34;&#34;Implementation Instructions:
+    To implement this without re-extracting the data (which is basically the current workflow of creating a new SITH instead),
+    you must set the SITH._reference geometry to that with the new geometryName, move the old reference geometry into the list of
+    deformed geometries, and then _validateGeometries() _populateQ(). This seems unnecessary as the cost which it saves is minimal.&#34;&#34;&#34;
+    raise NotImplementedError(
+        &#34;Unimplemented due to current lack of necessity, contact @mmfarrugia on github for more info.&#34;)
+    &#34;&#34;&#34;Use Case Note:
+    This can be useful for cases where the error increases unacceptably and multiple reference points along a 
+    deformation are needed in order to have a more accurate energy calculation as the stretching coordinate progresses.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="SITH" href="index.html">SITH</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="SITH.SITH.SITH" href="#SITH.SITH.SITH">SITH</a></code></h4>
+<ul class="">
+<li><code><a title="SITH.SITH.SITH.deformationEnergy" href="#SITH.SITH.SITH.deformationEnergy">deformationEnergy</a></code></li>
+<li><code><a title="SITH.SITH.SITH.deformed" href="#SITH.SITH.SITH.deformed">deformed</a></code></li>
+<li><code><a title="SITH.SITH.SITH.deltaQ" href="#SITH.SITH.SITH.deltaQ">deltaQ</a></code></li>
+<li><code><a title="SITH.SITH.SITH.energies" href="#SITH.SITH.SITH.energies">energies</a></code></li>
+<li><code><a title="SITH.SITH.SITH.energyAnalysis" href="#SITH.SITH.SITH.energyAnalysis">energyAnalysis</a></code></li>
+<li><code><a title="SITH.SITH.SITH.extractData" href="#SITH.SITH.SITH.extractData">extractData</a></code></li>
+<li><code><a title="SITH.SITH.SITH.hessian" href="#SITH.SITH.SITH.hessian">hessian</a></code></li>
+<li><code><a title="SITH.SITH.SITH.pEnergies" href="#SITH.SITH.SITH.pEnergies">pEnergies</a></code></li>
+<li><code><a title="SITH.SITH.SITH.q0" href="#SITH.SITH.SITH.q0">q0</a></code></li>
+<li><code><a title="SITH.SITH.SITH.qF" href="#SITH.SITH.SITH.qF">qF</a></code></li>
+<li><code><a title="SITH.SITH.SITH.reference" href="#SITH.SITH.SITH.reference">reference</a></code></li>
+<li><code><a title="SITH.SITH.SITH.removeMismatchedDOFs" href="#SITH.SITH.SITH.removeMismatchedDOFs">removeMismatchedDOFs</a></code></li>
+<li><code><a title="SITH.SITH.SITH.setKillAtoms" href="#SITH.SITH.SITH.setKillAtoms">setKillAtoms</a></code></li>
+<li><code><a title="SITH.SITH.SITH.setKillDOFs" href="#SITH.SITH.SITH.setKillDOFs">setKillDOFs</a></code></li>
+<li><code><a title="SITH.SITH.SITH.setReference" href="#SITH.SITH.SITH.setReference">setReference</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -119,7 +119,7 @@ testPath = pathlib.Path(
 
 dims = array('i', [15, 5, 7, 3])
 dimsGoodInput = ["          15           5           7           3"]
-dimIndicesGoodInput = ['           1           2           0           0           1           3',
+dim_indicesGoodInput = ['           1           2           0           0           1           3',
                        '           0           0           1           4           0           0',
                        '           1           5           0           0           5           6',
                        '           0           0           2           1           3           0',
@@ -154,15 +154,15 @@ hessExOof = np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], [-1, 
                       [.1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5], [.1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]])
 
 ltMat = LTMatrix(range(-60, 60))
-hessEx = ltMat.fullmat
+hessEx = ltMat.full_mat
 
 dqSmall = np.array([[1], [2], [3]], float32)
 hessSmall = np.array([[1, -2, 3], [-2, 2, -1], [3, -1, -0.2]])
 
-dimIndices = [(1, 2), (1, 3), (1, 4), (1, 5), (5, 6), (2, 1, 3), (2, 1, 4), (2, 1, 5),
+dim_indices = [(1, 2), (1, 3), (1, 4), (1, 5), (5, 6), (2, 1, 3), (2, 1, 4), (2, 1, 5),
               (3, 1, 4), (3, 1, 5), (4, 1, 5), (1, 5, 6), (2, 1, 5, 6), (3, 1, 5, 6), (4, 1, 5, 6)]
 
-dimIndices59 = ['           1           2           0           0           1           3',
+dim_indices59 = ['           1           2           0           0           1           3',
                 '           0           0           1           4           0           0',
                 '           1           5           0           0           5           6',
                 '           0           0           2           1           3           0',
@@ -173,7 +173,7 @@ dimIndices59 = ['           1           2           0           0           1   
                 '           2           1           5           6           3           1',
                 '           5           6           4           1           5']
 
-dimIndicesLetters = ['           1           2           k           0           1           3',
+dim_indicesLetters = ['           1           2           k           0           1           3',
                      '           0           0           1           4           0           0',
                      '           1           l           0           0           5           6',
                      '           0           0           2           1           3           0',
@@ -184,7 +184,7 @@ dimIndicesLetters = ['           1           2           k           0          
                      '           2           1           5           6           3           1',
                      '           5           6           4           1           5           6']
 
-dimIndicesNumI = ['           1           2           0           0           1           3',
+dim_indicesNumI = ['           1           2           0           0           1           3',
                   '           0           0           1           4           0           0',
                   '           1           5           0           0           5           6',
                   '           0           0           2           1           3           0',
@@ -596,7 +596,7 @@ fullHessianMOH = np.array([[3.60723640e-01, -1.02888793e-03, -1.02902258e-03,  4
 refExtractor = Extractor(Path(
     '/hits/fast/mbm/farrugma/sw/SITH/tests/frankenTest-methanol.fchk'), frankenNoLines)
 refExtractor._extract()
-refGeo = refExtractor.getGeometry()
+refGeo = refExtractor.get_geometry()
 refGeoCopy = deepcopy(refGeo)
 
 refAtoms = Atoms([
