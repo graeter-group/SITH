@@ -22,6 +22,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Sphinx autodoc build html
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "/docs"
+  
   # Build job
   build:
     runs-on: ubuntu-latest
@@ -33,7 +42,7 @@ jobs:
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./docs/
+          source: ./html/SITH/index.html
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
