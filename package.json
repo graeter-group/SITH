@@ -1,0 +1,29 @@
+{
+  "name": "sith",
+  "version": "1.0.0",
+  "description": "Stress Induced Traversal of Hessian analysis code",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "gh-pages -d html/SITH"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hits-mbm-dev/SITH.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hits-mbm-dev/SITH/issues"
+  },
+  "homepage": "https://github.com/hits-mbm-dev/SITH#readme",
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}
