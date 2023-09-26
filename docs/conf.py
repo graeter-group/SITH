@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.abspath('../src/'))
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-remote_theme: rundocs/jekyll-rtd-theme
+#remote_theme: rundocs/jekyll-rtd-theme
 
 # html_theme = 'sphinx_rtd_theme'
 # html_theme_options = {
