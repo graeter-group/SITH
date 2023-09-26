@@ -35,7 +35,7 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: page
-        path: html
+        path: html/SITH
         if-no-files-found: error
     
   deploy:
