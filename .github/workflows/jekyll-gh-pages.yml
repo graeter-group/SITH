@@ -38,7 +38,7 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: page
-        path: html/SITH
+        path: docs/html
         if-no-files-found: error
     # - name: Commit documentation changes
     #   run: |
