@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>SITH.SithWriter API documentation</title>
+<meta name="description" content="Contains methods which format, organize, and output data from SITH objects" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>SITH.SithWriter</code></h1>
+</header>
+<section id="section-intro">
+<p>Contains methods which format, organize, and output data from SITH objects</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Contains methods which format, organize, and output data from SITH objects&#34;&#34;&#34;
+from typing import Tuple
+
+import numpy as np
+from ase.io import write
+
+from SITH.SITH import SITH
+from SITH.Utilities import Geometry, UnitConverter
+
+
+
+#region: Write
+def writeAll(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    return writeSummary(sith, filePrefix) and writeDeltaQ(sith, filePrefix) and writeEnergyMatrix(sith, filePrefix) and writeError(sith, filePrefix)
+def writeSummary(sith: SITH, filePrefix=&#39;&#39;, includeXYZ=False) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
+    -----
+    File is written to sith input&#39;s parent directory.
+    &#34;&#34;&#34;
+    totE = buildTotEnergiesString(sith)
+    dq = buildDeltaQString(sith)
+    ric = buildInternalCoordsString(sith)
+    error = buildErrorStrings(sith)
+    expectedDE, errorDE, pErrorDE = compareEnergies(sith)
+    energies = buildEnergyMatrix(sith)
+    try:
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, &#34;w&#34;) as s:
+            s.write(&#34;Summary of SITH analysis\n&#34;)
+            s.write(
+                &#34;Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n&#34;)
+            s.writelines(&#39;\n&#39;.join(ric))
+            s.write(
+                &#34;\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n&#34;)
+            s.writelines(&#39;\n&#39;.join(dq))
+            s.write(
+                &#34;\n\n***********************\n**  Energy Analysis  **\n***********************\n&#34;)
+            s.write(&#34;Overall Structural Energies\n&#34;)
+            s.writelines(&#39;\n&#39;.join(error))
+            s.write(&#34;\nEnergy per DOF (RIC)\n&#34;)
+            s.writelines(&#34;\n&#34;.join(energies))
+            s.write(&#34;\nXYZ FILES APPENDED\n&#34;)
+        if includeXYZ:
+            write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, sith.reference.atoms, format=&#39;xyz&#39;, append=True, comment=sith.reference.name)
+            for geometry in sith.deformed:
+                write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, geometry.atoms, format=&#39;xyz&#39;, append=True, comment=geometry.name)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False
+def writeTotEnergiesString(sith: SITH, filePrefix=&#34;&#34;) -&gt; True:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
+    -----
+    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        lines = buildTotEnergiesString(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;totalStressEnergy.txt&#34;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(lines))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False
+def writeDeltaQ(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
+    -----
+    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        dqPrint = buildDeltaQString(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;delta_q.txt&#34;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(dqPrint))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False
+def writeError(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    &#34;&#34;&#34;Takes in SITH object sith, Writes error data, Returns True if successful
+    -----
+    Writes to .txt file in directory of sith input files&#39; parent&#34;&#34;&#34;
+    try:
+        lines = buildErrorStrings(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#39;Error.txt&#39;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(lines))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False
+def writeEnergyMatrix(sith: SITH, filePrefix=&#39;&#39;) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
+    -----
+    Data is in Hartrees and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        ePrint = buildEnergyMatrix(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#39;E_RICs.txt&#39;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(ePrint))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False
+def writeXYZ(geometry: Geometry):
+    &#34;&#34;&#34;
+    Writes a .xyz file of the geometry
+    &#34;&#34;&#34;
+    write(str(geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+&#34;.xyz&#34;), geometry.atoms, format=&#39;xyz&#39;, append=False)
+def writeXYZs(sith: SITH):
+    &#34;&#34;&#34;
+    Writes .xyz files of all geometries
+    &#34;&#34;&#34;
+    writeXYZ(sith.reference)
+    for deformation in sith.deformed:
+        writeXYZ(deformation)
+#endregion
+#region: Build
+def buildTotEnergiesString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+    Data is in Hartrees and percentages.
+    &#34;&#34;&#34;
+    assert sith.deformationEnergy is not None, &#34;SITH.energyAnalysis() has not been performed yet, no information available.&#34;
+    lines = list()
+    header = &#34;            &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    lines.append(header)
+    lines.append(&#34;Stress Energy   &#34; +
+                 &#39;&#39;.join([&#34;{: &gt;16.6E}&#34;.format(e) for e in sith.deformationEnergy[0]]))
+    return lines
+def buildDeltaQString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom 
+    per deformed geometry. Data is in Angstroms and degrees of the format row:DOF column: deformation
+    &#34;&#34;&#34;
+    &#34;&#34;&#34;
+    DOF Index       Deformation 1       Deformation 2       ...
+    1               change              change              ...
+    2               change              change              ...
+    ...
+    &#34;&#34;&#34;
+    assert sith.deltaQ is not None, &#34;SITH.extractData() has not been performed yet, no deltaQ information available.&#34;
+    uc = UnitConverter()
+    dqAngstroms = list()
+    header = &#34;DOF         &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    dqAngstroms.append(header)
+    dqAng = [uc.bohrToAngstrom(dq)
+             for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
+    dqAng = np.asarray(dqAng)
+    for dof in range(sith._reference.dims[1]):
+        if len(sith._deformed) &gt; 1:
+            line = &#34;{: &lt;12}&#34;.format(
+                dof+1) + &#39;&#39;.join([&#34;{: &gt;16.6e}&#34;.format(dqa) for dqa in dqAng[dof, :]])
+            dqAngstroms.append(line)
+        else:
+            line = &#34;{: &lt;12}{: &gt;16.6e}&#34;.format(dof+1, dqAng[dof][0])
+            dqAngstroms.append(line)
+    dqDeg = np.degrees(sith.deltaQ[sith._reference.dims[1]:, :])
+    dqDeg = np.asarray(dqDeg)
+    for dof in range(sith._reference.dims[2]+sith._reference.dims[3]):
+        if len(sith._deformed) &gt; 1:
+            line = &#34;{:&lt; 12}&#34;.format(dof+1+sith._reference.dims[1]) + &#39;&#39;.join(
+                [&#34;{: &gt;16.6e}&#34;.format(dqd) for dqd in dqDeg[dof, :]])
+            dqAngstroms.append(line)
+        else:
+            line = &#34;{:&lt; 12}{: &gt;16.6e}&#34;.format(
+                dof+1+sith._reference.dims[1], dqDeg[dof][0])
+            dqAngstroms.append(line)
+    return dqAngstroms
+def buildInternalCoordsString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
+    &#34;&#34;&#34;
+    assert sith._reference.dimIndices is not None, &#34;SITH.extractData() has not been performed yet, no summary information available.&#34;
+    return [&#34;{: &lt;12}&#34;.format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]
+def buildEnergyMatrix(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
+    per deformed geometry. Data is in Hartrees and of the format row:DOF column:deformation
+    &#34;&#34;&#34;
+    &#34;&#34;&#34;
+    DOF Index       Deformation 1       Deformation 2       ...
+    1               stress E            stress E            ...
+    2               stress E            stress E            ...
+    ...             ...                 ...                 ...
+    &#34;&#34;&#34;
+    assert sith.energies is not None, &#34;SITH.energyAnalysis() has not been performed yet, no summary information available.&#34;
+    uc = UnitConverter()
+    eMat = list()
+    header = &#34;DOF         &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    eMat.append(header)
+    for dof in range(sith._reference.dims[0]):
+        line = &#34;{: &lt;12}&#34;.format(
+            dof+1) + &#39;&#39;.join([&#34;{: &gt;16.6E}&#34;.format(e) for e in sith.energies[dof, :]])
+        eMat.append(line)
+    return eMat
+def buildErrorStrings(sith: SITH):
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+    Data is in Hartrees and percentages.
+    &#34;&#34;&#34;
+    expected, error, pError = compareEnergies(sith)
+    lines = list()
+    lines.append(&#34;{: &lt;12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}&#34;.format(
+        &#39;Deformation&#39;, &#34;\u0394E&#34;, &#34;Expected \u0394E&#34;, &#34;\u0025Error&#34;, &#34;Error&#34;))
+    # &#34;Deformation        \u0394E          Expected \u0394E       \u0025Error        Error&#34;)
+    for i in range(len(sith._deformed)):
+        lines.append(&#34;{: &lt;12s}{: &gt;16.6E}{: &gt;16.6E}{: &gt;12.2f}{: &gt;16.6E}&#34;.format(
+            sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
+    return lines
+#endregion
+def compareEnergies(sith: SITH) -&gt; Tuple:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
+    -----
+    Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
+    Stress Energy Error: calculated stress energy - Expected Stress Energy
+    %Error: Stress Energy Error / Expected Stress Energy&#34;&#34;&#34;
+    assert sith.deformationEnergy is not None, &#34;SITH.energyAnalysis() has not been performed yet, no summary information available.&#34;
+    expectedDE = np.zeros((1, len(sith._deformed)))
+    for i in range(len(sith._deformed)):
+        expectedDE[0, i] = sith._deformed[i].energy - \
+            sith._reference.energy
+    errorDE = sith.deformationEnergy - expectedDE
+    pErrorDE = (errorDE / expectedDE) * 100
+    return (expectedDE, errorDE, pErrorDE)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="SITH.SithWriter.buildDeltaQString"><code class="name flex">
+<span>def <span class="ident">buildDeltaQString</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom
+per deformed geometry. Data is in Angstroms and degrees of the format row:DOF column: deformation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildDeltaQString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the change in internal coordinates in each degree of freedom 
+    per deformed geometry. Data is in Angstroms and degrees of the format row:DOF column: deformation
+    &#34;&#34;&#34;
+    &#34;&#34;&#34;
+    DOF Index       Deformation 1       Deformation 2       ...
+    1               change              change              ...
+    2               change              change              ...
+    ...
+    &#34;&#34;&#34;
+    assert sith.deltaQ is not None, &#34;SITH.extractData() has not been performed yet, no deltaQ information available.&#34;
+    uc = UnitConverter()
+    dqAngstroms = list()
+    header = &#34;DOF         &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    dqAngstroms.append(header)
+    dqAng = [uc.bohrToAngstrom(dq)
+             for dq in sith.deltaQ[0:sith._reference.dims[1], :]]
+    dqAng = np.asarray(dqAng)
+    for dof in range(sith._reference.dims[1]):
+        if len(sith._deformed) &gt; 1:
+            line = &#34;{: &lt;12}&#34;.format(
+                dof+1) + &#39;&#39;.join([&#34;{: &gt;16.6e}&#34;.format(dqa) for dqa in dqAng[dof, :]])
+            dqAngstroms.append(line)
+        else:
+            line = &#34;{: &lt;12}{: &gt;16.6e}&#34;.format(dof+1, dqAng[dof][0])
+            dqAngstroms.append(line)
+    dqDeg = np.degrees(sith.deltaQ[sith._reference.dims[1]:, :])
+    dqDeg = np.asarray(dqDeg)
+    for dof in range(sith._reference.dims[2]+sith._reference.dims[3]):
+        if len(sith._deformed) &gt; 1:
+            line = &#34;{:&lt; 12}&#34;.format(dof+1+sith._reference.dims[1]) + &#39;&#39;.join(
+                [&#34;{: &gt;16.6e}&#34;.format(dqd) for dqd in dqDeg[dof, :]])
+            dqAngstroms.append(line)
+        else:
+            line = &#34;{:&lt; 12}{: &gt;16.6e}&#34;.format(
+                dof+1+sith._reference.dims[1], dqDeg[dof][0])
+            dqAngstroms.append(line)
+    return dqAngstroms</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.buildEnergyMatrix"><code class="name flex">
+<span>def <span class="ident">buildEnergyMatrix</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
+per deformed geometry. Data is in Hartrees and of the format row:DOF column:deformation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildEnergyMatrix(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the energy in each degree of freedom
+    per deformed geometry. Data is in Hartrees and of the format row:DOF column:deformation
+    &#34;&#34;&#34;
+    &#34;&#34;&#34;
+    DOF Index       Deformation 1       Deformation 2       ...
+    1               stress E            stress E            ...
+    2               stress E            stress E            ...
+    ...             ...                 ...                 ...
+    &#34;&#34;&#34;
+    assert sith.energies is not None, &#34;SITH.energyAnalysis() has not been performed yet, no summary information available.&#34;
+    uc = UnitConverter()
+    eMat = list()
+    header = &#34;DOF         &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    eMat.append(header)
+    for dof in range(sith._reference.dims[0]):
+        line = &#34;{: &lt;12}&#34;.format(
+            dof+1) + &#39;&#39;.join([&#34;{: &gt;16.6E}&#34;.format(e) for e in sith.energies[dof, :]])
+        eMat.append(line)
+    return eMat</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.buildErrorStrings"><code class="name flex">
+<span>def <span class="ident">buildErrorStrings</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+Data is in Hartrees and percentages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildErrorStrings(sith: SITH):
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+    Data is in Hartrees and percentages.
+    &#34;&#34;&#34;
+    expected, error, pError = compareEnergies(sith)
+    lines = list()
+    lines.append(&#34;{: &lt;12s}{: ^16s}{: ^16s}{: ^12s}{: ^16s}&#34;.format(
+        &#39;Deformation&#39;, &#34;\u0394E&#34;, &#34;Expected \u0394E&#34;, &#34;\u0025Error&#34;, &#34;Error&#34;))
+    # &#34;Deformation        \u0394E          Expected \u0394E       \u0025Error        Error&#34;)
+    for i in range(len(sith._deformed)):
+        lines.append(&#34;{: &lt;12s}{: &gt;16.6E}{: &gt;16.6E}{: &gt;12.2f}{: &gt;16.6E}&#34;.format(
+            sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
+    return lines</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.buildInternalCoordsString"><code class="name flex">
+<span>def <span class="ident">buildInternalCoordsString</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildInternalCoordsString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing the atom indices involved in each degree of freedom.
+    &#34;&#34;&#34;
+    assert sith._reference.dimIndices is not None, &#34;SITH.extractData() has not been performed yet, no summary information available.&#34;
+    return [&#34;{: &lt;12}&#34;.format(dof+1) + str(sith._reference.dimIndices[dof]) for dof in range(sith._reference.dims[0])]</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.buildTotEnergiesString"><code class="name flex">
+<span>def <span class="ident">buildTotEnergiesString</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+Data is in Hartrees and percentages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildTotEnergiesString(sith: SITH) -&gt; list:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns a list of strings containing error informationper deformed geometry.
+    Data is in Hartrees and percentages.
+    &#34;&#34;&#34;
+    assert sith.deformationEnergy is not None, &#34;SITH.energyAnalysis() has not been performed yet, no information available.&#34;
+    lines = list()
+    header = &#34;            &#34;
+    for deformation in sith._deformed:
+        header += &#34;{: ^16s}&#34;.format(deformation.name)
+    lines.append(header)
+    lines.append(&#34;Stress Energy   &#34; +
+                 &#39;&#39;.join([&#34;{: &gt;16.6E}&#34;.format(e) for e in sith.deformationEnergy[0]]))
+    return lines</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.compareEnergies"><code class="name flex">
+<span>def <span class="ident">compareEnergies</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>) ‑> Tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-returns-tuple-of-expected-stress-energy-stress-energy-error-and-error">Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error</h2>
+<p>Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
+Stress Energy Error: calculated stress energy - Expected Stress Energy
+%Error: Stress Energy Error / Expected Stress Energy</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compareEnergies(sith: SITH) -&gt; Tuple:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Returns Tuple of expected stress energy, stress energy error, and %Error
+    -----
+    Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
+    Stress Energy Error: calculated stress energy - Expected Stress Energy
+    %Error: Stress Energy Error / Expected Stress Energy&#34;&#34;&#34;
+    assert sith.deformationEnergy is not None, &#34;SITH.energyAnalysis() has not been performed yet, no summary information available.&#34;
+    expectedDE = np.zeros((1, len(sith._deformed)))
+    for i in range(len(sith._deformed)):
+        expectedDE[0, i] = sith._deformed[i].energy - \
+            sith._reference.energy
+    errorDE = sith.deformationEnergy - expectedDE
+    pErrorDE = (errorDE / expectedDE) * 100
+    return (expectedDE, errorDE, pErrorDE)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeAll"><code class="name flex">
+<span>def <span class="ident">writeAll</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='') ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeAll(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    return writeSummary(sith, filePrefix) and writeDeltaQ(sith, filePrefix) and writeEnergyMatrix(sith, filePrefix) and writeError(sith, filePrefix)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeDeltaQ"><code class="name flex">
+<span>def <span class="ident">writeDeltaQ</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='') ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-writes-the-change-in-rics-per-structure-returns-true-if-successful">Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.</h2>
+<p>Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeDeltaQ(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
+    -----
+    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        dqPrint = buildDeltaQString(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;delta_q.txt&#34;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(dqPrint))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeEnergyMatrix"><code class="name flex">
+<span>def <span class="ident">writeEnergyMatrix</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='') ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-writes-the-energy-in-each-degree-of-freedom-per-deformed-geometry-returns-true-if-successful">Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful</h2>
+<p>Data is in Hartrees and of the format row:DOF column:deformation structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeEnergyMatrix(sith: SITH, filePrefix=&#39;&#39;) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the energy in each degree of freedom per deformed geometry, Returns True if successful
+    -----
+    Data is in Hartrees and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        ePrint = buildEnergyMatrix(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#39;E_RICs.txt&#39;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(ePrint))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeError"><code class="name flex">
+<span>def <span class="ident">writeError</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='') ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-writes-error-data-returns-true-if-successful">Takes in SITH object sith, Writes error data, Returns True if successful</h2>
+<p>Writes to .txt file in directory of sith input files' parent</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeError(sith: SITH, filePrefix=&#34;&#34;) -&gt; bool:
+    &#34;&#34;&#34;Takes in SITH object sith, Writes error data, Returns True if successful
+    -----
+    Writes to .txt file in directory of sith input files&#39; parent&#34;&#34;&#34;
+    try:
+        lines = buildErrorStrings(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#39;Error.txt&#39;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(lines))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeSummary"><code class="name flex">
+<span>def <span class="ident">writeSummary</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='', includeXYZ=False) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-writes-summarytxt-file-of-sith-data-returns-true-if-successful">Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful</h2>
+<p>File is written to sith input's parent directory.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeSummary(sith: SITH, filePrefix=&#39;&#39;, includeXYZ=False) -&gt; bool:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes summary.txt file of sith data, Returns True if successful
+    -----
+    File is written to sith input&#39;s parent directory.
+    &#34;&#34;&#34;
+    totE = buildTotEnergiesString(sith)
+    dq = buildDeltaQString(sith)
+    ric = buildInternalCoordsString(sith)
+    error = buildErrorStrings(sith)
+    expectedDE, errorDE, pErrorDE = compareEnergies(sith)
+    energies = buildEnergyMatrix(sith)
+    try:
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, &#34;w&#34;) as s:
+            s.write(&#34;Summary of SITH analysis\n&#34;)
+            s.write(
+                &#34;Redundant Internal Coordinate Definitions\n**Defined by indices of involved atoms**\n&#34;)
+            s.writelines(&#39;\n&#39;.join(ric))
+            s.write(
+                &#34;\nChanges in internal coordinates (Delta q)\n**Distances given in Angstroms, angles given in degrees**\n&#34;)
+            s.writelines(&#39;\n&#39;.join(dq))
+            s.write(
+                &#34;\n\n***********************\n**  Energy Analysis  **\n***********************\n&#34;)
+            s.write(&#34;Overall Structural Energies\n&#34;)
+            s.writelines(&#39;\n&#39;.join(error))
+            s.write(&#34;\nEnergy per DOF (RIC)\n&#34;)
+            s.writelines(&#34;\n&#34;.join(energies))
+            s.write(&#34;\nXYZ FILES APPENDED\n&#34;)
+        if includeXYZ:
+            write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, sith.reference.atoms, format=&#39;xyz&#39;, append=True, comment=sith.reference.name)
+            for geometry in sith.deformed:
+                write(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;summary.txt&#34;, geometry.atoms, format=&#39;xyz&#39;, append=True, comment=geometry.name)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeTotEnergiesString"><code class="name flex">
+<span>def <span class="ident">writeTotEnergiesString</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>, filePrefix='') ‑> True</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-in-sith-object-sith-writes-the-change-in-rics-per-structure-returns-true-if-successful">Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.</h2>
+<p>Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeTotEnergiesString(sith: SITH, filePrefix=&#34;&#34;) -&gt; True:
+    &#34;&#34;&#34;
+    Takes in SITH object sith, Writes the change in RICs per structure, Returns true if successful.
+    -----
+    Data is in Angstroms and Radians and of the format row:DOF column:deformation structure.
+    &#34;&#34;&#34;
+    try:
+        lines = buildTotEnergiesString(sith)
+        with open(sith._referencePath.parent.as_posix()+sith._referencePath.root+filePrefix+&#34;totalStressEnergy.txt&#34;, &#34;w&#34;) as dq:
+            dq.writelines(&#39;\n&#39;.join(lines))
+            dq.write(&#39;\n&#39;)
+        return True
+    except IOError as e:
+        print(e)
+        return False
+    except e:
+        print(&#34;Non-IO Exception encountered:&#34;)
+        print(e)
+        return False</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeXYZ"><code class="name flex">
+<span>def <span class="ident">writeXYZ</span></span>(<span>geometry: <a title="SITH.Utilities.Geometry" href="Utilities.html#SITH.Utilities.Geometry">Geometry</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes a .xyz file of the geometry</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeXYZ(geometry: Geometry):
+    &#34;&#34;&#34;
+    Writes a .xyz file of the geometry
+    &#34;&#34;&#34;
+    write(str(geometry._path.parent.as_posix()+geometry._path.root+geometry._path.stem+&#34;.xyz&#34;), geometry.atoms, format=&#39;xyz&#39;, append=False)</code></pre>
+</details>
+</dd>
+<dt id="SITH.SithWriter.writeXYZs"><code class="name flex">
+<span>def <span class="ident">writeXYZs</span></span>(<span>sith: <a title="SITH.SITH.SITH" href="SITH.html#SITH.SITH.SITH">SITH</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes .xyz files of all geometries</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeXYZs(sith: SITH):
+    &#34;&#34;&#34;
+    Writes .xyz files of all geometries
+    &#34;&#34;&#34;
+    writeXYZ(sith.reference)
+    for deformation in sith.deformed:
+        writeXYZ(deformation)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="SITH" href="index.html">SITH</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="SITH.SithWriter.buildDeltaQString" href="#SITH.SithWriter.buildDeltaQString">buildDeltaQString</a></code></li>
+<li><code><a title="SITH.SithWriter.buildEnergyMatrix" href="#SITH.SithWriter.buildEnergyMatrix">buildEnergyMatrix</a></code></li>
+<li><code><a title="SITH.SithWriter.buildErrorStrings" href="#SITH.SithWriter.buildErrorStrings">buildErrorStrings</a></code></li>
+<li><code><a title="SITH.SithWriter.buildInternalCoordsString" href="#SITH.SithWriter.buildInternalCoordsString">buildInternalCoordsString</a></code></li>
+<li><code><a title="SITH.SithWriter.buildTotEnergiesString" href="#SITH.SithWriter.buildTotEnergiesString">buildTotEnergiesString</a></code></li>
+<li><code><a title="SITH.SithWriter.compareEnergies" href="#SITH.SithWriter.compareEnergies">compareEnergies</a></code></li>
+<li><code><a title="SITH.SithWriter.writeAll" href="#SITH.SithWriter.writeAll">writeAll</a></code></li>
+<li><code><a title="SITH.SithWriter.writeDeltaQ" href="#SITH.SithWriter.writeDeltaQ">writeDeltaQ</a></code></li>
+<li><code><a title="SITH.SithWriter.writeEnergyMatrix" href="#SITH.SithWriter.writeEnergyMatrix">writeEnergyMatrix</a></code></li>
+<li><code><a title="SITH.SithWriter.writeError" href="#SITH.SithWriter.writeError">writeError</a></code></li>
+<li><code><a title="SITH.SithWriter.writeSummary" href="#SITH.SithWriter.writeSummary">writeSummary</a></code></li>
+<li><code><a title="SITH.SithWriter.writeTotEnergiesString" href="#SITH.SithWriter.writeTotEnergiesString">writeTotEnergiesString</a></code></li>
+<li><code><a title="SITH.SithWriter.writeXYZ" href="#SITH.SithWriter.writeXYZ">writeXYZ</a></code></li>
+<li><code><a title="SITH.SithWriter.writeXYZs" href="#SITH.SithWriter.writeXYZs">writeXYZs</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
