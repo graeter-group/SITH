@@ -34,7 +34,7 @@ jobs:
       with:
         docs-folder: "docs"
         pre-build-command: "pip install sphinx-rtd-theme && apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended"
-        build-command: "sphinx-build -a -b html . html"
+        build-command: "sphinx-build -a -b html -c docs . html"
     - uses: actions/upload-artifact@master
       with:
         name: page
