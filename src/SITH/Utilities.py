@@ -441,11 +441,11 @@ class Extractor:
                     # g09 stores forces in chk using [eV]/[A ]
                     self.geometry.internal_forces = np.array(self.internal_forces)
                 i = i + 1
-            print("Building full Hessian matrix.")
+
+            # Prints H when starts to read a hessian and adds * when is done.
+            print("H", end='')
             self.build_hessian()
-
-
-            print("Cartesian data extracted successfully.")
+            print("* ", end='')
             return True
         except Exception as e:
             print(e)
