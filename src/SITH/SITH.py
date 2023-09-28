@@ -427,10 +427,30 @@ class SITH:
         """
         with np.nditer(self.deltaQ, op_flags=['readwrite']) as dqit:
             for dq in dqit:
-                #         dq[...] = np.abs(dq - 2*np.pi) if dq > (2*np.pi -
-                #                                                 0.005) else (dq + 2*np.pi if dq < -(2*np.pi - 0.005) else dq)
-                if dq > np.pi:
-                    blah = 3
-                dq[...] = 2*np.pi - \
-                    dq if dq > np.pi else (-(dq + 2*np.pi)
-                                           if dq < -np.pi else dq)
+# Error
+    def compareEnergies(self):
+        """
+        Takes in SITH object sith, Returns Tuple of expected stress energy, stress
+        energy error, and %Error
+
+        Notes
+        -----
+        Expected Stress Energy: Total E deformed structure from input .fchk - total
+        E reference structure from input .fchk
+        Stress Energy Error: calculated stress energy - Expected Stress Energy
+        %Error: Stress Energy Error / Expected Stress Energy
+        """
+
+        assert self.deformationEnergy is not None, \
+            "SITH.energyAnalysis() has not been performed yet, no summary " +\
+            "information available."
+        obtainedDE = self.deformationEnergy
+        expectedDE = np.zeros((1, len(self._deformed)))
+        for i in range(len(self._deformed)):
+            expectedDE[0, i] = self._deformed[i].energy - \
+                self._reference.energy
+        errorDE = self.deformationEnergy - expectedDE
+        pErrorDE = (errorDE / expectedDE) * 100
+        if not np.isfinite(pErrorDE[0][0]):
+            pErrorDE[0][0] = -1
+        return np.array([obtainedDE[0], expectedDE[0], errorDE[0], pErrorDE[0]])
