@@ -1,14 +1,18 @@
 from array import array
 from pathlib import Path
 import pathlib
-from ase import Atoms, Atom
+from ase import Atoms
 from ase.data import chemical_symbols
 from ase.units import Bohr
 import numpy as np
+from ase import units
 
 
 class LTMatrix(list):
-    """LTMatrix class and code adapted to PEP8 style but from https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py"""
+    """
+    LTMatrix class and code adapted to PEP8 style but from
+    https://github.com/ruixingw/rxcclib/blob/dev/utils/my/LTMatrix.py
+    """
 
     def __init__(self, L):
         """
@@ -34,8 +38,8 @@ class LTMatrix(list):
     @staticmethod
     def get_row_column(N):
         """
-        Return the row and column number of the Nth entry  of a lower triangular matrix.
-        N, ROW, COLUMN are counted from ZERO!
+        Return the row and column number of the Nth entry  of a lower
+        triangular matrix. N, ROW, COLUMN are counted from ZERO!
         Example:
            C0 C1 C2 C3 C4 C5
         R0 0
@@ -59,7 +63,8 @@ class LTMatrix(list):
     @staticmethod
     def get_position(i, j):
         """
-        Return the number of entry in the i-th row and j-th column of a symmetric matrix.
+        Return the number of entry in the i-th row and j-th column of a
+        symmetric matrix.
         All numbers are counted from ZERO.
         >>> LTMatrix.getPosition(3, 4)
         13
@@ -131,17 +136,23 @@ class LTMatrix(list):
 
 
 class Geometry:
-    """Houses data associated with a molecular structure, all public variables are intended for access not modification."""
+    """
+    Houses data associated with a molecular structure, all public variables
+    are intended for access not modification.
+    """
 
     def __init__(self, name: str, path: pathlib.Path, n_atoms: int) -> None:
         self.name = name
-        """Name of geometry, based off of stem of .fchk file path unless otherwise modified."""
+        """Name of geometry, based off of stem of .fchk file path unless
+           otherwise modified."""
         self._path = path
         """Path of geometry .fchk file."""
         self.ric = array('f')
-        """Redundant Internal Coordinates of geometry in atomic units (Bohr radius)"""
+        """Redundant Internal Coordinates of geometry in atomic units (Bohr
+        radius)"""
         self.energy = None
-        """Energy associated with geometry based on the DFT or higher level calculations used to generate the .fchk file input"""
+        """Energy associated with geometry based on the DFT or higher level
+        calculations used to generate the .fchk file input (Hatrees)"""
         self.atoms = list()
         """<ase.Atoms> object associated with geometry."""
         self.n_atoms = n_atoms
@@ -153,39 +164,48 @@ class Geometry:
         [2]: bond angles
         [3]: dihedral angles
         """
-        self.dim_indices = list()
-        """List of Tuples referring to the indices of the atoms involved in each dimension/DOF in order of DOF index in ric"""
+        self.dim_ndices = list()
+        """List of Tuples referring to the indices of the atoms involved in
+        each dimension/DOF in order of DOF index in ric"""
 
         self.hessian = None
-        """Hessian matrix associated with the geometry. If 'None', then the associated fchk file did not contain any Hessian,
-        in the case of Gaussian the Hessian is generated when a freq analysis is performed."""
+        """
+        Hessian matrix associated with the geometry. If 'None', then the
+        associated fchk file did not contain any Hessian, in the case of
+        Gaussian the Hessian is generated when a freq analysis is performed.
+        """
 
-    def build_atoms(self, raw_coords:list, atomic_num:list):
-        assert len(raw_coords) == len(atomic_num) * 3, str(len(raw_coords))+" cartesian coordinates given, incorrect for "+str(len(atomic_num))+" atoms."
+    def build_atoms(self, raw_coords: list, atomic_num: list):
+        assert len(raw_coords) == len(atomic_num) * 3, \
+               f"{len(raw_coords)} cartesian coordinates given, incorrect " +\
+               f"for {len(atomic_num)} atoms."
         atomic_coord = [Bohr * float(raw_coord) for raw_coord in raw_coords]
         atomic_coord = np.reshape(atomic_coord, (self.n_atoms, 3))
         molecule = ''.join([chemical_symbols[int(i)] for i in atomic_num])
         self.atoms = Atoms(molecule, atomic_coord)
 
-    def build_RIC(self, dims: list, dim_indices_lines: list, coord_lines: list):
+    def build_RIC(self, dims: list, dim_indices_lines: list,
+                  coord_lines: list):
         """
-        Takes in lists of RIC-related data, Populates 
+        Takes in lists of RIC-related data, Populates
 
             dims: quantities of each RIC dimension type
-            dimILines: list of strings of each line of RIC Indices 
-            coordLines: list of strings of each line of RICs
+            dim_indices_lines: list of strings of each line of RIC Indices
+            coord_lines: list of strings of each line of RICs
         """
         try:
             self.dims = array('i', [int(d) for d in dims])
         except ValueError:
             raise Exception(
                 "Invalid input given for Redundant internal dimensions.")
-        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and len(
-            dims) == 4, "Invalid quantities of dimension types (bond lengths, angles, dihedrals) given in .fchk."
+        assert self.dims[0] == self.dims[1] + self.dims[2] + self.dims[3] and \
+               len(dims) == 4, \
+               "Invalid quantities of dimension types (bond lengths, " +\
+               "angles, dihedrals) given in .fchk."
 
         # region Indices
-        # Parses through the 'dimILines' input which indicates which atoms (by index)
-        # are involved in each RIC degree of freedom
+        # Parses through the 'dim_indices_lines' input which indicates which
+        # atoms (by index) are involved in each RIC degree of freedom
 
         raw_indices = list()
         for indices_line in dim_indices_lines:
@@ -197,10 +217,14 @@ class Geometry:
                 raise Exception("Invalid atom index given as input.")
 
         # Check that # indices is divisible by 4
-        assert len(raw_indices) % 4 == 0 and len(
-            raw_indices) == self.dims[0] * 4, "One or more redundant internal coordinate indices are missing or do not have the expected format. Please refer to documentation"
+        assert len(raw_indices) % 4 == 0 and \
+               len(raw_indices) == self.dims[0] * 4, \
+               "One or more redundant internal coordinate indices are " +\
+               "missing or do not have the expected format. Please refer " +\
+               "to documentation"
 
-        # Parse into sets of 4, then into tuples of the relevant number of values
+        # Parse into sets of 4, then into tuples of the relevant number of
+        # values
         lengths_count = 0
         angles_count = 0
         diheds_count = 0
@@ -209,31 +233,51 @@ class Geometry:
             a2 = raw_indices[i+1]
             a3 = raw_indices[i+2]
             a4 = raw_indices[i+3]
-            # Check that the number of values in each tuple matches the dimension type (length, angle, dihedral) for that dim index
+            # Check that the number of values in each tuple matches the
+            # dimension type (length, angle, dihedral) for that dim index
             # These should line up with self.dims correctly
             assert all([(x <= self.n_atoms and x >= 0)
-                       for x in raw_indices[i:i+4]]), "Invalid atom index given as input."
-            assert a1 != a2 and a1 != a3 and a1 != a4 and a2 != a3 and a2 != a4 and (
-                a3 != a4 or a3 == 0), "Invalid RIC dimension given, atomic indices cannot repeat within a degree of freedom."
-            assert a1 != 0 and a2 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                        for x in raw_indices[i: i + 4]]), \
+                   "Invalid atom index given as input."
+            assert a1 != a2 and a1 != a3 and \
+                   a1 != a4 and a2 != a3 and \
+                   a2 != a4 and (a3 != a4 or a3 == 0), \
+                   "Invalid RIC dimension given, atomic indices cannot " +\
+                   "repeat within a degree of freedom."
+            assert a1 != 0 and \
+                   a2 != 0, \
+                   "Mismatch between given 'RIC dimensions' and given " +\
+                   "RIC indices."
             # bond lengths check
             if i < self.dims[1]*4:
-                assert a3 == 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 == 0 and \
+                       a4 == 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dim_indices.append((a1, a2))
                 lengths_count += 1
             # bond angles check
             elif i < (self.dims[1] + self.dims[2])*4:
-                assert a3 != 0 and a4 == 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 != 0 and \
+                       a4 == 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dim_indices.append((a1, a2, a3))
                 angles_count += 1
             # dihedral angles check
             elif i < (self.dims[1] + self.dims[2] + self.dims[3])*4:
-                assert a3 != 0 and a4 != 0, "Mismatch between given 'RIC dimensions' and given RIC indices."
+                assert a3 != 0 and \
+                       a4 != 0, \
+                       "Mismatch between given 'RIC dimensions' and given " +\
+                       "RIC indices."
                 self.dim_indices.append((a1, a2, a3, a4))
                 diheds_count += 1
 
-        assert lengths_count == self.dims[1] and angles_count == self.dims[2] and diheds_count == self.dims[
-            3], "Redundant internal coordinate indices given inconsistent with Redundant internal dimensions given."
+        assert lengths_count == self.dims[1] and \
+               angles_count == self.dims[2] and \
+               diheds_count == self.dims[3], \
+               "Redundant internal coordinate indices given inconsistent " +\
+               "with Redundant internal dimensions given."
 
         # endregion
 
@@ -241,23 +285,25 @@ class Geometry:
             for line in coord_lines:
                 self.ric.extend([float(ric) for ric in line.split()])
         except ValueError:
-            raise(Exception(
-                "Redundant internal coordinates contains invalid values, such as strings."))
+            raise (Exception("Redundant internal coordinates contains "
+                             "invalid values, such as strings."))
 
         self.ric = np.asarray(self.ric, dtype=np.float32)
-        assert len(self.ric) == self.dims[0], "Mismatch between the number of degrees of freedom expected ("+str(
-            dims[0])+") and number of coordinates given ("+str(len(self.ric))+")."
+        assert len(self.ric) == self.dims[0], \
+               "Mismatch between the number of degrees of freedom expected " +\
+               f"({self.dims[0]}) and number of coordinates given " +\
+               f"({len(self.ric)})."
 
-        # Angles are moved (-pi, pi)
-        for i in range(self.dims[1], self.dims[0]):
-            self.ric[i] = self.ric[i]
-
-    def _kill_DOFs(self, dof_indices: list[int]):
-        """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dim_indices, and hessian, updates dims"""
+    def _killDOFs(self, dof_indices: list[int]):
+        """
+        Takes in list of indices of degrees of freedom to remove, Removes DOFs
+        from ric, dim_indices, and hessian, updates dims
+        """
         self.ric = np.delete(self.ric, dof_indices)
         self.internal_forces = np.delete(self.internal_forces, dof_indices)
-        tdofremoved = [0, 0, 0]  # counter of the number of DOF removed 
-                                 # arranged in types (lenght, angle, dihedral)
+        # counter of the number of DOF removed arranged in types (lenght,
+        # angle, dihedral)
+        tdofremoved = [0, 0, 0]
         for index in sorted(dof_indices, reverse=True):
             tdofremoved[len(self.dim_indices[index]) - 2] += 1
             del self.dim_indices[index]
@@ -267,7 +313,7 @@ class Geometry:
         self.dims[2] -= tdofremoved[1]
         self.dims[3] -= tdofremoved[2]
 
-        if(self.hessian is not None):
+        if (self.hessian is not None):
             self.hessian = np.delete(self.hessian, dof_indices, axis=0)
             self.hessian = np.delete(self.hessian, dof_indices, axis=1)
 
@@ -287,11 +333,12 @@ class Geometry:
 
 class UnitConverter:
     """
-    Class to convert units utilizing Atomic Simulation Environment (ase) constants
-    xyz standard input is in Angstrom
-    RIC are in atomic units
-    internal Hessian is in atomic units of length: Ha/Bohr^2 angle: Hartree/radian^2
-    Note: values in all Gaussian version 3 formatted checkpoint files are in atomic units
+    Class to convert units utilizing Atomic Simulation Environment (ASE)
+    constants xyz standard input is in Angstrom RIC are in atomic units
+    internal Hessian is in atomic units of length: Ha/Bohr^2 angle:
+    Hartree/radian^2
+    Note: values in all Gaussian version 3 formatted checkpoint files are in
+    atomic units
     """
 
     def __init__(self) -> None:
@@ -311,19 +358,27 @@ class UnitConverter:
 
 
 class Extractor:
-    """Used on a per .fchk file basis to organize lines from the fchk file into a Geometry
+    """
+    Used on a per .fchk file basis to organize lines from the fchk file into a
+    Geometry
 
     Note:
-        The user really shouldn't be using this class 0.0 unless they perhaps want a custom one for
-        non-fchk files, in which case they should make a new class inheriting from and overriding methods in this one."""
+        The user really shouldn't be using this class 0.0 unless they perhaps
+        want a custom one for non-fchk files, in which case they should make a
+        new class inheriting from this one.
+    """
 
     def __init__(self, path: Path, lines_list: list) -> None:
         """Initializes an Extractor
 
         Args:
-            path (Path): path to the fchk file to extract into a SITH.Utilities.Geometry object
-            lines_list (list): content of the input fchk file as a list of the lines of the file.
-        """        
+            path (Path):
+                path to the fchk file to extract into a SITH.Utilities.Geometry
+                object
+            lines_list (list):
+                content of the input fchk file as a list of the lines of the
+                file.
+        """
         self.__energy_header = "Total Energy"
         self.__hessian_header = "Internal Force Constants"
         self.__cartesian_coords_header = "Current cartesian coordinates"
@@ -338,16 +393,17 @@ class Extractor:
         self._name = path.stem
 
         self.geometry = None
-        "Geometry object into which the Extractor loads the extracted fchk data"
+        # Geometry object into which the Extractor loads the extracted fchk
+        # data
 
         self.__lines = lines_list
 
     def _extract(self) -> bool:
-        """Extracts and populates Geometry information from self.__lines
-
+        """
+        Extracts and populates Geometry information from self.__lines.
         Returns:
             bool: True if successful
-        """        
+        """
 
         try:
             i = 0
@@ -355,14 +411,17 @@ class Extractor:
             while i < len(self.__lines):
                 line = self.__lines[i]
 
-                # This all must be in order because of the way things show up in the fchk file, it makes no sense to build
-                # these out separately to reduce dependencies because it will just increase the number of times to traverse the data.
+                # This all must be in order because of the way things show up
+                # in the fchk file, it makes no sense to build these out
+                # separately to reduce dependencies because it will just
+                # increase the number of times to traverse the data.
+
                 if self.__num_atoms_header in line:
                     split_line = line.split()
                     num_atoms = int(split_line[len(split_line)-1])
                     self.geometry = Geometry(self._name, self._path, num_atoms)
 
-                if self.__atomic_nums_header in line:
+                elif self.__atomic_nums_header in line:
                     i += 1
                     stop = int(line.split()[-1])
                     count = 0
@@ -388,10 +447,10 @@ class Extractor:
                         count += len(self.__lines[i].split())
                         i += 1
                     xrDims = self.__lines[rdiStart:i+1]
-                    assert len(
-                        xrDims) > 0, "Missing Redundant internal coordinate indices."
+                    assert len(xrDims) > 0, \
+                           "Missing Redundant internal coordinate indices."
 
-                if self.__RIC_header in line:
+                elif self.__RIC_header in line:
                     i = i+1
                     xrStart = i
                     stop = int(line.split()[-1])
@@ -399,10 +458,10 @@ class Extractor:
                     while count < stop:
                         count += len(self.__lines[i].split())
                         i += 1
-                    xrRaw = self.__lines[xrStart:i]
-                    self.geometry.build_RIC(r_dims, xrDims, xrRaw)
+                    xr_raw = self.__lines[xrStart:i]
+                    self.geometry.build_RIC(r_dims, xrDims, xr_raw)
 
-                if self.__cartesian_coords_header in line:
+                elif self.__cartesian_coords_header in line:
                     i = i+1
                     stop = int(line.split()[-1])
                     count = 0
@@ -411,7 +470,9 @@ class Extractor:
                         c_raw.extend(self.__lines[i].split())
                         count += len(self.__lines[i].split())
                         i += 1
-                    assert len(atomic_nums) == num_atoms, "Mismatch between length of atomic numbers and number of atoms specified."
+                    assert len(atomic_nums) == num_atoms, \
+                           "Mismatch between length of atomic numbers and " +\
+                           "number of atoms specified."
                     self.geometry.build_atoms(c_raw, atomic_nums)
 
                 elif self.__hessian_header in line:
@@ -439,7 +500,8 @@ class Extractor:
                         i += 1
                     i -= 1
                     # g09 stores forces in chk using [eV]/[A ]
-                    self.geometry.internal_forces = np.array(self.internal_forces)
+                    self.geometry.internal_forces = \
+                        np.array(self.internal_forces)
                 i = i + 1
 
             # Prints H when starts to read a hessian and adds * when is done.
@@ -453,20 +515,26 @@ class Extractor:
             return False
 
     def build_hessian(self):
-        """Properly formats the Hessian matrix from the lower triangular matrix given by the .fchk data"""
+        """
+        Properly formats the Hessian matrix from the lower triangular
+        matrix given by the .fchk data
+        """
         lt_mat = LTMatrix(self.h_raw)
         self.hessian = lt_mat.full_mat
         self.geometry.hessian = self.hessian
 
     def get_geometry(self) -> Geometry:
-        """Gets the geometry as extracted from the .fchk file given to the Extractor.
+        """Gets the geometry as extracted from the .fchk file given to the
+        Extractor.
 
         Raises:
-            Exception: if `geometry` is None, implying it hasn't been populated by the Extractor
+            Exception: if `geometry` is None, implying it hasn't been populated
+            by the Extractor
 
         Returns:
-            Geometry: geometry populated by the Extractor based on the input lines from a .fchk file
-        """        
+            Geometry: geometry populated by the Extractor based on the input
+            lines from a .fchk file
+        """
         if self.geometry is not None:
             return self.geometry
         else:
@@ -478,12 +546,13 @@ class void:
 
 
 class SummaryReader:
-    def __init__(self, file:str):
-        """Extract the data in a summary file
+    def __init__(self, file):
+        """
+        Extract the data in a summary file
 
         Args:
             file (str): summary file from which to extract data
-        """        
+        """
         with open(file) as data:
             self.info = data.readlines()
 
@@ -491,22 +560,24 @@ class SummaryReader:
         self._deformed = list()
         self.read_all()
 
-    def read_section(self, header, tail, iplus=0, jminus=0) -> list[str]:       
+    def read_section(self, header, tail, iplus=0, jminus=0) -> list[str]:
         """
         Take any block of a set of lines separated by header
         and tail as references
 
         Args:
-            lines (list[str]): set of lines from which to extract the blocks.
-            header (str): line that marks the start of the block. It is included
-            in the block.
-            tail (str): line that marks the end of the block. It is not included
-            in the block.
-            iplus (int): number of lines to ignore after header. Defaults to 0.
-            jminus (int): number of lines to ignore before the tail. Defaults to 0.
-
-        Returns:
-            data (list[str]): set of lines extracted
+            lines (list[str]):
+                set of lines to extract the blocks
+            header (str):
+                line that marks the start of the block. It is included
+                in the block.
+            tail (str):
+                line that marks the end of the block. It is not included
+                in the block.
+            iplus (int):
+                number of lines to ignore after header
+            jminus (int):
+                number of lines to ignore before the tail
         """
         i = self.info.index(header)
         j = self.info.index(tail)
@@ -514,11 +585,11 @@ class SummaryReader:
         return data
 
     def read_dofs(self) -> list[tuple]:
-        """Read in the degrees of freedom in the summary file
+        """
+        Read the degrees of freedom in the summary file
 
-        Returns:
-            list[tuple]: degrees of freedom as tuples of the atomic indices involved
-        """        
+        Return the dofs in a list.
+        """
 
         lines = self.read_section('Redundant Internal Coordinate' +
                                   ' Definitions\n',
@@ -532,7 +603,8 @@ class SummaryReader:
                 sep=' ', dtype=int)[1:])
                 for line in lines]
 
-#TODO make this a 2D array with row column maybe? for ease bc lists take up more than arrays
+# TODO make this a 2D array with row column maybe? for ease bc lists take up
+# more than arrays
     def read_changes(self) -> list[list]:
         """
         Read the changes in the DOFs (\u0394q) in the summary file
@@ -547,8 +619,8 @@ class SummaryReader:
                                   iplus=3, jminus=2)
         return np.array([np.fromstring(line, sep=' ')[1:] for line in lines])
 
-#TODO finish making documentation conform with Google style
-    def read_accuracy(self) -> np.ndarray:     
+# TODO finish making documentation conform with Google style
+    def read_accuracy(self) -> np.ndarray:
         """
         read the accuracy in the total difference of energy.
 
