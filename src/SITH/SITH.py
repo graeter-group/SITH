@@ -36,13 +36,11 @@ class SITH:
         """Path to deformed geometry or directory of deformed geometries, specified on SITH construction"""
 
         if(rePath == ''):
-            #self._referencePath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/x0.fchk')
             self._referencePath = self._workingPath / 'x0.fchk'
         else:
             self._referencePath = self._workingPath / rePath
 
         if(dePath == ''):
-            #self._deformedPath = Path('/hits/fast/mbm/farrugma/sw/SITH/tests/xF.fchk')
             self._deformedPath = self._workingPath / 'xF.fchk'
         else:
             self._deformedPath = self._workingPath / dePath
