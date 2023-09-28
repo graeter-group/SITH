@@ -149,6 +149,8 @@ class SITH:
         for dof in dofs:
             rIndices.extend([i for i in range(self._reference.dims[0])
                             if self._reference.dim_indices[i] == dof])
+        # remove repetition
+        rIndices = list(set(rIndices))
         self._reference._kill_DOFs(rIndices)
 
 # endregion
@@ -240,7 +242,8 @@ class SITH:
                 if j < self._reference.dims[0]:  # reference not in deformed
                     assert self._reference.dim_indices[j] in deformation.dim_indices, "Deformed geometry ("+deformation.name+") is missing reference DOF "+str(
                         self._reference.dim_indices[j])+"."
-
+            # Remove repetition
+            dofsToRemove = list(set(dofsToRemove))
             deformation._kill_DOFs(dofsToRemove)
 
     def extract_data(self):       
