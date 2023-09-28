@@ -255,16 +255,18 @@ class Geometry:
     def _kill_DOFs(self, dof_indices: list[int]):
         """Takes in list of indices of degrees of freedom to remove, Removes DOFs from ric, dim_indices, and hessian, updates dims"""
         self.ric = np.delete(self.ric, dof_indices)
-        self.dim_indices = np.delete(self.dim_indices, dof_indices)
-        lengths_deleted = sum(x < self.dims[1] and x >= 0 for x in dof_indices)
-        angles_deleted = sum(
-            x < self.dims[2] + self.dims[1] and x >= self.dims[1] for x in dof_indices)
-        dihedrals_deleted = sum(
-            x < self.dims[0] and x >= self.dims[2] + self.dims[1] for x in dof_indices)
+        self.internal_forces = np.delete(self.internal_forces, dof_indices)
+        tdofremoved = [0, 0, 0]  # counter of the number of DOF removed 
+                                 # arranged in types (lenght, angle, dihedral)
+        for index in sorted(dof_indices, reverse=True):
+            tdofremoved[len(self.dim_indices[index]) - 2] += 1
+            del self.dim_indices[index]
+
         self.dims[0] -= len(dof_indices)
-        self.dims[1] -= lengths_deleted
-        self.dims[2] -= angles_deleted
-        self.dims[3] -= dihedrals_deleted
+        self.dims[1] -= tdofremoved[0]
+        self.dims[2] -= tdofremoved[1]
+        self.dims[3] -= tdofremoved[2]
+
         if(self.hessian is not None):
             self.hessian = np.delete(self.hessian, dof_indices, axis=0)
             self.hessian = np.delete(self.hessian, dof_indices, axis=1)
