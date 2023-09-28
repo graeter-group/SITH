@@ -332,6 +332,7 @@ class Extractor:
         self.__RIC_indices_header = "Redundant internal coordinate indices"
         self.__num_atoms_header = "Number of atoms"
         self.__atomic_nums_header = "Atomic numbers"
+        self.__internal_forces = "Internal Forces                            R"
 
         self._path = path
         self._name = path.stem
@@ -423,8 +424,22 @@ class Extractor:
                         self.h_raw.extend([float(i) for i in row_split])
                         i = i+1
 
-                
-                    
+                elif self.__internal_forces in line:
+                    i += 1
+                    stop = int(line.split()[-1])
+                    count = 0
+                    self.internal_forces = list()
+
+                    while count < stop:
+                        row = self.__lines[i]
+                        rowsplit = row.split()
+                        forces = [float(force) for force in rowsplit]
+                        self.internal_forces.extend(forces)
+                        count += len(forces)
+                        i += 1
+                    i -= 1
+                    # g09 stores forces in chk using [eV]/[A ]
+                    self.geometry.internal_forces = np.array(self.internal_forces)
                 i = i + 1
             print("Building full Hessian matrix.")
             self.build_hessian()
