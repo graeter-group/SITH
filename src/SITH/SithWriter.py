@@ -349,32 +349,4 @@ def build_error(sith: SITH)->list:
         lines.append("{: <12s}{: >16.6E}{: >16.6E}{: >12.2f}{: >16.6E}".format(
             sith._deformed[i].name, sith.deformationEnergy[0, i], expected[0, i], pError[0, i], error[0, i]))
     return lines
-# endregion
-
-
-def calculate_error(sith: SITH) -> Tuple:
-    """Performs error calculation
-
-    Error calculation is based off of the discrepancy between the energy given by the input geometry optimization
-    calculations and the total stress energy calculated by SITH analysis using the Hessian and \u0394q.
-
-    Args:
-        sith (SITH): analyzed SITH object
-
-    Returns: 
-        Tuple: (expected stress energy, stress energy error, %Error)
-
-        Expected Stress Energy: Total E deformed structure from input .fchk - total E reference structure from input .fchk
-
-        Stress Energy Error: calculated stress energy - Expected Stress Energy
-
-        %Error: Stress Energy Error / Expected Stress Energy
-    """    
-    assert sith.deformationEnergy is not None, "SITH.analyze() has not been performed yet, no summary information available."
-    expectedDE = np.zeros((1, len(sith._deformed)))
-    for i in range(len(sith._deformed)):
-        expectedDE[0, i] = sith._deformed[i].energy - \
-            sith._reference.energy
-    errorDE = sith.deformationEnergy - expectedDE
-    pErrorDE = (errorDE / expectedDE) * 100
-    return (expectedDE, errorDE, pErrorDE)
+#  end region
