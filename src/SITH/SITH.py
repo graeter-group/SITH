@@ -8,8 +8,8 @@ from SITH.Utilities import Extractor, Geometry
 
 
 class SITH:
-    """A class to calculate & house SITH analysis data."""
-    """Attributes:
+    """A class to calculate & house SITH analysis data.
+    Attributes:
         q0 (numpy.ndarray):
             RIC values of reference geometry [DOF index, deformation index]
         qF (numpy.ndarray[float]):
