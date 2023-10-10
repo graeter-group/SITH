@@ -779,6 +779,36 @@ class VisualizeEnergies(MoleculeViewer):
 
         return self.fig, self.ax
 
+    def show_bonds_of_DOF(self, dof, unique=False, color=None):
+        """
+        Show an specific dof.
+
+        Params
+        ======
+
+        dof: int.
+            index in sith object that corresponds to the dof you want to show.
+        unique: Bool. default False.
+            True if you want to remove all the other bonds and only keeping
+            these ones.
+        color: list[int]*3. default R G B for bonds, angles, dihedrals
+               respectively.
+            color that you want to use in this dof.
+        """
+        dof_indices = self.sith._reference.dim_indices[dof]
+        if color is None:
+            colors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            color = colors[len(dof_indices) - 2]
+        atoms1 = []
+        atoms2 = []
+        for i in range(len(dof_indices)-1):
+            atoms1.append(dof_indices[i])
+            atoms2.append(dof_indices[i + 1])
+        if unique:
+            self.remove_all_bonds()
+
+        return self.add_bonds(atoms1, atoms2, colors=color)
+
     def show_dof(self, dofs, **kwargs):
         """
         Show specific degrees of freedom.
