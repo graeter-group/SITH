@@ -876,6 +876,18 @@ class VisualizeEnergies(MoleculeViewer):
 
         minval = min(energies)
         maxval = max(energies)
+        energies_ref = []
+        if absolute:
+            for dof in dofs:
+                for index, sithdof in enumerate(self.sith._deformed[0].dim_indices):
+                    if dof == sithdof:
+                        energies_ref.append(self.sith.energies[:, index])
+                all_ener = np.array(energies_ref).flatten()
+                minval = min(all_ener)
+                maxval = max(all_ener)
+        if minval == maxval:
+            minval = 0
+            maxval = 1
 
         if orientation == 'v' or orientation == 'vertical':
             rotation = 0
