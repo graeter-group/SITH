@@ -463,6 +463,45 @@ class MoleculeViewer:
                 self.viewer.view.remove_component(triangle)
         self.dihedrals.clear()
 
+    def add_dof(self, dof, color=None, n=5, radius=0.07):
+        """
+        Add the degree of freedom to the molecule image
+
+        Parameters
+        ==========
+
+        dof: tuple
+            label of the degree of freedom according with g09 convention.
+
+        Example
+        =======
+            i=(1, 2) means a bond between atoms 1 and 2
+            i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2, 3 and 4
+        """
+
+        if color is None:
+            color = [0.5, 0.5, 0.5]
+
+        types = ["bond", "angle", "dihedral"]
+        type_dof = types[len(dof) - 2]
+
+
+        if type_dof == "bond":
+            index1, index2 = dof
+            return self.add_bond(index1, index2, color, radius=radius)
+
+        elif type_dof == "angle":
+            index1, index2, index3 = dof
+            return self.add_angle(index1, index2, index3, color, n=n)
+
+        elif type_dof == "dihedral":
+            index1, index2, index3, index4 = dof
+            return self.add_dihedral(index1, index2, index3,
+                                     index4, color, n=n)
+        else:
+            raise TypeError(f"{dof} is not an accepted degree of freedom.")
+
     def add_axis(self, length=1, radius=0.1):
         """
         Add xyz axis.
@@ -644,8 +683,43 @@ class VisualizeEnergies(MoleculeViewer):
 
         see: https://doi.org/10.1063/1.4870334
         """
-        self.sith.extractData()
-        self.sith.energyAnalysis()
+        self.sith.extract_data()
+        self.sith.analyze()
+
+    def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
+        """
+        Add the degree of freedom to the molecule image
+
+        Parameters
+        ==========
+
+        dof: tuple
+            label of the degree of freedom according with g09 convention.
+
+        Example
+        =======
+            i=(1, 2) means a bond between atoms 1 and 2
+            i=(1, 2, 3) means an angle between atoms 1, 2 and 3
+            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2, 3 and 4
+        """
+
+        types = ["bond", "angle", "dihedral"]
+        type_dof = types[len(dof)-2]
+
+        if type_dof == "bond":
+            index1, index2 = dof
+            return self.add_bond(index1, index2, color, radius=radius)
+
+        elif type_dof == "angle":
+            index1, index2, index3 = dof
+            return self.add_angle(index1, index2, index3, color, n=n)
+
+        elif type_dof == "dihedral":
+            index1, index2, index3, index4 = dof
+            return self.add_dihedral(index1, index2, index3,
+                                     index4, color, n=n)
+        else:
+            raise TypeError(f"{dof} is not an accepted degree of freedom.")
 
     def energies_bonds(self, **kwargs):
         """
