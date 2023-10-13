@@ -615,7 +615,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         self.viewer.view.background = background
 
-        dims = self.sith._reference.dims
+        dims = self.sith._deformed[0].dims
         self.nbonds = dims[1]
         self.nangles = dims[2]
         self.ndihedral = dims[3]
@@ -675,7 +675,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dim_indices[:self.nbonds]
+        dofs = self.sith._deformed[0].dim_indices[:self.nbonds]
         return self.energies_some_dof(dofs, **kwargs)
 
     def energies_angles(self, **kwargs):
@@ -688,7 +688,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dim_indices[self.nbonds:self.nbonds +
+        dofs = self.sith._deformed[0].dim_indices[self.nbonds:self.nbonds +
                                                self.nangles]
         return self.energies_some_dof(dofs, **kwargs)
 
@@ -702,7 +702,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dim_indices[self.nbonds+self.nangles:]
+        dofs = self.sith._deformed[0].dim_indices[self.nbonds + self.nangles:]
         return self.energies_some_dof(dofs, **kwargs)
 
     def energies_all_dof(self, **kwargs):
@@ -715,7 +715,7 @@ class VisualizeEnergies(MoleculeViewer):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._reference.dim_indices
+        dofs = self.sith._deformed[0].dim_indices
         return self.energies_some_dof(dofs, **kwargs)
 
     def energies_some_dof(self, dofs, cmap=mpl.cm.get_cmap("Blues"),
@@ -749,7 +749,7 @@ class VisualizeEnergies(MoleculeViewer):
         """
         energies = []
         for dof in dofs:
-            for index, sithdof in enumerate(self.sith._reference.dim_indices):
+            for index, sithdof in enumerate(self.sith._deformed[0].dim_indices):
                 if dof == sithdof:
                     energies.append(self.sith.energies[index][self.idef])
 
@@ -811,7 +811,7 @@ class VisualizeEnergies(MoleculeViewer):
                respectively.
             color that you want to use in this dof.
         """
-        dof_indices = self.sith._reference.dim_indices[dof]
+        dof_indices = self.sith._deformed[0].dim_indices[dof]
         if color is None:
             colors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
             color = colors[len(dof_indices) - 2]
@@ -852,7 +852,7 @@ class VisualizeEnergies(MoleculeViewer):
         The color is not related with the JEDI method. It
         could be changed with the kwarg color=rgb list.
         """
-        dofs = self.sith._reference.dim_indices[:self.nbonds]
+        dofs = self.sith._deformed[0].dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
 
     def create_trajectory(self, **kwargs):
