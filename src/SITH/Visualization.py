@@ -202,7 +202,7 @@ class MoleculeViewer:
         """ remove all bonds"""
         return self.remove_bonds()
 
-    def plot_arc(self, vertex, arcdots, color):
+    def add_arc(self, vertex, arcdots, color):
         """ Add an arc using triangles.
 
         Parameters
@@ -285,7 +285,7 @@ class MoleculeViewer:
         if n != 0:
             [arcdots.insert(1, vert) for vert in new[::-1]]
 
-        self.angles[name] = self.plot_arc(vertex, arcdots, color)
+        self.angles[name] = self.add_arc(vertex, arcdots, color)
 
         return self.angles[name]
 
@@ -424,7 +424,7 @@ class MoleculeViewer:
         if n != 0:
             [arcdots.insert(1, vert) for vert in new[::-1]]
 
-        self.dihedrals[name] = self.plot_arc(vertex, arcdots, color)
+        self.dihedrals[name] = self.add_arc(vertex, arcdots, color)
 
         return self.dihedrals[name]
 
