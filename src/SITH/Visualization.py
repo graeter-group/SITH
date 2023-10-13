@@ -7,7 +7,7 @@ from ase.visualize import view
 
 class MoleculeViewer:
     def __init__(self, atoms, alignment=None, axis=False):
-        """ Set of graphic tools to see the distribution
+        """Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
         (lengths, angles, dihedrals)
 
@@ -16,7 +16,6 @@ class MoleculeViewer:
             indexes of the atoms in the xy plane. the first
             two atoms are set to the x axis.
         """
-
         if type(atoms) is list:
             self.is_trajectory = True
             self.atoms = [config.copy() for config in atoms]
@@ -31,7 +30,7 @@ class MoleculeViewer:
                  for config in self.atoms]
             else:
                 self.xy_alignment(self.atoms, index1, index2, index3)
-        
+
         self.viewer = view(self.atoms, viewer='ngl')
         # The keys of the next dictionaries are the names of the DOFs and they
         # are defined such that the name is invariant to the order of the
@@ -47,12 +46,11 @@ class MoleculeViewer:
 
     def add_bond(self, atom1index, atom2index,
                  color=None, radius=0.1):
-        """ Add a bond between two atoms:
+        """Add a bond between two atoms:
         atom1 and atom2
 
         Parameters
         ==========
-
         atom1index (and atom2index): int
             Indexes of the atoms to be connected according with g09
             convention.
@@ -80,8 +78,9 @@ class MoleculeViewer:
             indexes = indexes[::-1]
         name = ''.join(str(i).zfill(3) for i in indexes)
         self.remove_bond(atom1index, atom2index)
-        b = self.shape.add_cylinder(atoms[atom1index-1].position,
-                                    atoms[atom2index-1].position,
+
+        b = self.shape.add_cylinder(atoms[atom1index - 1].position,
+                                    atoms[atom2index - 1].position,
                                     color,
                                     radius)
 
@@ -91,13 +90,12 @@ class MoleculeViewer:
         return self.bonds[name]
 
     def add_bonds(self, atoms1indexes, atoms2indexes, colors=None, radii=None):
-        """ Add a bond between each pair of atoms corresponding to
+        """Add a bond between each pair of atoms corresponding to
         two lists of atoms:
         atoms1 and atoms.
 
         Parameters
         ==========
-
         atom1index (and atom2index): int
             Indexes of the atoms to be connected according with g09
             convention.
@@ -140,7 +138,7 @@ class MoleculeViewer:
         return self.bonds
 
     def remove_bond(self, atom1index, atom2index):
-        """ Remove a bond between two atoms:
+        """Remove a bond between two atoms:
         atoms1 and atoms2.
 
         Parameters
@@ -166,7 +164,7 @@ class MoleculeViewer:
         return self.bonds
 
     def remove_bonds(self, atoms1indexes=None, atoms2indexes=None):
-        """ remove several bonds in the plot between two list of atoms:
+        """Remove several bonds in the plot between two list of atoms:
         atoms1 and atoms2.
 
         Parameters
@@ -207,11 +205,11 @@ class MoleculeViewer:
             return self.bonds
 
     def remove_all_bonds(self):
-        """ remove all bonds"""
+        """Remove all bonds"""
         return self.remove_bonds()
 
     def add_arc(self, vertex, arcdots, color):
-        """ Add an arc using triangles.
+        """Add an arc using triangles.
 
         Parameters
         ==========
@@ -229,10 +227,10 @@ class MoleculeViewer:
         """
 
         triangles = []
-        for i in range(len(arcdots)-1):
+        for i in range(len(arcdots) - 1):
             vertexes = np.hstack((vertex,
                                   vertex + arcdots[i],
-                                  vertex + arcdots[i+1]))
+                                  vertex + arcdots[i + 1]))
             t = self.shape.add_mesh(vertexes, color)
             triangles.append(t)
 
@@ -240,7 +238,7 @@ class MoleculeViewer:
 
     def add_angle(self, atom1index, atom2index, atom3index,
                   color=None, n=0):
-        """ Add an angle to between three atoms:
+        """Add an angle to between three atoms:
         atom1, atom2 and atom3
         - with the vertex in the atom2
 
@@ -274,14 +272,14 @@ class MoleculeViewer:
         self.remove_angle(atom1index, atom2index, atom3index)
         self.angles[name] = []
 
-        vertex = atoms[atom2index-1].position
-        side1 = atoms[atom1index-1].position - vertex
-        side2 = atoms[atom3index-1].position - vertex
+        vertex = atoms[atom2index - 1].position
+        side1 = atoms[atom1index - 1].position - vertex
+        side2 = atoms[atom3index - 1].position - vertex
         lenside1 = np.linalg.norm(side1)
         lenside2 = np.linalg.norm(side2)
         lensides = min(lenside1, lenside2)
-        side1 = 0.7 * lensides * side1/lenside1
-        side2 = 0.7 * lensides * side2/lenside2
+        side1 = 0.7 * lensides * side1 / lenside1
+        side2 = 0.7 * lensides * side2 / lenside2
 
         arcdots = [side1, side2]
         color = color * 3
@@ -299,7 +297,7 @@ class MoleculeViewer:
         return self.angles[name]
 
     def intermedia_vectors(self, a, b, n):
-        """ Define the intermedia arc dots between two vectors
+        """Define the intermedia arc dots between two vectors
 
         Parameters
         ==========
@@ -323,27 +321,26 @@ class MoleculeViewer:
         lenc = np.linalg.norm(c)
         lend = min(lena, lenb)
 
-        theta_total = np.arccos(np.dot(a, b)/(lena * lenb))
-        beta = np.arccos(np.dot(a, c)/(lena * lenc))
+        theta_total = np.arccos(np.dot(a, b) / (lena * lenb))
+        beta = np.arccos(np.dot(a, c) / (lena * lenc))
         intermedia = []
 
         for i in range(1, n):
-            theta = i * theta_total/n
+            theta = i * theta_total / n
             gamma = beta - theta
-            factor = (lena * np.sin(theta))/(lenc * np.sin(gamma))
+            factor = (lena * np.sin(theta)) / (lenc * np.sin(gamma))
             dird = a + factor * c
-            d = lend * dird/np.linalg.norm(dird)
+            d = lend * dird / np.linalg.norm(dird)
             intermedia.append(d)
         return intermedia
 
     def remove_angle(self, atom1index, atom2index, atom3index):
-        """
-        Remove an angle if it exists
+        """Remove an angle if it exists
 
         Parameters
         ==========
 
-        atom1index (and atom2/3index): int
+        atom1index (and atom2 / 3index): int
             Indexes of the three atoms that defines the angle
             to remove.
 
@@ -364,7 +361,7 @@ class MoleculeViewer:
         return self.angles
 
     def remove_all_angles(self):
-        """ remove all angles"""
+        """Remove all angles"""
         names = self.angles.keys()
 
         for name in names:
@@ -374,7 +371,7 @@ class MoleculeViewer:
 
     def add_dihedral(self, atom1index, atom2index, atom3index,
                      atom4index, color=None, n=0):
-        """ Add an dihedral angle between four atoms:
+        """Add an dihedral angle between four atoms:
         atom1, atom2, atom3 and atom4
         - with the vertex in the midle of the atom 2 and 3
 
@@ -406,23 +403,22 @@ class MoleculeViewer:
             indexes = indexes[::-1]
         name = ''.join(str(i).zfill(3) for i in indexes)
 
-        axis = (atoms[atom3index-1].position -
-                atoms[atom2index-1].position)
-        vertex = 0.5 * (atoms[atom3index-1].position +
-                        atoms[atom2index-1].position)
-        axis1 = (atoms[atom1index-1].position -
-                 atoms[atom2index-1].position)
-        axis2 = (atoms[atom4index-1].position -
-                 atoms[atom3index-1].position)
-
-        side1 = axis1 - axis * (np.dot(axis, axis1)/np.dot(axis, axis))
-        side2 = axis2 - axis * (np.dot(axis, axis2)/np.dot(axis, axis))
+        axis = (atoms[atom3index - 1].position -
+                atoms[atom2index - 1].position)
+        vertex = 0.5 * (atoms[atom3index - 1].position +
+                        atoms[atom2index - 1].position)
+        axis1 = (atoms[atom1index - 1].position -
+                 atoms[atom2index - 1].position)
+        axis2 = (atoms[atom4index - 1].position -
+                 atoms[atom3index - 1].position)
+        side1 = axis1 - axis * (np.dot(axis, axis1) / np.dot(axis, axis))
+        side2 = axis2 - axis * (np.dot(axis, axis2) / np.dot(axis, axis))
 
         lenside1 = np.linalg.norm(side1)
         lenside2 = np.linalg.norm(side2)
         lensides = min(lenside1, lenside2)
-        side1 = 0.7 * lensides * side1/lenside1
-        side2 = 0.7 * lensides * side2/lenside2
+        side1 = 0.7 * lensides * side1 / lenside1
+        side2 = 0.7 * lensides * side2 / lenside2
 
         arcdots = [side1, side2]
         color = color * 3
@@ -435,12 +431,13 @@ class MoleculeViewer:
             [arcdots.insert(1, vert) for vert in new[::-1]]
 
         self.dihedrals[name] = self.add_arc(vertex, arcdots, color)
-        self.all_dofs_parameters[name] = (atom1index, atom2index, atom3index, atom4index)
+        self.all_dofs_parameters[name] = (atom1index, atom2index,
+                                          atom3index, atom4index)
 
         return self.dihedrals[name]
 
     def remove_dihedral(self, atom1index, atom2index, atom3index, atom4index):
-        """ Remove the dihedral angle between 4 atoms:
+        """Remove the dihedral angle between 4 atoms:
 
         atom1, atom2, atom3 and atom4
 
@@ -467,7 +464,7 @@ class MoleculeViewer:
         return self.dihedrals
 
     def remove_all_dihedrals(self):
-        """ remove all dihedral angles"""
+        """Remove all dihedral angles"""
         names = self.dihedrals.keys()
 
         for name in names:
@@ -476,8 +473,7 @@ class MoleculeViewer:
         self.dihedrals.clear()
 
     def add_dof(self, dof, color=None, n=5, radius=0.07):
-        """
-        Add the degree of freedom to the molecule image
+        """Add the degree of freedom to the molecule image
 
         Parameters
         ==========
@@ -498,7 +494,6 @@ class MoleculeViewer:
         types = ["bond", "angle", "dihedral"]
         type_dof = types[len(dof) - 2]
 
-
         if type_dof == "bond":
             index1, index2 = dof
             return self.add_bond(index1, index2, color, radius=radius)
@@ -515,8 +510,7 @@ class MoleculeViewer:
             raise TypeError(f"{dof} is not an accepted degree of freedom.")
 
     def add_axis(self, length=1, radius=0.1):
-        """
-        Add xyz axis.
+        """Add xyz axis.
 
         Parameters
         ==========
@@ -534,7 +528,7 @@ class MoleculeViewer:
         for i in range(3):
             a = self.shape.add_cylinder([0, 0, 0],
                                         unit_vectors[i],
-                                        unit_vectors[i]/length,
+                                        unit_vectors[i] / length,
                                         radius)
             self.axis[str(i)] = a
 
@@ -579,14 +573,13 @@ class MoleculeViewer:
         return R
 
     def align_axis(self, vector):
-        """
-        Apply the necessary rotations to set a
+        """Apply the necessary rotations to set a
         vector aligned with positive x axis
         """
         xyproj = vector.copy()
         xyproj[2] = 0
-        phi = np.arcsin(vector[2]/np.linalg.norm(vector))
-        theta = np.arccos(vector[0]/np.linalg.norm(xyproj))
+        phi = np.arcsin(vector[2] / np.linalg.norm(vector))
+        theta = np.arccos(vector[0] / np.linalg.norm(xyproj))
         if vector[1] < 0:
             theta *= -1
         trans = np.dot(self.rot_y(phi), self.rot_z(-theta))
@@ -598,14 +591,13 @@ class MoleculeViewer:
         """
         reference = vector.copy()
         reference[0] = 0
-        angle = np.arccos(reference[1]/np.linalg.norm(reference))
+        angle = np.arccos(reference[1] / np.linalg.norm(reference))
         if reference[2] < 0:
             angle *= -1
         return self.rot_x(-angle)
 
     def apply_trans(self, atoms, trans, indexes=None):
-        """
-        Apply a transformation to all vector positions of the
+        """Apply a transformation to all vector positions of the
         atoms object
         """
         if indexes is None:
@@ -622,14 +614,13 @@ class MoleculeViewer:
         return new_positions
 
     def xy_alignment(self, atoms, index1, index2, index3):
-        """
-        transforme the positions of the atoms such that
+        """Transforme the positions of the atoms such that
         the atoms of indexes 1 and 2 are aligned in the
         x axis
 
         the atom 3 is in the xy plane"""
         # center
-        center = (atoms[index1].position+atoms[index2].position)/2
+        center = (atoms[index1].position + atoms[index2].position) / 2
         atoms.set_positions(atoms.positions - center)
         axis = atoms[index2].position
         self.apply_trans(atoms, self.align_axis(axis))
@@ -639,17 +630,14 @@ class MoleculeViewer:
         return atoms.positions
 
     def show(self):
-        """
-        Show the molecule.
-        """
+        """Show the molecule."""
         return self.box
 
 
 class VisualizeEnergies(MoleculeViewer):
     def __init__(self, sith_info, idef='all', alignment=None, axis=False,
                  background='#ffc', **kwargs):
-        """
-        Set of tools to show a molecule and the
+        """Set of tools to show a molecule and the
         distribution of energies in the different DOF.
 
         Params
@@ -714,8 +702,7 @@ class VisualizeEnergies(MoleculeViewer):
         self.sith.analyze()
 
     def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
-        """
-        Add the degree of freedom to the molecule image
+        """Add the degree of freedom to the molecule image
 
         Parameters
         ==========
@@ -749,8 +736,7 @@ class VisualizeEnergies(MoleculeViewer):
             raise TypeError(f"{dof} is not an accepted degree of freedom.")
 
     def energies_bonds(self, **kwargs):
-        """
-        Add the bonds with a color scale that represents the
+        """Add the bonds with a color scale that represents the
         distribution of energy according to the JEDI method.
 
         Parameters
@@ -764,8 +750,7 @@ class VisualizeEnergies(MoleculeViewer):
         return out
 
     def energies_angles(self, **kwargs):
-        """
-        Add the angles with a color scale that represents the
+        """Add the angles with a color scale that represents the
         distribution of energy according to the JEDI method.
 
         Parameters
@@ -774,14 +759,13 @@ class VisualizeEnergies(MoleculeViewer):
         optional kwargs for energies_some_dof
         """
         dofs = self.sith._deformed[0].dim_indices[self.nbonds:self.nbonds +
-                                                 self.nangles]
+                                                  self.nangles]
         out = self.energies_some_dof(dofs, **kwargs)
         self.update_frame()
         return out
-    
+
     def energies_dihedrals(self, **kwargs):
-        """
-        Add the dihedral angles with a color scale that represents the
+        """Add the dihedral angles with a color scale that represents the
         distribution of energy according to the JEDI method.
 
         Parameters
@@ -795,18 +779,18 @@ class VisualizeEnergies(MoleculeViewer):
         return out
 
     def update_frame(self, change=None):
-        """Function that is called when the frame is changed. Set the internal atribute self.kwargs_edofs
-        to keep fixed the parameters to update the visualization of dofs"""
+        """Function that is called when the frame is changed. Set the internal
+        atribute self.kwargs_edofs to keep fixed the parameters to update the
+        visualization of dofs.
+        """
         self.idef = self.viewer.view.frame
-        
+
         dofs = list(self.all_dofs_parameters.values())
         if len(dofs) != 0:
             self.energies_some_dof(dofs, **self.kwargs_edofs)
 
-
     def energies_all_dof(self, **kwargs):
-        """
-        Add all DOF with a color scale that represents the
+        """Add all DOF with a color scale that represents the
         distribution of energy according to the JEDI method.
 
         Parameters
@@ -821,13 +805,11 @@ class VisualizeEnergies(MoleculeViewer):
                           label=None, labelsize=None,
                           orientation=None, div=None, deci=None,
                           width=None, height=None, absolute=None, **kwargs):
-        """
-        Add the bonds with a color scale that represents the
+        """Add the bonds with a color scale that represents the
         distribution of energy according to the JEDI method.
 
         Parameters
         ==========
-
         dofs: list of tuples.
             list of degrees of freedom defined according with g09 convention.
 
@@ -865,8 +847,9 @@ class VisualizeEnergies(MoleculeViewer):
         if absolute is None:
             absolute = self.kwargs_edofs['absolute']
         energies = []
+        dof_ind = self.sith._deformed[0].dim_indices
         for dof in dofs:
-            for index, sithdof in enumerate(self.sith._deformed[0].dim_indices):
+            for index, sithdof in enumerate(dof_ind):
                 if dof == sithdof:
                     energies.append(self.sith.energies[self.idef][index])
 
@@ -879,7 +862,7 @@ class VisualizeEnergies(MoleculeViewer):
         energies_ref = []
         if absolute:
             for dof in dofs:
-                for index, sithdof in enumerate(self.sith._deformed[0].dim_indices):
+                for index, sithdof in enumerate(dof_ind):
                     if dof == sithdof:
                         energies_ref.append(self.sith.energies[:, index])
                 all_ener = np.array(energies_ref).flatten()
@@ -894,10 +877,8 @@ class VisualizeEnergies(MoleculeViewer):
         else:
             rotation = 90
 
-        boundaries = np.linspace(minval, maxval, div+1)
+        boundaries = np.linspace(minval, maxval, div + 1)
         normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
-
-        self.fig, self.ax = plt.subplots(figsize=(0.5, 7))
 
         # Costumize cbar
         cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
@@ -920,24 +901,21 @@ class VisualizeEnergies(MoleculeViewer):
         out = Output()
         with out:
             plt.show()
-        self.box = HBox(children=[self.viewer.view, out])
+        # self.box = HBox(children=[self.viewer.view, out])
 
         return self.fig, self.ax
 
     def show_bonds_of_DOF(self, dof, unique=False, color=None):
-        """
-        Show an specific dof.
+        """Show an specific dof.
 
-        Params
-        ======
-
+        Parameters
+        ==========
         dof: int.
             index in sith object that corresponds to the dof you want to show.
         unique: Bool. default False.
             True if you want to remove all the other bonds and only keeping
             these ones.
-        color: list[int]*3. default R G B for bonds, angles, dihedrals
-               respectively.
+        color: list[3(int)]. default R G B for angles, distances, dihedrals.
             color that you want to use in this dof.
         """
         dof_indices = self.sith._deformed[0].dim_indices[dof]
@@ -946,7 +924,7 @@ class VisualizeEnergies(MoleculeViewer):
             color = colors[len(dof_indices) - 2]
         atoms1 = []
         atoms2 = []
-        for i in range(len(dof_indices)-1):
+        for i in range(len(dof_indices) - 1):
             atoms1.append(dof_indices[i])
             atoms2.append(dof_indices[i + 1])
         if unique:
@@ -955,12 +933,10 @@ class VisualizeEnergies(MoleculeViewer):
         return self.add_bonds(atoms1, atoms2, colors=color)
 
     def show_dof(self, dofs, **kwargs):
-        """
-        Show specific degrees of freedom.
+        """Show specific degrees of freedom.
 
-        Params
-        ======
-
+        Parameters
+        ==========
         dofs: list of tuples.
             list of degrees of freedom defined according with g09 convention.
 
@@ -973,8 +949,7 @@ class VisualizeEnergies(MoleculeViewer):
             self.add_dof(dof, **kwargs)
 
     def show_bonds(self, **kwargs):
-        """
-        Show the bonds in the molecule.
+        """Show the bonds in the molecule.
 
         Notes
         -----
