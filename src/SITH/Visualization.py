@@ -71,9 +71,9 @@ class MoleculeViewer:
             color = [0.5, 0.5, 0.5]
 
         indexes = [atom1index, atom2index]
-        indexes.sort()
+        if atom1index > atom2index:
+            indexes = indexes[::-1]
         name = ''.join(str(i).zfill(3) for i in indexes)
-
         self.remove_bond(atom1index, atom2index)
         b = self.shape.add_cylinder(atoms[atom1index-1].position,
                                     atoms[atom2index-1].position,
@@ -260,7 +260,8 @@ class MoleculeViewer:
             atoms = self.atoms
 
         indexes = [atom1index, atom2index, atom3index]
-        indexes.sort()
+        if atom1index > atom3index:
+            indexes = indexes[::-1]
         name = ''.join(str(i).zfill(3) for i in indexes)
         self.remove_angle(atom1index, atom2index, atom3index)
         self.angles[name] = []
@@ -391,7 +392,8 @@ class MoleculeViewer:
             color = [0.5, 0.5, 0.5]
 
         indexes = [atom1index, atom2index, atom3index, atom4index]
-        indexes.sort()
+        if atom1index > atom4index:
+            indexes = indexes[::-1]
         name = ''.join(str(i).zfill(3) for i in indexes)
 
         axis = (atoms[atom3index-1].position -
@@ -633,43 +635,8 @@ class VisualizeEnergies(MoleculeViewer):
 
         see: https://doi.org/10.1063/1.4870334
         """
-        self.sith.extract_data()
-        self.sith.analyze()
-
-    def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
-        """
-        Add the degree of freedom to the molecule image
-
-        Parameters
-        ==========
-
-        dof: tuple
-            label of the degree of freedom according with g09 convention.
-
-        Example
-        =======
-            i=(1, 2) means a bond between atoms 1 and 2
-            i=(1, 2, 3) means an angle between atoms 1, 2 and 3
-            i=(1, 2, 3, 4) means a dihedral angle between atoms 1, 2, 3 and 4
-        """
-
-        types = ["bond", "angle", "dihedral"]
-        type_dof = types[len(dof)-2]
-
-        if type_dof == "bond":
-            index1, index2 = dof
-            return self.add_bond(index1, index2, color, radius=radius)
-
-        elif type_dof == "angle":
-            index1, index2, index3 = dof
-            return self.add_angle(index1, index2, index3, color, n=n)
-
-        elif type_dof == "dihedral":
-            index1, index2, index3, index4 = dof
-            return self.add_dihedral(index1, index2, index3,
-                                     index4, color, n=n)
-        else:
-            raise TypeError(f"{dof} is not an accepted degree of freedom.")
+        self.sith.extractData()
+        self.sith.energyAnalysis()
 
     def energies_bonds(self, **kwargs):
         """
