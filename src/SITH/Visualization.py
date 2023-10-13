@@ -41,7 +41,7 @@ class MoleculeViewer:
             self.add_axis()
 
     def add_bond(self, atom1index, atom2index,
-                 color=[0.5, 0.5, 0.5], radius=0.1):
+                 color=None, radius=0.1):
         """ Add a bond between two atoms:
         atom1 and atom2
 
@@ -67,6 +67,8 @@ class MoleculeViewer:
             atoms = self.atoms[0]
         else:
             atoms = self.atoms
+        if color is None:
+            color = [0.5, 0.5, 0.5]
 
         indexes = [atom1index, atom2index]
         indexes.sort()
@@ -229,7 +231,7 @@ class MoleculeViewer:
         return triangles
 
     def add_angle(self, atom1index, atom2index, atom3index,
-                  color=[0.5, 0.5, 0.5], n=0):
+                  color=None, n=0):
         """ Add an angle to between three atoms:
         atom1, atom2 and atom3
         - with the vertex in the atom2
@@ -249,6 +251,8 @@ class MoleculeViewer:
         ======
         Return the angles in the system
         """
+        if color is None:
+            color = [0.5, 0.5, 0.5]
 
         if self.is_trajectory:
             atoms = self.atoms[0]
@@ -358,7 +362,7 @@ class MoleculeViewer:
         self.angles.clear()
 
     def add_dihedral(self, atom1index, atom2index, atom3index,
-                     atom4index, color=[0.5, 0.5, 0.5], n=0):
+                     atom4index, color=None, n=0):
         """ Add an dihedral angle between four atoms:
         atom1, atom2, atom3 and atom4
         - with the vertex in the midle of the atom 2 and 3
@@ -383,6 +387,8 @@ class MoleculeViewer:
             atoms = self.atoms[0]
         else:
             atoms = self.atoms
+        if color is None:
+            color = [0.5, 0.5, 0.5]
 
         indexes = [atom1index, atom2index, atom3index, atom4index]
         indexes.sort()
