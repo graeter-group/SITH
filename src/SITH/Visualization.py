@@ -552,13 +552,22 @@ class MoleculeViewer:
             angle *= -1
         return self.rot_x(-angle)
 
-    def apply_trans(self, atoms, trans):
+    def apply_trans(self, atoms, trans, indexes=None):
         """
         Apply a transformation to all vector positions of the
         atoms object
         """
-        new_positions = [np.dot(trans, atom.position) for atom in atoms]
+        if indexes is None:
+            indexes = list(range(len(atoms)))
+
+        new_positions = []
+        for i, atom in enumerate(atoms):
+            if i in indexes:
+                new_positions.append(np.dot(trans, atom.position))
+            else:
+                new_positions.append(atom.position)
         atoms.set_positions(new_positions)
+
         return new_positions
 
     def xy_alignment(self, atoms, index1, index2, index3):
