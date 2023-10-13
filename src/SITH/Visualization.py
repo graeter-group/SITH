@@ -983,11 +983,3 @@ class VisualizeEnergies(MoleculeViewer):
         """
         dofs = self.sith._deformed[0].dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
-
-    def create_trajectory(self, **kwargs):
-        self.traj = VisualizeEnergies(self.sith, trajectory=True, **kwargs)
-        self.traj.viewer.view.clear_representations()
-        self.traj.viewer.view.add_ball_and_stick()
-
-        return self.traj
-       
