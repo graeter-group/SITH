@@ -64,7 +64,7 @@ class SITH:
             -- G09Reader
         reference: int (optional)
             index of the structure to have as a reference for the energy
-            distribution analysis. Default: 0
+            distribution analysis. Default=0
         **kwargs
             additional arguments for the selected reader.
         """
@@ -234,7 +234,8 @@ class SITH:
                                                  for defo in
                                                  self.structures]) - e_ref
 
-        print("Atoms and DOFs killed...")
+        # TODO: use logging instead of print
+        # print("Atoms and DOFs killed...")
 
         return self.removed_dofs
 
@@ -253,7 +254,7 @@ class SITH:
 
         Return
         ======
-        (list) Deformed Geometry objects. self.structures.
+        (list) Deformed Geometry objects. SITH.structures.
         """
         ini_index = rem_first_def
         last_index = self.n_structures - rem_last_def
@@ -273,11 +274,35 @@ class SITH:
 
     # region Energy Analysis
     def jedi_analysis(self):
+        """Uses the values in 'structures' (:mod:`~SITH.Utilities.Geometry`
+        of each configuration) and computes the distribution of energies
+        using JEDI (Harmonic approximation)
+
+        Return
+        (float, np.array) energy predicted by the method summing up the
+        energies of each DOF
+        """
         ja = JediAnalysis(self)
         self.structure_energy, self.dofs_energy = ja.jedi_analysis()
         return self.structure_energy, self.dofs_energy
 
     def sith_analysis(self, integration_method: str = 'trapezoid_integration'):
+        """Uses the values in 'structures' (:mod:`~SITH.Utilities.Geometry`
+        of each configuration) and computes the distribution of energies
+        using SITH (Numerical integration).
+
+        Parameters
+        ==========
+        integration_method: str
+           choose one of the next integration methods:
+               - trapezoid_integration (Default)
+               - simpson_integration
+               - rectangle_integration
+
+        Return
+        (float, np.array) energy predicted by the method summing up the
+        energies of each DOF
+        """
         sa = SithAnalysis(self)
         # transform integration method from string to method
         integration_method = getattr(sa, integration_method)

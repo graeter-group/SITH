@@ -2,7 +2,17 @@ import numpy as np
 
 
 class SithAnalysis:
+    """Tool to compute the energy distribution analysis using numerical
+    integration.
+    """
     def __init__(self, structures_info):
+        """
+        Parameters
+        ==========
+        structures_info: list
+            list of :mom:`SITH.Utilities.Geometry` containing the data obtained
+            with QM.
+        """
         self.structures_info = structures_info
         self.structures_info.delta_q = self.get_sith_dq()
 
@@ -19,9 +29,7 @@ class SithAnalysis:
         return delta_dofs
 
     def rectangle_integration(self):
-        """
-        Numerical integration using rectangle rule algorithm. Method 0 in this
-        class (see Sith parameters).
+        """Numerical integration using rectangle rule algorithm.
 
         Return
         ======
@@ -35,9 +43,7 @@ class SithAnalysis:
         return energies, total_ener
 
     def trapezoid_integration(self):
-        """
-        Numerical integration using trapezoid rule algorithm. Method 1 in this
-        class (see Sith parameters).
+        """Numerical integration using trapezoid rule algorithm.
 
         Return
         ======
@@ -57,9 +63,7 @@ class SithAnalysis:
         return energies, total_ener
 
     def simpson_integration(self):
-        """
-        Numerical integration using simpson algorithm. Method 2 in this class
-        (see Sith parameters).
+        """Numerical integration using Simpson algorithm.
 
         Return
         ======
