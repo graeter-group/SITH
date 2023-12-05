@@ -63,6 +63,36 @@ class Geometry:
         self.atoms = None  # mandatory
         # endregion
 
+    def __eq__(self, __o: object) -> bool:
+        """Basic method used to compare two Geometry objects
+
+        Parameters
+        ==========
+        __o: obj
+            object to compare
+
+        Returns
+        =======
+        (bool) True if Geometry objects have the same values on the attributes.
+        """
+        if not isinstance(__o, Geometry):
+            return False
+        b = True
+        b = b and self.name == __o.name
+        b = b and self.n_atoms == __o.n_atoms
+        b = b and self.scf_energy == __o.scf_energy
+        b = b and (self.dims, __o.dims).all()
+        b = b and (self.dim_indices, __o.dim_indices).all()
+        b = b and ((self.hessian is None and __o.hessian is None) or
+                   (self.hessian == __o.hessian).all())
+        b = b and ((self.internal_forces is None and 
+                    __o.internal_forces is None) or
+                   (self.internal_forces == __o.internal_forces).all())
+        b = b and (self.dof, __o.dof).all()
+        b = b and self.atoms == __o.atoms
+
+        return b
+
     def kill_dofs(self, dof_indices: list[int]) -> np.array:
         """Takes in list of indices of degrees of freedom and removes DOFs from
         dof, dim_indices, internal_forces, and hessian; updates dims
