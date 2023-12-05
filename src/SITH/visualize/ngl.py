@@ -5,7 +5,7 @@ import numpy as np
 from ase.visualize import view
 
 
-class MoleculeViewer:
+class EnergiesNGL:
     def __init__(self, atoms, alignment=None, axis=False):
         """Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
