@@ -1,10 +1,8 @@
-"""Calculates & houses SITH analysis data."""
-import sys
-from typing import Tuple
-import pathlib
-from pathlib import Path
 import numpy as np
-from SITH.Utilities import Extractor, Geometry
+import importlib
+from typing import Union
+from SITH.energy_analysis.sith_analysis import SithAnalysis
+from SITH.energy_analysis.jedi_analysis import JediAnalysis
 
 
 class SITH:
