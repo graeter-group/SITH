@@ -3,7 +3,7 @@ import numpy as np
 
 class Geometry:
     """Houses data associated with a molecular structure, all public variables
-    are intended for access not modification.
+    are intended for access, not modification.
 
     Every sith.readers.<reader> must assing the values of Geometry attributes.
 
@@ -17,17 +17,17 @@ class Geometry:
     scf_energy: float
         Potential energy associated with geometry.
     dims: np.array
-        Array of number of dimensions of DOF type with shape (4)
+        Array of number of DOFs types in 4 components
         [0]: total dimensions/DOFs
         [1]: bond lengths
         [2]: bond angles
         [3]: dihedral angles
-    dof: np.array
-        values of the DOFs for the given configuration with shape (#DOFs).
     dim_indices: np.array
         Indices that define each DOF with shape (#DOFs, 4). These indices start
-        in one. Indices zero means None because of DOFs with less than 4
-        indices, e.g. distances.
+        in one. Index zero means None for DOFs with less than 4 indices, e.g.
+        distances.
+    dof: np.array
+        values of the DOFs for the given configuration with shape (#DOFs).
     hessian: np.array
         Hessian matrix associated with the geometry in units of
     internal_forces: np.array
@@ -39,13 +39,13 @@ class Geometry:
     """
 
     def __init__(self, name: str = ''):
-        """Geometry object that SITH would take to compute the energy
-        distribution analysis.
+        """Geometry object that stores the geometric information of each
+        structure and sith takes to compute the energy distribution analysis.
 
         Parameters
         ==========
         name: str (optional)
-            name of the Geometry object, it is arbitrary. Default: ''
+            name of the Geometry object, it is arbitrary. Default defined by reader.
         """
         # region Basic Attributes
 

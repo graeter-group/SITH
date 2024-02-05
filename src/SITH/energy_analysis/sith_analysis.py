@@ -36,7 +36,8 @@ class SithAnalysis:
         (tuple) [energies, total_ener] energies computed by SITH
         method.
         """
-        all_values = - self.structures_info.all_forces * self.structures_info.delta_q
+        all_values = - self.structures_info.all_forces * \
+            self.structures_info.delta_q
         energies = np.cumsum(all_values, axis=0)
         total_ener = np.sum(energies, axis=1)
 
@@ -55,7 +56,8 @@ class SithAnalysis:
         added_forces = (self.structures_info.all_forces[1:] +
                         self.structures_info.all_forces[:-1]) / 2
         all_values = added_forces * self.structures_info.delta_q[1:]
-        all_values = np.insert(all_values, 0, np.zeros(self.structures_info.dims[0]),
+        all_values = np.insert(all_values, 0,
+                               np.zeros(self.structures_info.dims[0]),
                                axis=0)
         energies = -np.cumsum(all_values, axis=0)
         total_ener = np.sum(energies, axis=1)

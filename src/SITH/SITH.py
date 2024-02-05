@@ -17,7 +17,7 @@ class SITH:
     n_structures: list
         Number of structures to include in the analysis.
     dims: np.array
-        Array of number of dimensions of DOF type with shape (4)
+        counter of the DOFs, organized as:
         [0]: total dimensions/DOFs
         [1]: bond lengths
         [2]: bond angles
@@ -35,16 +35,19 @@ class SITH:
     dof_energies: np.array
         Stress energy associated to all DOFs for all structures with shape
         (#structures, #DOFs)
-    structure_energy: np.array
+    structure_energies: np.array
         Energy of each structure according to the distribution of energies with
         shape (#structures)
     energies_percentage: np.array
         Percentage of stress energy in each degree of freedom respect to the
         structure energy with shape (#structures, #DOFs)
-    removed_dof: dict
+    removed_dofs: dict
         Tracking of the removed DOFs. keys are '<structure index>_<DOF index>',
         values are the arrays of indices that define the removed DOF.
     dim_indices: np.array
+        Indices that define each DOF with shape (#DOFs, 4). These indices start
+        in one. Index zero means None for DOFs with less than 4 indices, e.g.
+        distances.
     """
 
     def __init__(self, inputfiles: Union[list, str],
@@ -89,7 +92,7 @@ class SITH:
                                       for defo in self.structures])
         self.all_forces = np.array([defo.internal_forces
                                     for defo in self.structures])
-        self.dofs_energy = None
+        self.dofs_energies = None
         self.structure_energy = None
         self.energies_percertage = None
 
@@ -114,12 +117,18 @@ class SITH:
     # region Validate
     def _validate_geometries(self):
         """Ensure that all structures are compatible(# atoms, # dofs, etc.)"""
-        # TODO: Replace print by logging        
-        #print("Validating geometries...")
+        # TODO: Replace print by logging
+        # print("Validating geometries...")
         ref = self.structures[0]
-        assert all([deformn.n_atoms == ref.n_atoms for deformn in self.structures]), "Incompatible number of atoms"
-        assert all([(deformn.dims == ref.dims).all() for deformn in self.structures]), f"Incompatible dimensions {ref.dims} {self.structures[-1].dims}"
-        assert all([(deformn.dim_indices == ref.dim_indices).all() for deformn in self.structures]), "Incompatible dimensions"
+        assert all([deformn.n_atoms == ref.n_atoms
+                    for deformn in self.structures]), \
+            "Incompatible number of atoms"
+        assert all([(deformn.dims == ref.dims).all()
+                    for deformn in self.structures]), \
+            f"Incompatible dimensions {ref.dims} " +\
+            f"{self.structures[-1].dims}"
+        assert all([(deformn.dim_indices == ref.dim_indices).all()
+                    for deformn in self.structures]), "Incompatible dimensions"
     # endregion
 
     # Error
@@ -152,7 +161,7 @@ class SITH:
         all structures. Ensures that all structures data are compatible.
         """
         # TODO: change prints for logging
-        #print("Removing extra DOFs in the structures... " +
+        # print("Removing extra DOFs in the structures... " +
         #      "(check SITH.removed_dofs)")
         n_dimensions = [defo.dims[0] for defo in self.structures]
         ref_index = n_dimensions.index(min(n_dimensions))
@@ -246,10 +255,10 @@ class SITH:
 
         Parameters
         ==========
-        rem_first_def: int
+        rem_first_def: int (optional)
             number of configuration to remove in the first stretched
-            configuration.
-        rem_last_def: int
+            configuration. Default=0
+        rem_last_def: int (optional)
             number of configuration to remove in the last stretching
             configuration. Default=0
         from_last_minimum: bool (optional)
@@ -277,8 +286,10 @@ class SITH:
 
         self.structures = self.structures[ini_index: last_index]
         self.n_structures = len(self.structures)
-        self.structures_scf_energies = self.structures_scf_energies[ini_index: last_index]
-        self.structures_scf_energies -= self.structures_scf_energies[self.reference]
+        self.structures_scf_energies = self.structures_scf_energies[
+            ini_index: last_index]
+        self.structures_scf_energies -= self.structures_scf_energies[
+            self.reference]
         self.all_dofs = self.all_dofs[ini_index: last_index]
         if self.all_hessians is not None:
             self.all_hessians = self.all_hessians[ini_index: last_index]
@@ -300,9 +311,10 @@ class SITH:
         (float, np.array) energy predicted by the method summing up the
         energies of each DOF
         """
+        # Jedi Analysis (ja)
         ja = JediAnalysis(self)
-        self.structure_energy, self.dofs_energy = ja.jedi_analysis()
-        return self.structure_energy, self.dofs_energy
+        self.dofs_energies, self.structure_energy = ja.jedi_analysis()
+        return self.structure_energy, self.dofs_energies
 
     def sith_analysis(self, integration_method: str = 'trapezoid_integration'):
         """Uses the values in 'structures' (:mod:`~SITH.Utilities.Geometry`
@@ -321,9 +333,10 @@ class SITH:
         (float, np.array) energy predicted by the method summing up the
         energies of each DOF
         """
+        # SITH Analysis (sa)
         sa = SithAnalysis(self)
         # transform integration method from string to method
         integration_method = getattr(sa, integration_method)
-        self.dofs_energy, self.structure_energy = integration_method()
-        return self.structure_energy, self.dofs_energy
+        self.dofs_energies, self.structure_energy = integration_method()
+        return self.structure_energy, self.dofs_energies
     # endregion

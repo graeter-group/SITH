@@ -32,7 +32,7 @@ class FileReader:
         attributes of the class :mod:`~SITH.Utilities.Geometry`.
     """
     def __init__(self, path: Union[Path, str], extract_data: bool = True):
-        """Initializes reader
+        """Initializes g09 reader
 
         Parameters
         ==========
@@ -123,17 +123,17 @@ class FileReader:
         FileReader.atomic_nums must have an assigned value.
         """
         assert self.cartesian_coord is not None, "Cartesian coordinates " +\
-            "not read properly"
+            "were not read properly"
         assert self.atomic_nums is not None, "Atomic numbers were not read " +\
-            "were properly"
+            " properly"
         atomic_coord = self.cartesian_coord
         molecule = ''.join([chemical_symbols[int(i)]
                             for i in self.atomic_nums])
         self.geometry.atoms = Atoms(molecule, atomic_coord)
 
         return self.geometry.atoms
-    # region readers
 
+    # region readers
     def _fill_array(self, ith_line: int, dtype=None) -> tuple[np.ndarray, int]:
         """Fill an array after a given the header of a g09 block.
 
@@ -374,7 +374,7 @@ class G09Reader:
         inputfiles: list or str
             list of paths to the fchk files (as strings or paths). The order of
             the elements matters according to the energy anaylis applied. This
-            parameter could also be a string of the path to the a directory
+            parameter could be also a string of the path to the a directory
             containing the fchk files in alphabetic order.
         """
         if isinstance(inputfiles, str):
