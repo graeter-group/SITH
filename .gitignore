@@ -92,3 +92,7 @@ tests/E_RICs.txt
 tests/x0summary.txt
 tests/x0.xyz
 tests/summary.txt
+
+
+# Temporal ignoring
+./examples
