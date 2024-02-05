@@ -282,8 +282,10 @@ class SITH:
         self.all_dofs = self.all_dofs[ini_index: last_index]
         if self.all_hessians is not None:
             self.all_hessians = self.all_hessians[ini_index: last_index]
-        if self.dofs_energy is not None:
-            self.structure_energy = np.sum(self.dofs_energy, axis=1)
+        if self.all_forces is not None:
+            self.all_forces = self.all_forces[ini_index: last_index]
+        if self.dofs_energies is not None:
+            self.structure_energy = np.sum(self.dofs_energies, axis=1)
 
         return self.structures
     # endregion
