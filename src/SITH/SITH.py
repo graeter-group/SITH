@@ -239,7 +239,8 @@ class SITH:
 
         return self.removed_dofs
 
-    def rem_first_last(self, rem_first_def=0, rem_last_def=0) -> list:
+    def rem_first_last(self, rem_first_def=0, rem_last_def=0,
+                       from_last_minimum: bool = False) -> list:
         """Removes first and last structure configs and data from all the
         attributes of the Sith object.
 
@@ -250,13 +251,28 @@ class SITH:
             configuration.
         rem_last_def: int
             number of configuration to remove in the last stretching
-            configuration
+            configuration. Default=0
+        from_last_minimum: bool (optional)
+            set the rem_first_def to the structure of the last minium in the
+            total energy if it is larger than current value of rem_first_def.
+            Default=False
 
         Return
         ======
         (list) Deformed Geometry objects. SITH.structures.
         """
-        ini_index = rem_first_def
+        if from_last_minimum:
+            try:
+                dif_ener = self.structures_scf_energies[1:] - \
+                    self.structures_scf_energies[:-1] < 0
+                i_min = (np.where(dif_ener)[0] + 1)[-1]
+                ini_index = max(rem_first_def, i_min)
+            except IndexError:
+                ini_index = rem_first_def
+                pass
+        else:
+            ini_index = rem_first_def
+
         last_index = self.n_structures - rem_last_def
 
         self.structures = self.structures[ini_index: last_index]
