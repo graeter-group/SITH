@@ -51,7 +51,7 @@ class EnergiesVMol(VMolecule):
     vatoms: list
         set of spheres that represents the atoms in the displayed scene.
     """
-    def __init__(self, sith_info: SITH,
+    def __init__(self, sith_info: SITH, dofs: list,
                  idef: int = 0,
                  alignment: Union[list, tuple, np.ndarray] = None,
                  show_axis: bool = False,
@@ -65,7 +65,8 @@ class EnergiesVMol(VMolecule):
         Parameters
         ==========
         sith_info: SITH
-            sith object with the QM information to perform the analysis.
+            sith object with the distribution of energies and structures
+            information.
         idef: int
             initial deformation to be considered as reference. Default=0
         alignment: list
@@ -84,6 +85,10 @@ class EnergiesVMol(VMolecule):
         """
         self.canvaskwargs = kwargs
         self.sith = sith_info
+        dims = self.sith.dims
+        self.nbonds = dims[1]
+        self.nangles = dims[2]
+        self.ndihedral = dims[3]
 
         atoms = [config.atoms for config in self.sith.structures]
 
@@ -99,27 +104,8 @@ class EnergiesVMol(VMolecule):
             height = 500
             kwargs['height'] = height
 
-        VMolecule.__init__(self, atoms,
-                           show_axis=show_axis,
-                           alignment=alignment,
-                           frame=idef,
-                           align='left',
-                           js='<img src="colorbar.png"' +
-                              'style="object-fit:fill;' +
-                              f'height:{height}px;"/>',
-                           portion=portion,
-                           **kwargs)
-        self.scene.background = self._asvector(background)
-        self.traj_buttons()
-
-        dims = self.sith.dims
-        self.nbonds = dims[1]
-        self.nangles = dims[2]
-        self.ndihedral = dims[3]
-
         # matplotlib figure for colorbar
         self.fig = None
-
         self.kwargs_edofs = {'cmap': mpl.cm.get_cmap("Blues"),
                              'label': "Energy [Ha]",
                              'labelsize': 20,
@@ -208,7 +194,7 @@ class EnergiesVMol(VMolecule):
         =======
         (tuple) DOFs and their computed energies.
         """
-        dofs = self.sith.structures[0].dim_indices[:self.nbonds]
+        dofs = self.sith.dim_indices[:self.nbonds]
         out = self.energies_some_dof(dofs, **kwargs)
 
         return out
@@ -226,7 +212,7 @@ class EnergiesVMol(VMolecule):
         =======
         (tuple) DOFs and their computed energies.
         """
-        dofs = self.sith.structures[0].dim_indices[self.nbonds:self.nbonds +
+        dofs = self.sith.dim_indices[self.nbonds:self.nbonds +
                                                    self.nangles]
         out = self.energies_some_dof(dofs, **kwargs)
         return out
@@ -244,7 +230,7 @@ class EnergiesVMol(VMolecule):
         =======
         (tuple) DOFs and their computed energies.
         """
-        dofs = self.sith.structures[0].dim_indices[self.nbonds + self.nangles:]
+        dofs = self.sith.dim_indices[self.nbonds + self.nangles:]
         out = self.energies_some_dof(dofs, **kwargs)
         return out
 
@@ -283,14 +269,37 @@ class EnergiesVMol(VMolecule):
         =======
         (tuple) DOFs and their computed energies.
         """
-        dofs = self.sith.structures[0].dim_indices
+        dofs = self.sith.dim_indices
         return self.energies_some_dof(dofs, **kwargs)
 
-    def energies_some_dof(self, dofs: list, cmap=None, label: str = None,
-                          labelsize: float = None, orientation: str = None,
-                          div: int = None, deci: int = None, width: int = None,
-                          height: int = None, absolute: int = None,
-                          **kwargs) -> tuple:
+    def change_def(self, def_dict: dict, **kwargs) -> tuple:
+        """
+        This functions change the values stored in a dictionary and removes
+        each one of the arguments from the kwargs.
+        
+        Parameters
+        ==========
+        def_dict: dict
+            dictionary with the default values.
+        **kwargs: all the arguments you want to change.
+
+        Returns
+        =======
+        (dict, dict) modified dictionary withe the default values and set of
+        kwargs without the used keys.
+        """
+        rem_keys = []
+        for key, value in kwargs.items():
+            if key in def_dict.keys():
+                rem_keys.append(key)
+                def_dict[key] = value
+
+        for key in rem_keys:
+            del kwargs[key]
+
+        return def_dict, kwargs
+
+    def energies_some_dof(self, dofs, **kwargs) -> tuple:
         r"""
         Add the bonds with a color scale that represents the distribution of
         energy according to the JEDI method.
@@ -299,156 +308,23 @@ class EnergiesVMol(VMolecule):
         ==========
         dofs: list of tuples.
             list of degrees of freedom defined according with g09 convention.
-        cmap: cmap.
-            cmap used in the color bar. Default: mpl.cm.get_cmap("Blues")
-        label: str.
-            label of the color bar. Default: "Energy [Ha]"
-        labelsize: float.
-            size of the labels in the color bar defined as text points.
-            Default=20
-        orientation: "vertical" or "horizontal".
-            orientation of the color bar. Default: "vertical"
-        div: int.
-            number of colors in the colorbar. Default=5
-        deci: int
-            number of decimals in the colorbar. Default=2
-        width: int
-            width (in pixels) of the space that will contain the scene and the
-            color bar. Deault=700
-        height: int
-            height (in pixels) of the space that will contain the scene and the
-            color bar. Deault=700
-        absolute: bool
-            True to define the color bar based on the maximum energy of the all
-            the DOFS in all the stretching confs. False to define the color bar
-            based on the maximum energy of the all the DOFS in the present
-            stretching conf.
+        normalize:
+            normalization of colors acording to the range of energies and the
+            colormap.
         \*\*kwargs of VMolecule.add_dof
 
         Returns
         =======
-        (tuple) DOFs and their computed energies.
+        (list) VPython objects of the visual representation of DOFs.
         """
-        if cmap is None:
-            cmap = self.kwargs_edofs['cmap']
-        else:
-            self.kwargs_edofs['cmap'] = cmap
-
-        if label is None:
-            label = self.kwargs_edofs['label']
-        if labelsize is None:
-            labelsize = self.kwargs_edofs['labelsize']
-        if orientation is None:
-            orientation = self.kwargs_edofs['orientation']
-        if div is None:
-            div = self.kwargs_edofs['div']
-        else:
-            self.kwargs_edofs['div'] = div
-        if deci is None:
-            deci = self.kwargs_edofs['deci']
-        if width is None:
-            width = self.kwargs_edofs['width']
-        if height is None:
-            height = self.kwargs_edofs['height']
-        if absolute is None:
-            absolute = self.kwargs_edofs['absolute']
-        else:
-            self.kwargs_edofs['absolute'] = absolute
-        energies = []
-        dof_ind = self.sith.structures[0].dim_indices
-        for dof in dofs:
-            for index, sithdof in enumerate(dof_ind):
-                if (dof == sithdof).all():
-                    energies.append(self.sith.dofs_energies[self.idef][index])
-
-        assert len(dofs) == len(energies), "The number of DOFs " + \
-            f"({len(dofs)}) does not correspond with the number of " + \
-            f"energies ({len(energies)})"
-
-        minval = min(energies)
-        maxval = max(energies)
-
-        # respect to the max-min dof energy of all stretching
-        # TODO: can this be merged with the previous for?
-        energies_ref = []
-        if absolute:
-            for dof in dofs:
-                for index, sithdof in enumerate(dof_ind):
-                    if (dof == sithdof).all():
-                        energies_ref.append(self.sith.dofs_energies[:, index])
-                all_ener = np.array(energies_ref).flatten()
-                minval = min(all_ener)
-                maxval = max(all_ener)
-        # In case of all the energies are the same (e.g. 0 stretching)
-        if minval == maxval:
-            minval = 0
-            maxval = 1
-
-        if orientation == 'v' or orientation == 'vertical':
-            rotation = 0
-        else:
-            rotation = 90
-
-        boundaries = np.linspace(minval, maxval, div + 1)
-        normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
-
-        # Costumize cbar
-        if self.fig is None:
-            self._create_colorbar(normalize, cmap, deci, label, labelsize,
-                                  rotation)
-
+        self.kwargs_edofs, kwargs = self.change_def(self.kwargs_edofs,
+                                                    **kwargs)
+        cmap = self.kwargs_edofs['cmap']
         for i, dof in enumerate(dofs):
-            color = cmap(normalize(energies[i]))[:3]
+            color = cmap(self.normalize(self.energies[self.idef][i]))[:3]
             self.add_dof(dof, color=color, **kwargs)
 
-        return dofs, energies
-
-    def _create_colorbar(self, normalize, cmap,
-                         deci: int, label: str,
-                         labelsize: float, rotation: str) -> None:
-        """
-        Creates the Color bar using matplotlib ans stores it in a png figure.
-
-        Parameters
-        ==========
-        cmap: cmap.
-            cmap used in the color bar.
-        label: str.
-            label of the color bar.
-        labelsize: float.
-            size of the labels in the color bar defined as text points.
-        rotation: float
-            Angle (in degrees) of the ticks.
-        deci: int
-            number of decimals in the colorbar.
-        """
-        # TODO: delete the present canvas and create a new
-        # one with the created figure
-        dpi = 300
-        # labelsize is given in points, namely 1/72 inches
-        # the width is here defined as 1.16 times the space occupied by
-        # the ticks and labels(see below)
-        width_inches = 0.07*labelsize
-        height_inches = self.scene.height / dpi  # Convert pixels to inches
-
-        self.fig, self.ax = plt.subplots(figsize=(width_inches, height_inches))
-        cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
-                                                       cmap=cmap),
-                                 cax=self.ax, orientation='vertical',
-                                 format='%1.{}f'.format(deci))
-        cbar.set_label(label=label,
-                       fontsize=labelsize,
-                       labelpad=0.5 * labelsize)
-        cbar.ax.tick_params(labelsize=0.8*labelsize,
-                            length=0.2*labelsize,
-                            pad=0.2*labelsize,
-                            rotation=rotation)
-        self.ax.set_position(Bbox([[0.01, 0.1],
-                                   [0.99-0.06*labelsize/width_inches,
-                                    0.9]]),
-                             which='both')
-        plt.savefig('colorbar.png', dpi=dpi)
-        plt.close()
+        return self.dofs, kwargs
 
     def show_bonds_of_DOF(self, dof: list, unique: bool = False,
                           color: list = None) -> dict:
@@ -470,7 +346,7 @@ class EnergiesVMol(VMolecule):
         (dict) all the DOFs in the system. keys -> dof names,
         values -> vpython.objects
         """
-        dof_indices = self.sith.structures[0].dim_indices[dof]
+        dof_indices = self.sith.dim_indices[dof]
         if color is None:
             colors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
             color = colors[len(dof_indices) - 2]
@@ -516,7 +392,7 @@ class EnergiesVMol(VMolecule):
         The color is not related with the JEDI method. It
         could be changed with the kwarg color=rgb list.
         """
-        dofs = self.sith.structures[0].dim_indices[:self.nbonds]
+        dofs = self.sith.dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
 
     def traj_buttons(self) -> vp.button:
