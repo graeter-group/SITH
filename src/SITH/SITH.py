@@ -79,6 +79,7 @@ class SITH:
         # check compatibility between strucures
         self.remove_extra_dofs()
         self._validate_geometries()
+        self.dim_indices = self.structures[0].dim_indices
 
         self.n_structures = len(self.structures)
         # structures geometries must be the equal.
@@ -93,6 +94,7 @@ class SITH:
         self.dofs_energies = None
         self.structure_energy = None
         self.energies_percertage = None
+        self.delta_q = None
 
     def _get_reader(self, reader: str) -> object:
         """Import the class of the reader. It depends on the software used by
@@ -176,6 +178,8 @@ class SITH:
                     j -= 1
                 j += 1
 
+        self.dim_indices = self.structures[0].dim_indices
+
         return self.removed_dofs
 
     def killer(self, killAtoms: list = None, killDOFs: list = None,
@@ -238,6 +242,7 @@ class SITH:
                                                  for defo in
                                                  self.structures]) - e_ref
 
+        self.dim_indices = self.structures[0].dim_indices
         # TODO: use logging instead of print
         # print("Atoms and DOFs killed...")
 
