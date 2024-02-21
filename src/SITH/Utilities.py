@@ -1,4 +1,5 @@
 import numpy as np
+from SITH.SITH import SITH
 
 
 class Geometry:
@@ -37,7 +38,6 @@ class Geometry:
 
     Note: All quantities are in units of Hartrees, Angstrom, radians
     """
-
     def __init__(self, name: str = ''):
         """Geometry object that stores the geometric information of each
         structure and sith takes to compute the energy distribution analysis.
@@ -45,7 +45,8 @@ class Geometry:
         Parameters
         ==========
         name: str (optional)
-            name of the Geometry object, it is arbitrary. Default defined by reader.
+            name of the Geometry object, it is arbitrary. Default defined by
+            reader.
         """
         # region Basic Attributes
 
@@ -85,7 +86,7 @@ class Geometry:
         b = b and (self.dim_indices, __o.dim_indices).all()
         b = b and ((self.hessian is None and __o.hessian is None) or
                    (self.hessian == __o.hessian).all())
-        b = b and ((self.internal_forces is None and 
+        b = b and ((self.internal_forces is None and
                     __o.internal_forces is None) or
                    (self.internal_forces == __o.internal_forces).all())
         b = b and (self.dof, __o.dof).all()
