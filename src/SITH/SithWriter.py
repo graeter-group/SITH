@@ -1,3 +1,6 @@
+from pathlib import Path
+from ase.units import Bohr
+import numpy as np
 import os
 
 
@@ -9,6 +12,18 @@ class WriteSITH:
         again.
         """
         self.geometry = geometry
+
+        # Units in fchk are different:
+        self.geometry.dof[:self.geometry.dims[1]] /= Bohr
+        
+        if self.geometry.hessian is not None:
+            self.geometry.hessian[:, : self.geometry.dims[1]] *= Bohr
+            self.geometry.hessian[: self.geometry.dims[1]] *= Bohr
+        if self.geometry.internal_forces is not None:
+            self.geometry.internal_forces[:self.geometry.dims[1]] *= Bohr
+
+        self._transform_hessian()
+
         self.lines = f'This file was created using SITH.SithWriter. All ' +\
             'the units of quantities are in Hartrees, Angstroms or Radians.\n'
 
@@ -30,10 +45,22 @@ class WriteSITH:
                                 self.__internal_forces: 'internal_forces',
                                 self.__hessian_header: 'hessian'}
 
+    def _transform_hessian(self):
+        if self.geometry.hessian is not None:
+            n = self.geometry.dims[0]
+            row, col = np.tril_indices(n)
+            tril = np.zeros(len(row))
+            for i in range(len(row)):
+                tril[i] = self.geometry.hessian[row[i]][col[i]]
+            self.geometry.hessian = tril
+            return tril
+        else:
+            return None
+
     def _write_atoms(self):
         """Writes atoms coordinates and atomic numbers"""
         cs = self.geometry.atoms.get_atomic_numbers()
-        pos = self.geometry.atoms.positions
+        pos = self.geometry.atoms.positions / Bohr
         lines = self._write_array(self.__atomic_nums_header, cs)
         lines += self._write_array(self.__coords_header, pos)
         self.lines += lines
@@ -131,14 +158,21 @@ class WriteSITH:
         self._write_atoms()
 
         for header, variable in self.headers_scalars.items():
-            self._write_scalar(header,
-                               getattr(self.geometry, 
-                                       variable))
+            if getattr(self.geometry, variable) is not None:
+                self._write_scalar(header,
+                                getattr(self.geometry, 
+                                        variable))
+            else:
+                print(f'Geometry object does not have a defined {variable}')
 
         for header, variable in self.headers_vectors.items():
-            self._write_scalar(header,
-                               getattr(self.geometry, 
-                                       variable))
+            if getattr(self.geometry, variable) is not None:
+                self._write_array(header,
+                                getattr(self.geometry, 
+                                        variable))
+            else:
+                print(f'Geometry object does not have a defined {variable}')
+
 
         with open(outputfile, 'w') as output:
             output.write(self.lines)
@@ -159,18 +193,22 @@ def write_sith_data(sith_obj, outdir: str = './'):
     ======
     (str) name of the subdir
     """
-    assert os.path.exists(outdir), "The path to the directory you " +\
+    if isinstance(outdir, (Path, str)):
+            outdir = Path(outdir)
+    assert outdir.exists(), "The path to the directory you " +\
         "specified does not exist does not exist"
     # avoid deleting previous data existing in the output directory
-    subdir = outdir + '/sith_data'
+    subdir = outdir / 'sith_data'
     i = 1
-    while os.path.exists(subdir + '_' + str(i)):
+    final_output = subdir
+    while os.path.exists(final_output):
+        final_output = Path(str(subdir) + '_' + "{:03d}".format(i))
         i += 1
 
-    os.makedirs(subdir + '_' + str(i))
+    os.makedirs(final_output)
 
-    for i, geometry in enumerate(sith_obj.structures):
+    for j, geometry in enumerate(sith_obj.structures):
         geowriter = WriteSITH(geometry)
-        geowriter.write_file(outputfile=subdir + f'/structure_{i}.fchk')
+        geowriter.write_file(outputfile=final_output / 'structure_{:03d}.fchk'.format(j))
 
-    return subdir
+    return final_output
