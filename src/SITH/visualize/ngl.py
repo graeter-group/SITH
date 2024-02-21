@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from ipywidgets import HBox, Output
+from ipywidgets import HBox
 import numpy as np
-from ase.visualize import view
+from SITH.Utilities import color_distribution, create_colorbar
 
 
 class MoleculeNGL:
@@ -801,10 +801,34 @@ class EnergiesNGL(MoleculeNGL):
         dofs = self.sith._deformed[0].dim_indices
         return self.energies_some_dof(dofs, **kwargs)
 
-    def energies_some_dof(self, dofs, cmap=None,
-                          label=None, labelsize=None,
-                          orientation=None, div=None, deci=None,
-                          width=None, height=None, absolute=None, **kwargs):
+    def change_def(self, def_dict: dict, **kwargs) -> tuple:
+        """
+        This functions change the values stored in a dictionary and removes
+        each one of the arguments from the kwargs.
+
+        Parameters
+        ==========
+        def_dict: dict
+            dictionary with the default values.
+        **kwargs: all the arguments you want to change.
+
+        Returns
+        =======
+        (dict, dict) modified dictionary withe the default values and set of
+        kwargs without the used keys.
+        """
+        rem_keys = []
+        for key, value in kwargs.items():
+            if key in def_dict.keys():
+                rem_keys.append(key)
+                def_dict[key] = value
+
+        for key in rem_keys:
+            del kwargs[key]
+
+        return def_dict, kwargs
+
+    def energies_some_dof(self, dofs, **kwargs):
         """Add the bonds with a color scale that represents the
         distribution of energy according to the JEDI method.
 
@@ -828,82 +852,40 @@ class EnergiesNGL(MoleculeNGL):
         div: int. Default: 5
             number of colors in the colorbar.
         """
-        if cmap is None:
-            cmap = self.kwargs_edofs['cmap']
-        if label is None:
-            label = self.kwargs_edofs['label']
-        if labelsize is None:
-            labelsize = self.kwargs_edofs['labelsize']
-        if orientation is None:
-            orientation = self.kwargs_edofs['orientation']
-        if div is None:
-            div = self.kwargs_edofs['div']
-        if deci is None:
-            deci = self.kwargs_edofs['deci']
-        if width is None:
-            width = self.kwargs_edofs['width']
-        if height is None:
-            height = self.kwargs_edofs['height']
-        if absolute is None:
-            absolute = self.kwargs_edofs['absolute']
-        energies = []
-        dof_ind = self.sith._deformed[0].dim_indices
-        for dof in dofs:
-            for index, sithdof in enumerate(dof_ind):
-                if dof == sithdof:
-                    energies.append(self.sith.energies[self.idef][index])
+        self.kwargs_edofs, kwargs = self.change_def(self.kwargs_edofs,
+                                                    **kwargs)
+        cmap = self.kwargs_edofs['cmap']
+        label = self.kwargs_edofs['label']
+        labelsize = self.kwargs_edofs['labelsize']
+        orientation = self.kwargs_edofs['orientation']
+        div = self.kwargs_edofs['div']
+        deci = self.kwargs_edofs['deci']
+        width = self.kwargs_edofs['width']
+        height = self.kwargs_edofs['height']
+        absolute = self.kwargs_edofs['absolute']
 
-        assert len(dofs) == len(energies), "The number of DOFs " + \
-            f"({len(dofs)}) does not correspond with the number of " + \
-            f"energies ({len(energies)})"
+        energies, normalize = color_distribution(self.sith,
+                                                 dofs,
+                                                 self.idef,
+                                                 cmap,
+                                                 absolute,
+                                                 div)
 
-        minval = min(energies)
-        maxval = max(energies)
-        energies_ref = []
-        if absolute:
-            for dof in dofs:
-                for index, sithdof in enumerate(dof_ind):
-                    if dof == sithdof:
-                        energies_ref.append(self.sith.energies[:, index])
-                all_ener = np.array(energies_ref).flatten()
-                minval = min(all_ener)
-                maxval = max(all_ener)
-        if minval == maxval:
-            minval = 0
-            maxval = 1
-
-        if orientation == 'v' or orientation == 'vertical':
-            rotation = 0
-        else:
-            rotation = 90
-
-        boundaries = np.linspace(minval, maxval, div + 1)
-        normalize = mpl.colors.BoundaryNorm(boundaries, cmap.N)
-
-        # Costumize cbar
-        cbar = self.fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
-                                                       cmap=cmap),
-                                 cax=self.ax, orientation='vertical',
-                                 format='%1.{}f'.format(deci))
-        cbar.set_label(label=label, fontsize=labelsize)
-        cbar.ax.tick_params(labelsize=0.8*labelsize, rotation=rotation)
-
-        # Insert colorbar in view
-        self.viewer.view._remote_call("setSize", targe="Widget",
-                                      args=[width, height])
         for i, dof in enumerate(dofs):
-            color = cmap(normalize(energies[i]))[:3]
+            color = cmap(normalize(energies[self.idef][i]))[:3]
             self.add_dof(dof, color=color, **kwargs)
 
-        self.viewer.view._remote_call("setSize",
-                                      targe="Widget",
-                                      args=[width, height])
-        out = Output()
-        with out:
-            plt.show()
-        # self.box = HBox(children=[self.viewer.view, out])
+        # Insert colorbar in view
+        self.view._remote_call("setSize",
+                               targe="Widget",
+                               args=[width, height])
+        self.fig, cbarwdg = create_colorbar(normalize, cmap, deci, label,
+                                            labelsize, orientation, width,
+                                            height)
 
-        return self.fig, self.ax
+        self.box = HBox([self.view, cbarwdg])
+
+        return self.fig
 
     def show_bonds_of_DOF(self, dof, unique=False, color=None):
         """Show an specific dof.

@@ -1,5 +1,10 @@
+from ipywidgets import Output
 import numpy as np
 from SITH.SITH import SITH
+from matplotlib.colors import BoundaryNorm, Colormap
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.transforms import Bbox
 
 
 class Geometry:
@@ -133,3 +138,139 @@ class Geometry:
             self.hessian = np.delete(self.hessian, dof_indices, axis=1)
 
         return dof_indices2remove
+
+
+def color_distribution(sith: SITH, dofs: np.ndarray,
+                       idef: int,
+                       cmap: Colormap,
+                       absolute: bool = False,
+                       div: int = 5):
+    """"
+    Extract the energies of the specified DOFs and deformation structure, and
+    the normalization according to a cmap.
+
+    Parameters
+    ==========
+    sith: SITH
+        sith object with the distribution of energies and structures
+        information.
+    dofs: array
+        specific set of dofs to extract the energies.
+    idef: int
+        index of the structure to extract the energies.
+    cmap: Colormap
+        colormap to normalize according the number of divisions.
+    absolute: bool
+        True to define the color bar based on the maximum energy of the all
+        the DOFS in all the stretching confs. False to define the color bar
+        based on the maximum energy of the all the DOFS in the present
+        stretching conf.
+    div: int
+        number of sets of colors in which the colorbar is divided.
+
+    Returns
+    =======
+    (np.array, BoundaryNorm) set of energies of DOFs and deformation structure
+    and the BoundaryNorm object to get the distribution of colors.
+    """
+    energies = []
+    dof_ind = sith.dim_indices
+    components = np.full(sith.dims[0], False, dtype=bool)
+
+    for dof in dofs:
+
+        dofindofs = np.all(dof_ind == dof, axis=1)
+        components = np.logical_or(dofindofs, components)
+
+    energies = sith.dofs_energies[:, components]
+
+    if absolute:
+        minval = min(energies.flatten())
+        maxval = max(energies.flatten())
+    else:
+        minval = min(energies[idef].flatten())
+        maxval = max(energies[idef].flatten())
+
+    # In case of all the energies are the same (e.g. 0 stretching)
+    if minval == maxval:
+        minval = 0
+        maxval = 1
+
+    assert len(dofs) == len(energies[idef]), "The number of DOFs " + \
+        f"({len(dofs)}) does not correspond with the number of " + \
+        f"energies ({len(energies)}). This could happen because " + \
+        "some DOFs that you are trying to map does not beling to" +\
+        "sith.dim_indices"
+
+    boundaries = np.linspace(minval, maxval, div + 1)
+    normalize = BoundaryNorm(boundaries, cmap.N)
+
+    return energies, normalize
+
+
+def create_colorbar(normalize: BoundaryNorm, cmap: Colormap, deci: int,
+                    label: str, labelsize: float, orientation: str,
+                    width: int, height: int, dpi: int = 100) -> None:
+    """
+    Plot the colorbar according to BoundaryNorm.
+
+    Parameters
+    ==========
+    normalize: BoundaryNorm
+        normalization function.
+    cmap: Colormap
+        colormap to normalize according the number of indexes.
+    deci: int
+        number of decimals if the ticks in the colorbar.
+    label: str
+        label of the color bar.
+    labelsize: int
+        size of the labels of the colorbar.
+    orientation: "vertical" or "horizontal".
+            orientation of the color bar. Default: "vertical"
+    width: int
+        width (in pixels) of the space that will contain the scene and the
+        color bar. Deault=700
+    height: int
+        height (in pixels) of the space that will contain the scene and the
+        color bar. Deault=700
+
+    Returns
+    =======
+    (plt.fig, widget.Output) Figure containing the colorbar and the widget of
+    the figure.
+    """
+    if orientation == 'v' or orientation == 'vertical':
+        rotation = 0
+    else:
+        rotation = 90
+
+    # labelsize is given in points, namely 1/72 inches
+    # the width is here defined as 1.16 times the space occupied by
+    # the ticks and labels(see below)
+    width_inches = 0.07*labelsize
+    height_inches = height / dpi  # Convert pixels to inches
+
+    fig, ax = plt.subplots(figsize=(width_inches, height_inches),
+                           dpi=dpi)
+    cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=normalize,
+                                              cmap=cmap),
+                        cax=ax, orientation='vertical',
+                        format='%1.{}f'.format(deci))
+    cbar.set_label(label=label,
+                   fontsize=labelsize,
+                   labelpad=0.5 * labelsize)
+    cbar.ax.tick_params(labelsize=0.8*labelsize,
+                        length=0.2*labelsize,
+                        pad=0.2*labelsize,
+                        rotation=rotation)
+    ax.set_position(Bbox([[0.01, 0.1],
+                          [0.99-0.06*labelsize/width_inches,
+                           0.9]]),
+                    which='both')
+
+    out = Output()
+    with out:
+        plt.show()
+
+    return fig, out

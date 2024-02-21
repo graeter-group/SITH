@@ -4,51 +4,8 @@ import matplotlib as mpl
 import numpy as np
 from vmol.view import VMolecule
 import vpython as vp
-from matplotlib.transforms import Bbox
 from SITH.SITH import SITH
-
-
-# TODO: add some documentation because I am using a modified version
-"""
-1) loook for vpython.py and modify the lines around
-
-"from IPython.display import display, HTML, Javascript":
-
-if _isnotebook:
-            if 'js' in list(args.keys()):
-                js = args['js']
-            else:
-                js = ''
-
-            if 'height' in list(args.keys()):
-                height = args['height']
-            else:
-                # because of this I just removed the
-                # automatic creation of a canvas in __init__
-                # just because it would mean a white unnecessary space
-                height = 500
-                args['height'] = height
-
-            # percentaje to of the 3d_canvas in the visualization
-            if 'portion' in list(args.keys()):
-                portion = args['portion']
-            else:
-                portion = 80
-
-            from IPython.display import display, HTML, Javascript
-            display(HTML('<body>'
-                         f'<div style="width: 100%; height: {height}px;">'
-                         f'<div style="width: {portion}%;" id="glowscript"'
-                         'class="glowscript"></div>'
-                         f'<div style="float: right; width: {100-portion}%;"> '
-                         f'{js}'
-                         ' </div>'
-                         '</div>'
-                         '</body>'))
-
-2) in /path/to/vpython/__init__.py change escene by:
-scene = canvas(height=0)
-"""
+from SITH.Utilities import color_distribution, create_colorbar
 
 
 class EnergiesVMol(VMolecule):
@@ -169,9 +126,74 @@ class EnergiesVMol(VMolecule):
                              'orientation': "vertical",
                              'div': 5,
                              'deci': 2,
-                             'width': "700px",
-                             'height': "600px",
+                             'width': "700",
+                             'height': "600",
                              'absolute': False}
+        self.normalize, kwargs = self.create_figure(dofs, **kwargs)
+
+        if 'img' not in kwargs.keys():
+            kwargs['img'] = "./tmp_cbar.png"
+
+        # Create scene
+        VMolecule.__init__(self, atoms,
+                           show_axis=show_axis,
+                           alignment=alignment,
+                           align='left',
+                           frame=idef,
+                           portion=portion,
+                           **kwargs)
+
+        self.scene.background = self._asvector(background)
+        self.traj_buttons()
+
+        # show energies in dofs
+        self.energies_some_dof(dofs, **self.kwargs_edofs)
+
+    
+    def create_figure(self, dofs: list, **kwargs):
+        if 'all' in dofs:
+            dofs = self.sith.dim_indices
+        else:
+            if 'bonds' in dofs:
+                bonds = self.sith.dim_indices[:self.nbonds]
+                dofs.extend(bonds)
+                dofs.remove('bonds')
+            elif 'angles' in dofs:
+                angles = self.sith.dim_indices[self.nbonds:self.nbonds +
+                                                   self.nangles]
+                dofs.extend(angles)
+                dofs.remove('angles')
+            elif 'dihedrals' in dofs:
+                dihedrals = self.sith.dim_indices[self.ndihedral:]
+                dofs.extend(dihedrals)
+                dofs.remove('dihedrals')
+        self.kwargs_edofs, kwargs = self.change_def(self.kwargs_edofs,
+                                                    **kwargs)
+        cmap = self.kwargs_edofs['cmap']
+        label = self.kwargs_edofs['label']
+        labelsize = self.kwargs_edofs['labelsize']
+        orientation = self.kwargs_edofs['orientation']
+        div = self.kwargs_edofs['div']
+        deci = self.kwargs_edofs['deci']
+        width = self.kwargs_edofs['width']
+        height = self.kwargs_edofs['height']
+        absolute = self.kwargs_edofs['absolute']
+        
+        self.energies, normalize = color_distribution(self.sith,
+                                                      dofs,
+                                                 self.idef,
+                                                 cmap,
+                                                 absolute,
+                                                 div)
+
+        # Colorbar
+        self.fig, _ = create_colorbar(normalize, cmap, deci, label, labelsize,
+                                      orientation, int(width), int(height),
+                                      dpi=300)
+
+        self.fig.savefig("./tmp_cbar.png", dpi=300)
+
+        return normalize, kwargs
 
     def energies_bonds(self, **kwargs) -> tuple:
         r"""
