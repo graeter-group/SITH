@@ -44,7 +44,7 @@ class FileReader:
             False, the user should run
             :mod:`~SITH.readers.g09_reader.FileReader._extract`. Defatult=True
         """
-        if isinstance(path, str):
+        if isinstance(path, (Path, str)):
             path = Path(path)
         self._path = path
         self._name = path.stem
@@ -377,14 +377,15 @@ class G09Reader:
             parameter could be also a string of the path to the a directory
             containing the fchk files in alphabetic order.
         """
-        if isinstance(inputfiles, str):
+        if isinstance(inputfiles, (str, Path)):
             master_path = Path(inputfiles)
             assert master_path.is_dir(), "Master directory does not exist."
-            inputfiles = glob(inputfiles + '/*.fchk')
-            inputfiles.sort()
-
-        if isinstance(inputfiles[0], str):
+            inputfiles = [fil for fil in sorted(master_path.glob('*.fchk'))]
+        elif isinstance(inputfiles[0], (str, Path)):
             inputfiles = [Path(fil) for fil in inputfiles]
+        else:
+            raise ValueError("input file must be a path or a list of paths to"
+                             " fchk gaussian files")
 
         self.inputfiles = inputfiles
         self._validate_files(self.inputfiles)
