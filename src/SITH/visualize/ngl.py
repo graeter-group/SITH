@@ -85,7 +85,8 @@ class MoleculeNGL:
                                     radius)
 
         self.bonds[name] = b
-        self.all_dofs_parameters[name] = (atom1index, atom2index)
+        self.all_dofs_parameters[name] = np.array([atom1index, atom2index,
+                                                   0, 0])
 
         return self.bonds[name]
 
@@ -292,7 +293,8 @@ class MoleculeNGL:
             [arcdots.insert(1, vert) for vert in new[::-1]]
 
         self.angles[name] = self.add_arc(vertex, arcdots, color)
-        self.all_dofs_parameters[name] = (atom1index, atom2index, atom3index)
+        self.all_dofs_parameters[name] = np.array([atom1index, atom2index,
+                                                   atom3index, 0])
 
         return self.angles[name]
 
@@ -431,8 +433,8 @@ class MoleculeNGL:
             [arcdots.insert(1, vert) for vert in new[::-1]]
 
         self.dihedrals[name] = self.add_arc(vertex, arcdots, color)
-        self.all_dofs_parameters[name] = (atom1index, atom2index,
-                                          atom3index, atom4index)
+        self.all_dofs_parameters[name] = np.array([atom1index, atom2index,
+                                                   atom3index, atom4index])
 
         return self.dihedrals[name]
 
@@ -492,20 +494,26 @@ class MoleculeNGL:
             color = [0.5, 0.5, 0.5]
 
         types = ["bond", "angle", "dihedral"]
-        type_dof = types[len(dof) - 2]
+        type_dof = types[np.count_nonzero(dof) - 2]
 
         if type_dof == "bond":
-            index1, index2 = dof
-            return self.add_bond(index1, index2, color, radius=radius)
+            index1 = dof[0]
+            index2 = dof[1]
+            return self.add_bond(index1, index2, **kwargs)
 
         elif type_dof == "angle":
-            index1, index2, index3 = dof
-            return self.add_angle(index1, index2, index3, color, n=n)
+            index1 = dof[0]
+            index2 = dof[1]
+            index3 = dof[2]
+            return self.add_angle(index1, index2, index3, **kwargs)
 
         elif type_dof == "dihedral":
-            index1, index2, index3, index4 = dof
+            index1 = dof[0]
+            index2 = dof[1]
+            index3 = dof[2]
+            index4 = dof[3]
             return self.add_dihedral(index1, index2, index3,
-                                     index4, color, n=n)
+                                     index4, **kwargs)
         else:
             raise TypeError(f"{dof} is not an accepted degree of freedom.")
 
@@ -719,19 +727,26 @@ class EnergiesNGL(MoleculeNGL):
 
         types = ["bond", "angle", "dihedral"]
         type_dof = types[len(dof)-2]
+        type_dof = types[np.count_nonzero(dof) - 2]
 
         if type_dof == "bond":
-            index1, index2 = dof
-            return self.add_bond(index1, index2, color, radius=radius)
+            index1 = dof[0]
+            index2 = dof[1]
+            return self.add_bond(index1, index2, **kwargs)
 
         elif type_dof == "angle":
-            index1, index2, index3 = dof
-            return self.add_angle(index1, index2, index3, color, n=n)
+            index1 = dof[0]
+            index2 = dof[1]
+            index3 = dof[2]
+            return self.add_angle(index1, index2, index3, **kwargs)
 
         elif type_dof == "dihedral":
-            index1, index2, index3, index4 = dof
+            index1 = dof[0]
+            index2 = dof[1]
+            index3 = dof[2]
+            index4 = dof[3]
             return self.add_dihedral(index1, index2, index3,
-                                     index4, color, n=n)
+                                     index4, **kwargs)
         else:
             raise TypeError(f"{dof} is not an accepted degree of freedom.")
 
