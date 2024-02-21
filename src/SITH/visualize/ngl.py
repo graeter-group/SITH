@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from ipywidgets import HBox
 import numpy as np
+from nglview import show_ase, show_asetraj
 from SITH.Utilities import color_distribution, create_colorbar
 
 
@@ -26,13 +27,29 @@ class MoleculeNGL:
 
         if alignment is not None:
             index1, index2, index3 = alignment
-            if type(atoms) is list:
+            if self.is_trajectory:
                 [self.xy_alignment(config, index1, index2, index3)
                  for config in self.atoms]
             else:
                 self.xy_alignment(self.atoms, index1, index2, index3)
 
-        self.viewer = view(self.atoms, viewer='ngl')
+        if self.is_trajectory:
+            # Assume this is a trajectory or struct list
+            self.view = show_asetraj(self.atoms, default=False)
+            self.struct = self.atoms[0]
+        else:
+            # Assume this is just a single structure
+            self.view = show_ase(self.atoms, default=False)
+            self.struct = self.atoms.copy()
+
+        self.view.add_spacefill()
+        self.view.update_spacefill(radiusScale=0.15)
+        self.view._remote_call('setSize', target='Widget',
+                               args=['%dpx' % (xsize,), '%dpx' % (ysize,)])
+        self.view.camera = 'orthographic'
+        self.view.parameters = {"clipDist": 0}
+        self.view.center()
+
         # The keys of the next dictionaries are the names of the DOFs and they
         # are defined such that the name is invariant to the order of the
         # indexes, such that the dof i-j((-k)-l) is the same as (l-(k-))j-i
@@ -41,8 +58,8 @@ class MoleculeNGL:
         self.angles = {}
         self.dihedrals = {}
         self.all_dofs_parameters = {}
-        self.shape = self.viewer.view.shape
-        self.box = self.viewer
+        self.shape = self.view.shape
+        self.box = self.view
         if axis:
             self.add_axis()
 
@@ -69,7 +86,7 @@ class MoleculeNGL:
         Return the bonds in the system
         """
         if self.is_trajectory:
-            atoms = self.atoms[self.viewer.view.frame]
+            atoms = self.atoms[self.view.frame]
         else:
             atoms = self.atoms
         if color is None:
@@ -161,7 +178,7 @@ class MoleculeNGL:
         name = ''.join(str(i).zfill(3) for i in indexes)
 
         if name in self.bonds.keys():
-            self.viewer.view.remove_component(self.bonds[name])
+            self.view.remove_component(self.bonds[name])
             del self.bonds[name]
             del self.all_dofs_parameters[name]
         return self.bonds
@@ -183,7 +200,7 @@ class MoleculeNGL:
 
         if (atoms1indexes is None) and (atoms2indexes is None):
             for name in self.bonds.keys():
-                self.viewer.view.remove_component(self.bonds[name])
+                self.view.remove_component(self.bonds[name])
             self.bonds.clear()
             return self.bonds
 
@@ -192,7 +209,7 @@ class MoleculeNGL:
             for name in self.bonds.keys():
                 for index in atoms1indexes:
                     if str(index) in name:
-                        self.viewer.view.remove_component(self.bonds[name])
+                        self.view.remove_component(self.bonds[name])
                         to_remove.append(name)
             for name in to_remove:
                 del self.bonds[name]
@@ -266,7 +283,7 @@ class MoleculeNGL:
             color = [0.5, 0.5, 0.5]
 
         if self.is_trajectory:
-            atoms = self.atoms[self.viewer.view.frame]
+            atoms = self.atoms[self.view.frame]
         else:
             atoms = self.atoms
 
@@ -360,7 +377,7 @@ class MoleculeNGL:
 
         if name in self.angles.keys():
             for triangle in self.angles[name]:
-                self.viewer.view.remove_component(triangle)
+                self.view.remove_component(triangle)
             del self.angles[name]
             del self.all_dofs_parameters[name]
 
@@ -372,7 +389,7 @@ class MoleculeNGL:
 
         for name in names:
             for triangle in self.angles[name]:
-                self.viewer.view.remove_component(triangle)
+                self.view.remove_component(triangle)
         self.angles.clear()
 
     def add_dihedral(self, atom1index, atom2index, atom3index,
@@ -400,7 +417,7 @@ class MoleculeNGL:
             n = self.n
 
         if self.is_trajectory:
-            atoms = self.atoms[self.viewer.view.frame]
+            atoms = self.atoms[self.view.frame]
         else:
             atoms = self.atoms
         if color is None:
@@ -466,7 +483,7 @@ class MoleculeNGL:
 
         if name in self.dihedrals.keys():
             for triangle in self.dihedrals[name]:
-                self.viewer.view.remove_component(triangle)
+                self.view.remove_component(triangle)
             del self.dihedrals[name]
             del self.all_dofs_parameters[name]
         return self.dihedrals
@@ -477,10 +494,10 @@ class MoleculeNGL:
 
         for name in names:
             for triangle in self.dihedrals[name]:
-                self.viewer.view.remove_component(triangle)
+                self.view.remove_component(triangle)
         self.dihedrals.clear()
 
-    def add_dof(self, dof, color=None, n=5, radius=0.07):
+    def add_dof(self, dof, color=None, **kwargs):
         """Add the degree of freedom to the molecule image
 
         Parameters
@@ -551,17 +568,16 @@ class MoleculeNGL:
         remove xyz axis
         """
         for name in self.axis.keys():
-            self.viewer.view.remove_component(self.axis[name])
+            self.view.remove_component(self.axis[name])
         self.axis.clear()
 
     def download_image(self, *args, **kwargs):
-        self.viewer.view.download_image(*args, **kwargs)
+        self.view.download_image(*args, **kwargs)
 
     def picked(self):
-        return self.viewer.view.picked
+        return self.view.picked
 
     # Alignment
-
     def rot_x(self, angle):
         c = np.cos(angle)
         s = np.sin(angle)
@@ -587,8 +603,8 @@ class MoleculeNGL:
         return R
 
     def align_axis(self, vector):
-        """Apply the necessary rotations to set a
-        vector aligned with positive x axis
+        """Apply the necessary rotations to set a vector aligned with positive
+        x axis.
         """
         xyproj = vector.copy()
         xyproj[2] = 0
@@ -650,7 +666,7 @@ class MoleculeNGL:
 
 class EnergiesNGL(MoleculeNGL):
     def __init__(self, sith_info, idef='all', alignment=None, axis=False,
-                 background='#ffc', **kwargs):
+                 background='#FFFFFF', **kwargs):
         """Set of tools to show a molecule and the
         distribution of energies in the different DOF.
 
@@ -660,7 +676,8 @@ class EnergiesNGL(MoleculeNGL):
         sith_info :
             sith object or sith.utilities.ReadSummary object
         idef: int
-            number of the deformation to be analized. Default=0
+            number of the deformation to be analized. Default=None, that means,
+            all the structures are displayed as a trajectory.
         alignment: list
             3 indexes to fix the correspondig atoms in the xy plane.
             The first atom is placed in the negative side of the x axis,
@@ -673,7 +690,7 @@ class EnergiesNGL(MoleculeNGL):
         """
         self.idef = idef
         self.sith = sith_info
-        if self.sith.energies is None:
+        if self.sith.dofs_energies is None:
             self._analize_energies(**kwargs)
 
         if idef == 'all':
@@ -686,9 +703,9 @@ class EnergiesNGL(MoleculeNGL):
         MoleculeNGL.__init__(self, atoms, alignment, axis)
 
         if self.idef is None:
-            self.idef = self.viewer.view.frame
+            self.idef = self.view.frame
 
-        self.viewer.view.background = background
+        self.view.background = background
 
         dims = self.sith.structures[0].dims
         self.nbonds = dims[1]
@@ -700,10 +717,10 @@ class EnergiesNGL(MoleculeNGL):
                              'orientation': "vertical",
                              'div': 5,
                              'deci': 2,
-                             'width': "700px",
-                             'height': "600px",
+                             'width': 700,
+                             'height': 600,
                              'absolute': False}
-        self.viewer.view.observe(self.update_frame, names='frame')
+        self.view.observe(self.update_frame, names='frame')
 
     def _analize_energies(self):
         """
@@ -715,7 +732,7 @@ class EnergiesNGL(MoleculeNGL):
         self.sith.extract_data()
         self.sith.analyze()
 
-    def add_dof(self, dof, color=[0.5, 0.5, 0.5], n=5, radius=0.07):
+    def add_dof(self, dof, **kwargs):
         """Add the degree of freedom to the molecule image
 
         Parameters
@@ -804,7 +821,7 @@ class EnergiesNGL(MoleculeNGL):
         atribute self.kwargs_edofs to keep fixed the parameters to update the
         visualization of dofs.
         """
-        self.idef = self.viewer.view.frame
+        self.idef = self.view.frame
 
         dofs = list(self.all_dofs_parameters.values())
         if len(dofs) != 0:
