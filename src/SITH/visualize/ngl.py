@@ -672,10 +672,10 @@ class EnergiesNGL(MoleculeNGL):
 
         if idef == 'all':
             self.idef = None
-            atoms = [config.atoms for config in self.sith._deformed]
+            atoms = [config.atoms for config in self.sith.structures]
         else:
             self.idef = idef
-            atoms = self.sith._deformed[self.idef].atoms
+            atoms = self.sith.structures[self.idef].atoms
 
         MoleculeViewer.__init__(self, atoms, alignment, axis)
 
@@ -684,7 +684,7 @@ class EnergiesNGL(MoleculeNGL):
 
         self.viewer.view.background = background
 
-        dims = self.sith._deformed[0].dims
+        dims = self.sith.structures[0].dims
         self.nbonds = dims[1]
         self.nangles = dims[2]
         self.ndihedral = dims[3]
@@ -759,7 +759,7 @@ class EnergiesNGL(MoleculeNGL):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._deformed[0].dim_indices[:self.nbonds]
+        dofs = self.sith.structures[0].dim_indices[:self.nbonds]
         out = self.energies_some_dof(dofs, **kwargs)
         self.update_frame()
         return out
@@ -773,8 +773,8 @@ class EnergiesNGL(MoleculeNGL):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._deformed[0].dim_indices[self.nbonds:self.nbonds +
-                                                  self.nangles]
+        dofs = self.sith.structures[0].dim_indices[self.nbonds:self.nbonds +
+                                                   self.nangles]
         out = self.energies_some_dof(dofs, **kwargs)
         self.update_frame()
         return out
@@ -788,7 +788,7 @@ class EnergiesNGL(MoleculeNGL):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._deformed[0].dim_indices[self.nbonds + self.nangles:]
+        dofs = self.sith.structures[0].dim_indices[self.nbonds + self.nangles:]
         out = self.energies_some_dof(dofs, **kwargs)
         self.update_frame()
         return out
@@ -813,7 +813,7 @@ class EnergiesNGL(MoleculeNGL):
 
         optional kwargs for energies_some_dof
         """
-        dofs = self.sith._deformed[0].dim_indices
+        dofs = self.sith.structures[0].dim_indices
         return self.energies_some_dof(dofs, **kwargs)
 
     def change_def(self, def_dict: dict, **kwargs) -> tuple:
@@ -915,7 +915,7 @@ class EnergiesNGL(MoleculeNGL):
         color: list[3(int)]. default R G B for angles, distances, dihedrals.
             color that you want to use in this dof.
         """
-        dof_indices = self.sith._deformed[0].dim_indices[dof]
+        dof_indices = self.sith.structures[0].dim_indices[dof]
         if color is None:
             colors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
             color = colors[len(dof_indices) - 2]
@@ -953,5 +953,5 @@ class EnergiesNGL(MoleculeNGL):
         The color is not related with the JEDI method. It
         could be changed with the kwarg color=rgb list.
         """
-        dofs = self.sith._deformed[0].dim_indices[:self.nbonds]
+        dofs = self.sith.structures[0].dim_indices[:self.nbonds]
         self.show_dof(dofs, **kwargs)
