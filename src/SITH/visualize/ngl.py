@@ -6,7 +6,8 @@ from SITH.Utilities import color_distribution, create_colorbar
 
 
 class MoleculeNGL:
-    def __init__(self, atoms, alignment=None, axis=False):
+    def __init__(self, atoms, alignment=None, axis=False,
+                 xsize: int = 500, ysize: int = 500, n=5):
         """Set of graphic tools to see the distribution
         of energies in the different degrees of freedom
         (lengths, angles, dihedrals)
@@ -36,6 +37,7 @@ class MoleculeNGL:
         # are defined such that the name is invariant to the order of the
         # indexes, such that the dof i-j((-k)-l) is the same as (l-(k-))j-i
         self.bonds = {}
+        self.n = n
         self.angles = {}
         self.dihedrals = {}
         self.all_dofs_parameters = {}
@@ -238,7 +240,7 @@ class MoleculeNGL:
         return triangles
 
     def add_angle(self, atom1index, atom2index, atom3index,
-                  color=None, n=0):
+                  color=None, n=None):
         """Add an angle to between three atoms:
         atom1, atom2 and atom3
         - with the vertex in the atom2
@@ -258,6 +260,8 @@ class MoleculeNGL:
         ======
         Return the angles in the system
         """
+        if n is None:
+            n = self.n
         if color is None:
             color = [0.5, 0.5, 0.5]
 
@@ -372,7 +376,7 @@ class MoleculeNGL:
         self.angles.clear()
 
     def add_dihedral(self, atom1index, atom2index, atom3index,
-                     atom4index, color=None, n=0):
+                     atom4index, color=None, n=None):
         """Add an dihedral angle between four atoms:
         atom1, atom2, atom3 and atom4
         - with the vertex in the midle of the atom 2 and 3
@@ -392,6 +396,8 @@ class MoleculeNGL:
         ======
         Return the dihedral angles
         """
+        if n is None:
+            n = self.n
 
         if self.is_trajectory:
             atoms = self.atoms[self.viewer.view.frame]
