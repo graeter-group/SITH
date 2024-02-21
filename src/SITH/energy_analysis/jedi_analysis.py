@@ -21,14 +21,14 @@ class JediAnalysis:
         """
         # TODO: replace print by logging
         # print("Performing energy analysis...")
-        if self.structures_info.all_hessians[0] is None:
+        hess = self.structures_info.structures[self.structures_info.reference
+                                               ].hessian
+        if hess is None:
             raise Exception(
                 "The Hessian matrix of the reference structure was not " +
                 "properly read from the input files")
         self.structures_info.dofs_energies = 0.5 * \
-            np.matmul(self.structures_info.delta_q,
-                      self.structures_info.all_hessians[
-                          self.structures_info.reference]) * \
+            np.matmul(self.structures_info.delta_q, hess) * \
             self.structures_info.delta_q
         self.structures_info.structure_energy = \
             np.sum(self.structures_info.dofs_energies, axis=1)
