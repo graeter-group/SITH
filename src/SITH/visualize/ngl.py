@@ -683,7 +683,7 @@ class EnergiesNGL(MoleculeNGL):
             self.idef = idef
             atoms = self.sith.structures[self.idef].atoms
 
-        MoleculeViewer.__init__(self, atoms, alignment, axis)
+        MoleculeNGL.__init__(self, atoms, alignment, axis)
 
         if self.idef is None:
             self.idef = self.viewer.view.frame
