@@ -88,8 +88,6 @@ class SITH:
                                                  self.structures]) - \
             self.structures[self.reference].scf_energy
         self.all_dofs = np.array([defo.dof for defo in self.structures])
-        self.all_hessians = np.array([defo.hessian
-                                      for defo in self.structures])
         self.all_forces = np.array([defo.internal_forces
                                     for defo in self.structures])
         self.dofs_energies = None
@@ -232,9 +230,6 @@ class SITH:
         self.all_dofs = np.delete(self.all_dofs, indexes2kill, axis=1)
         if self.delta_q is not None:
             self.delta_q = np.delete(self.delta_q, indexes2kill, axis=1)
-        if self.all_hessians[0] is not None:
-            self.all_hessians = np.array([defo.hessian
-                                          for defo in self.structures])
         if self.all_forces[0] is not None:
             self.all_forces = np.delete(self.all_forces, indexes2kill, axis=1)
 
@@ -291,8 +286,6 @@ class SITH:
         self.structures_scf_energies -= self.structures_scf_energies[
             self.reference]
         self.all_dofs = self.all_dofs[ini_index: last_index]
-        if self.all_hessians is not None:
-            self.all_hessians = self.all_hessians[ini_index: last_index]
         if self.all_forces is not None:
             self.all_forces = self.all_forces[ini_index: last_index]
         if self.dofs_energies is not None:
